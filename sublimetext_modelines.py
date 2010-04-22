@@ -1,9 +1,21 @@
 import sublime, sublimeplugin
 
 def getLineCommentCharacter(view):
-    return (view.metaInfo("shellVariables", 0) or {}).get("TM_COMMENT_START", "")
 
-class ExecuteSublimeTextModeLinesCommand(sublimeplugin.TextCommand):
+    commentChar = ""
+
+    try:
+        for pair in view.metaInfo("shellVariables", 0):
+            commentChar = pair["value"]
+            if pair["name"] == "TM_COMMENT_START":
+                break
+    except TypeError:
+        pass
+
+    return commentChar.strip()
+
+
+class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
     """
     This plugin provides a feature similar to vim modelines.
     Modelines set options local to the view by declaring them in the
@@ -14,40 +26,55 @@ class ExecuteSublimeTextModeLinesCommand(sublimeplugin.TextCommand):
         # st: gutter false
         # st: autoIndent false
 
-    Note that only MAX_LINES_TO_CHECK are searched for modelines.
+    Note that only the range spanning from 0 to MAX_LINES_TO_CHECK * LINE_LENGTH
+    are searched for modelines.
 
     TODO: let user declare multiple options per line.
-    TODO: some options will fail (rulers).
-    TODO: use each language's single-line comment character in
-    SUBLIMETEXT_MODELINE_PREFIX.
+    TODO: let user declare modelines in block comments
     """
-    SUBLIMETEXT_MODELINE_PREFIX = "# st: "
+    SUBLIMETEXT_MODELINE_PREFIX_TPL = "%s st: "
     MAX_LINES_TO_CHECK = 50
-
-    def _getAllLines(self, view):
-        r = sublime.Region(0, view.size())
-        return view.splitByNewlines(r)
+    LINE_LENGTH = 80
 
     def _getModelineCandidates(self, view):
-        ls = self._getAllLines(view)
 
-        endPoint = ls[ min(self.MAX_LINES_TO_CHECK, len(ls)) - 1 ].end()
-        modelinesRegion = sublime.Region(0, endPoint)
+        boundary = min(self.MAX_LINES_TO_CHECK * self.LINE_LENGTH, view.size())
+        candidates = view.splitByNewlines(sublime.Region(0, view.fullLine(boundary).end()))
 
-        return view.substr(modelinesRegion).split('\n')
+        # Add region at bottom of file if the file is large enough.
+        if boundary < view.size():
+            # don't exceed view.size()
+            upperBoundary = min(max(view.size() - boundary, candidates[-1].end() + 1),
+                                view.size())
 
-    def run(self, view, args):
-        print getLineCommentCharacter(view)
+            bottomRegion = sublime.Region(upperBoundary, view.size())
+            candidates += view.splitByNewlines(bottomRegion)
+
+        return [candidate for candidate in candidates if not candidate.empty()]
+
+    def _getOptionsToSet(self, view):
+
+        opts = []
+        actualPrefix = (self.SUBLIMETEXT_MODELINE_PREFIX_TPL %
+                                # sometimes there is no line comment char, so
+                                # st: should be right at the start of the line.
+                                getLineCommentCharacter(view)).lstrip()
+
+        for candidate in self._getModelineCandidates(view):
+
+            candidateStr = view.substr(candidate)
+            print candidateStr
+            if candidateStr.startswith(actualPrefix):
+                name, discard, value = candidateStr[len(actualPrefix):].partition(" ")
+                opts.append((name, value))
+
+        return opts
+
+    def _setOptions(self, view):
+
+        for name, value in self._getOptionsToSet(view):
+            # spaces in options are illegal in sublime text
+            view.options().set(name.strip(), value)
 
     def onLoad(self, view):
-        whereOptionStarts = len(self.SUBLIMETEXT_MODELINE_PREFIX)
-
-        for l in self._getModelineCandidates(view):
-
-            if l.startswith(self.SUBLIMETEXT_MODELINE_PREFIX):
-                try:
-                    name, value = l[whereOptionStarts:].split(' ', 1)
-                except ValueError:
-                    print "Modeline syntax error:", l
-
-                view.options().set(name, value)
+        self._setOptions(view)
