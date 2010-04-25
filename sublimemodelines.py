@@ -63,7 +63,6 @@ class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
         for candidate in self._getModelineCandidates(view):
 
             candidateStr = view.substr(candidate)
-            print candidateStr
             if candidateStr.startswith(actualPrefix):
                 name, discard, value = candidateStr[len(actualPrefix):].partition(" ")
                 opts.append((name, value))
