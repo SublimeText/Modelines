@@ -1,4 +1,8 @@
 import sublime, sublimeplugin
+import re
+
+SUBLIMETEXT_MODELINE_PREFIX_TPL = "%s\s*(st|sublime): "
+DEFAULT_LINE_COMMENT = "#"
 
 def getLineCommentCharacter(view):
 
@@ -13,6 +17,10 @@ def getLineCommentCharacter(view):
         pass
 
     return commentChar.strip()
+
+def buildModelinePrefix(view):
+    lineComment = getLineCommentCharacter(view).lstrip() or DEFAULT_LINE_COMMENT
+    return (SUBLIMETEXT_MODELINE_PREFIX_TPL % lineComment)
 
 
 class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
@@ -32,48 +40,57 @@ class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
     TODO: let user declare multiple options per line.
     TODO: let user declare modelines in block comments
     """
-    SUBLIMETEXT_MODELINE_PREFIX_TPL = "%s st: "
     MAX_LINES_TO_CHECK = 50
     LINE_LENGTH = 80
 
-    def _getModelineCandidates(self, view):
+    def _getCandidatesTop(self, view):
+        endBoundary = min(self.MAX_LINES_TO_CHECK * self.LINE_LENGTH, view.size())
+        # TODO: use lines() here instead.
+        candidates = view.lines(sublime.Region(0, view.fullLine(endBoundary).end()))
 
-        boundary = min(self.MAX_LINES_TO_CHECK * self.LINE_LENGTH, view.size())
-        candidates = view.splitByNewlines(sublime.Region(0, view.fullLine(boundary).end()))
+        return candidates
 
+    def _getCandidatesBottom(self, view, topCandidatesEnd):
+
+        candidates = []
         # Add region at bottom of file if the file is large enough.
-        if boundary < view.size():
-            # don't exceed view.size()
-            upperBoundary = min(max(view.size() - boundary, candidates[-1].end() + 1),
-                                view.size())
+        if (topCandidatesEnd + 1 < view.size()) and ():
 
-            bottomRegion = sublime.Region(upperBoundary, view.size())
-            candidates += view.splitByNewlines(bottomRegion)
+            bottomRegion = sublime.Region(topCandidatesEnd + 1, view.size())
+            candidates = view.splitByNewlines(bottomRegion)
 
-        return [candidate for candidate in candidates if not candidate.empty()]
+        return candidates
 
-    def _getOptionsToSet(self, view):
+    def _getModelines(self, view):
 
-        opts = []
-        actualPrefix = (self.SUBLIMETEXT_MODELINE_PREFIX_TPL %
-                                # sometimes there is no line comment char, so
-                                # st: should be right at the start of the line.
-                                getLineCommentCharacter(view)).lstrip()
+        candidates = self._getCandidatesTop(view)
+        candidates += self._getCandidatesBottom(view, candidates[-1].end())
 
-        for candidate in self._getModelineCandidates(view):
+        return [candidate for candidate in candidates if self.isModeline(view, candidate)]
 
-            candidateStr = view.substr(candidate)
-            if candidateStr.startswith(actualPrefix):
-                name, discard, value = candidateStr[len(actualPrefix):].partition(" ")
-                opts.append((name, value))
+    def isModeline(self, view, regionLine):
 
-        return opts
+        if regionLine.empty(): return False
 
-    def _setOptions(self, view):
+        actualPrefix = buildModelinePrefix(view)
 
-        for name, value in self._getOptionsToSet(view):
-            # spaces in options are illegal in sublime text
-            view.options().set(name.strip(), value)
+        candidateString = view.substr(regionLine)
+        if re.match(actualPrefix, candidateString):
+            return True
+
+    def _extractOption(self, view, modeline):
+
+        actualPrefix = buildModelinePrefix(view)
+
+        modelineStr = view.substr(modeline)
+        name, discard, value = modelineStr.partition(":")[2].lstrip().partition(" ")
+
+        # spaces in option are illegal in sublime text
+        return (name.strip(), value)
 
     def onLoad(self, view):
-        self._setOptions(view)
+
+        options = [self._extractOption(view, modeline) for modeline in self._getModelines(view)]
+
+        for name, value in options:
+            view.options().set(name, value)
