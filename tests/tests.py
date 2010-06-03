@@ -7,7 +7,7 @@ sublime.packagesPath.return_value = "XXX"
 
 import sublimeplugin
 
-sublimeplugin.Plugin = mock.Mock()
+# sublimeplugin.Plugin = mock.Mock()
 
 import sublimemodelines
 
@@ -79,6 +79,64 @@ class TestCase_buildModelinePrefix(unittest.TestCase):
 
         expected = "%s\\s*(st|sublime): " % self.DEFAULT_LINE_CHAR
         actual = sublimemodelines.buildModelinePrefix(self.view)
+
+        self.assertEquals(expected, actual)
+
+
+class TestCase_GettingCandidateModelines(unittest.TestCase):
+
+    def setUp(self):
+        self.view = mock.Mock()
+
+    def test_isModeline_EmptyLine(self):
+
+        regionLine = mock.Mock()
+        regionLine.emtpy.return_value = True
+
+        expected = False
+
+        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
+        actual = c.isModeline(self.view, regionLine)
+
+        self.assertEquals(expected, actual)
+
+
+    def test_isModeline_BadPrefix(self):
+
+        regionLine = mock.Mock()
+        self.view.substr.return_value = "NOT A MODELINE!"
+
+        expected = False
+
+        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
+        actual = c.isModeline(self.view, regionLine)
+
+        self.assertEquals(expected, actual)
+
+
+    def test_isModeline_Good_st_Style(self):
+
+        regionLine = mock.Mock()
+        regionLine.empty.return_value = False
+        self.view.substr.return_value = "# st: A MODELINE!"
+
+        expected = True
+
+        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
+        actual = c.isModeline(self.view, regionLine)
+
+        self.assertEquals(expected, actual)
+
+    def test_isModeline_Good_sublime_Style(self):
+
+        regionLine = mock.Mock()
+        regionLine.empty.return_value = False
+        self.view.substr.return_value = "# sublime: A MODELINE!"
+
+        expected = True
+
+        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
+        actual = c.isModeline(self.view, regionLine)
 
         self.assertEquals(expected, actual)
 
