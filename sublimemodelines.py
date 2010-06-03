@@ -44,9 +44,11 @@ class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
     LINE_LENGTH = 80
 
     def _getCandidatesTop(self, view):
-        endBoundary = min(self.MAX_LINES_TO_CHECK * self.LINE_LENGTH, view.size())
+        endBoundary = min(self.MAX_LINES_TO_CHECK *
+                                            self.LINE_LENGTH, view.size())
         # TODO: use lines() here instead.
-        candidates = view.lines(sublime.Region(0, view.fullLine(endBoundary).end()))
+        candidates = view.lines(sublime.Region(0,
+                                            view.fullLine(endBoundary).end()))
 
         return candidates
 
@@ -66,7 +68,8 @@ class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
         candidates = self._getCandidatesTop(view)
         candidates += self._getCandidatesBottom(view, candidates[-1].end())
 
-        return [candidate for candidate in candidates if self.isModeline(view, candidate)]
+        return [candidate for candidate in candidates
+                                            if self.isModeline(view, candidate)]
 
     def isModeline(self, view, regionLine):
 
@@ -90,7 +93,8 @@ class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
 
     def onLoad(self, view):
 
-        options = [self._extractOption(view, modeline) for modeline in self._getModelines(view)]
+        options = [self._extractOption(view, modeline)
+                                    for modeline in self._getModelines(view)]
 
         for name, value in options:
             view.options().set(name, value)
