@@ -83,7 +83,48 @@ class TestCase_buildModelinePrefix(unittest.TestCase):
         self.assertEquals(expected, actual)
 
 
-class TestCase_GettingCandidateModelines(unittest.TestCase):
+class TestCase_GettingModelines(unittest.TestCase):
+
+    def setUp(self):
+        self.view = mock.Mock()
+
+
+    def test_getCandidatesBottom_TopRegionLargerThanBuffer(self):
+        self.view.size.return_value = 100
+
+        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
+        actual = c._getCandidatesBottom(self.view, 200)
+        expected = []
+
+        self.assertEquals(expected, actual)
+
+    def test_getCandidatesBottom_MakeSureWeCall_sublime_Region_Correctly(self):
+
+        self.view.size.return_value = 200
+        sublime.Region = mock.Mock()
+
+        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
+        c._getCandidatesBottom(self.view, 100)
+        actual = sublime.Region.call_args
+        expected = ((101, 200), {})
+
+        self.assertEquals(expected, actual)
+
+
+    def test_getCandidatesBottom_MakeSureWeReturnFrom_view_lines(self):
+
+        self.view.size.return_value = 200
+        sublime.Region = mock.Mock()
+
+        self.view.lines.return_value = [1, 2]
+        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
+        actual = c._getCandidatesBottom(self.view, 100)
+        expected = [1, 2]
+
+        self.assertEquals(expected, actual)
+
+
+class TestCase_isModeline(unittest.TestCase):
 
     def setUp(self):
         self.view = mock.Mock()

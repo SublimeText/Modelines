@@ -54,10 +54,10 @@ class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
 
         candidates = []
         # Add region at bottom of file if the file is large enough.
-        if (topCandidatesEnd + 1 < view.size()):
+        if topCandidatesEnd + 1 < view.size():
 
             bottomRegion = sublime.Region(topCandidatesEnd + 1, view.size())
-            candidates = view.splitByNewlines(bottomRegion)
+            candidates = view.lines(bottomRegion)
 
         return candidates
 
