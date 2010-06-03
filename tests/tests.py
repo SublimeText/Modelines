@@ -6,9 +6,6 @@ sublime.packagesPath = mock.Mock()
 sublime.packagesPath.return_value = "XXX"
 
 import sublimeplugin
-
-# sublimeplugin.Plugin = mock.Mock()
-
 import sublimemodelines
 
 class TestCase_getLineCommentCharacter(unittest.TestCase):
@@ -87,13 +84,14 @@ class TestCase_GettingModelines(unittest.TestCase):
 
     def setUp(self):
         self.view = mock.Mock()
-
+        self.command = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
+        self.sublime = sublime
+        self.sublime.Region = mock.Mock()
 
     def test_getCandidatesBottom_TopRegionLargerThanBuffer(self):
         self.view.size.return_value = 100
 
-        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
-        actual = c._getCandidatesBottom(self.view, 200)
+        actual = self.command._getCandidatesBottom(self.view, 200)
         expected = []
 
         self.assertEquals(expected, actual)
@@ -101,11 +99,9 @@ class TestCase_GettingModelines(unittest.TestCase):
     def test_getCandidatesBottom_MakeSureWeCall_sublime_Region_Correctly(self):
 
         self.view.size.return_value = 200
-        sublime.Region = mock.Mock()
 
-        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
-        c._getCandidatesBottom(self.view, 100)
-        actual = sublime.Region.call_args
+        self.command._getCandidatesBottom(self.view, 100)
+        actual = self.sublime.Region.call_args
         expected = ((101, 200), {})
 
         self.assertEquals(expected, actual)
@@ -114,11 +110,9 @@ class TestCase_GettingModelines(unittest.TestCase):
     def test_getCandidatesBottom_MakeSureWeReturnFrom_view_lines(self):
 
         self.view.size.return_value = 200
-        sublime.Region = mock.Mock()
 
         self.view.lines.return_value = [1, 2]
-        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
-        actual = c._getCandidatesBottom(self.view, 100)
+        actual = self.command._getCandidatesBottom(self.view, 100)
         expected = [1, 2]
 
         self.assertEquals(expected, actual)
@@ -127,8 +121,7 @@ class TestCase_GettingModelines(unittest.TestCase):
 
         self.view.size.return_value = 5000
 
-        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
-        c._getCandidatesTop(self.view)
+        self.command._getCandidatesTop(self.view)
 
         actual = self.view.fullLine.call_args
         expected = ((4000,), {})
@@ -138,12 +131,10 @@ class TestCase_GettingModelines(unittest.TestCase):
     def test_getCandidatesTop_MakeSureWeReturnFrom_view_lines(self):
 
         self.view.size.return_value = 5000
-        sublime.Region = mock.Mock()
 
         self.view.lines.return_value = [1, 2]
-        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
 
-        actual = c._getCandidatesTop(self.view)
+        actual = self.command._getCandidatesTop(self.view)
         expected = [1, 2]
 
         self.assertEquals(expected, actual)
@@ -152,56 +143,44 @@ class TestCase_isModeline(unittest.TestCase):
 
     def setUp(self):
         self.view = mock.Mock()
+        self.regionLine = mock.Mock()
+        self.command = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
 
     def test_isModeline_EmptyLine(self):
 
-        regionLine = mock.Mock()
-        regionLine.emtpy.return_value = True
+        self.regionLine.emtpy.return_value = True
 
         expected = False
-
-        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
-        actual = c.isModeline(self.view, regionLine)
+        actual = self.command.isModeline(self.view, self.regionLine)
 
         self.assertEquals(expected, actual)
-
 
     def test_isModeline_BadPrefix(self):
 
-        regionLine = mock.Mock()
         self.view.substr.return_value = "NOT A MODELINE!"
 
         expected = False
-
-        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
-        actual = c.isModeline(self.view, regionLine)
+        actual = self.command.isModeline(self.view, self.regionLine)
 
         self.assertEquals(expected, actual)
 
-
     def test_isModeline_Good_st_Style(self):
 
-        regionLine = mock.Mock()
-        regionLine.empty.return_value = False
+        self.regionLine.empty.return_value = False
         self.view.substr.return_value = "# st: A MODELINE!"
 
         expected = True
-
-        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
-        actual = c.isModeline(self.view, regionLine)
+        actual = self.command.isModeline(self.view, self.regionLine)
 
         self.assertEquals(expected, actual)
 
     def test_isModeline_Good_sublime_Style(self):
 
-        regionLine = mock.Mock()
-        regionLine.empty.return_value = False
+        self.regionLine.empty.return_value = False
         self.view.substr.return_value = "# sublime: A MODELINE!"
 
         expected = True
-
-        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
-        actual = c.isModeline(self.view, regionLine)
+        actual = self.command.isModeline(self.view, self.regionLine)
 
         self.assertEquals(expected, actual)
 
