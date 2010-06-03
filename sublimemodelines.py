@@ -96,5 +96,9 @@ class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
         options = [self._extractOption(view, modeline)
                                     for modeline in self._getModelines(view)]
 
-        for name, value in options:
-            view.options().set(name, value)
+        try:
+            for name, value in options:
+                view.options().set(name, value)
+        except ValueError, e:
+            print "Sublime Modelines plugin -- Bad option detected: %s, %s\n%s" % (name, value)
+            print "Check your file's modelines. Keys cannot be empty strings."

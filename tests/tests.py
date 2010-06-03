@@ -123,6 +123,30 @@ class TestCase_GettingModelines(unittest.TestCase):
 
         self.assertEquals(expected, actual)
 
+    def test_getCandidatesTop_MakeSureWeGetCorrectDefaultBottomBoundary(self):
+
+        self.view.size.return_value = 5000
+
+        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
+        c._getCandidatesTop(self.view)
+
+        actual = self.view.fullLine.call_args
+        expected = ((4000,), {})
+
+        self.assertEquals(expected, actual)
+
+    def test_getCandidatesTop_MakeSureWeReturnFrom_view_lines(self):
+
+        self.view.size.return_value = 5000
+        sublime.Region = mock.Mock()
+
+        self.view.lines.return_value = [1, 2]
+        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
+
+        actual = c._getCandidatesTop(self.view)
+        expected = [1, 2]
+
+        self.assertEquals(expected, actual)
 
 class TestCase_isModeline(unittest.TestCase):
 
@@ -180,6 +204,23 @@ class TestCase_isModeline(unittest.TestCase):
         actual = c.isModeline(self.view, regionLine)
 
         self.assertEquals(expected, actual)
+
+
+class TestCase_Other(unittest.TestCase):
+
+    def setUp(self):
+        self.view = mock.Mock()
+
+    def test_WellFormedOptionIsParsedCorrectly(self):
+
+        self.view.substr.side_effect = lambda x: x
+
+        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
+        actual = c._extractOption(self.view, "sublime: drawWhiteSpace all")
+        expected = "drawWhiteSpace", "all"
+
+        self.assertEquals(expected, actual)
+
 
 
 if __name__ == "__main__":
