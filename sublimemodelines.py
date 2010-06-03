@@ -10,8 +10,8 @@ def getLineCommentCharacter(view):
 
     try:
         for pair in view.metaInfo("shellVariables", 0):
-            commentChar = pair["value"]
             if pair["name"] == "TM_COMMENT_START":
+                commentChar = pair["value"]
                 break
     except TypeError:
         pass
