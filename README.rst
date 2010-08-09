@@ -14,12 +14,12 @@ Usage
 How to declare modelines
 ------------------------
 
-Modelines must be declared in source code files with one of the following syntaxes:::
+Modelines must be declared in source code files with one of the following syntaxes::
 
     # sublime: optionName value
     # st: optionName value
 
-Note: ``#`` is the default comment character, but you must use the corresponding single-line commend character for your language. In cases where there isn't a concept of comment, the default one must be used.
+**Note**: ``#`` is the default comment character, but you must use the corresponding single-line commend character for your language. In cases where there isn't a concept of comment, the default one must be used.
 
 Examples::
 **********
