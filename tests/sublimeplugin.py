@@ -3,7 +3,7 @@ class Plugin(object):
    pass
 #
 #
-class ApplicationCommadn(Plugin):
+class ApplicationCommand(Plugin):
    pass
 #
 #
