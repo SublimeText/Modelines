@@ -1,12 +1,16 @@
-SublimeModelines package for Sublime Text
+SublimeModelines - A Sublime Text Package
 =========================================
 
-Vim-like modelines for the Sublime Text editor. With this plugin you can apply settings to files selectively.
+Set preferences local to a single buffer. A more granular approach to preferences
+than the per-file type ``sublime-options`` files.
+
+Inspired in Vim's modelines feature.
 
 Side effects
 ************
 
-All opened files will be scanned ``onLoad`` for modelines and settings defined in them will be applied. Other than that, there shouldn't be any side effects.
+Buffers will be scanned ``onLoad`` for modelines and preferences will be set
+accordingly. Preferences will apply **only** for the buffer declaring them.
 
 Usage
 *****
@@ -17,9 +21,11 @@ How to declare modelines
 Modelines must be declared in source code files with one of the following syntaxes::
 
     # sublime: optionName value
-    # st: optionName value
+    # sublime: optionName value; anotherOption value; thirdOption value
 
-**Note**: ``#`` is the default comment character, but you must use the corresponding single-line commend character for your language. In cases where there isn't a concept of comment, the default one must be used.
+**Note**: ``#`` is the default comment character, but you must use the corresponding
+single-line commend character for your language. In cases where there isn't a concept
+of comment, the default one must be used.
 
 Examples
 ********
@@ -29,3 +35,10 @@ Examples
     # sublime: gutter false
     # sublime: translateTabsToSpaces false
     # sublime: font Comic Sans 8
+    # sublime: drawWhiteSpace select; wordSeparators &%$·/;?!; translateTabsToSpaces true
+
+Caveats
+*******
+
+If the option's value contains a semicolon (``;``), make sure it isn't followed
+by a blank space. Otherwise it will be interpreted as a multioption separator.
