@@ -24,7 +24,7 @@ Modelines must be declared in source code files with one of the following syntax
     # sublime: optionName value; anotherOption value; thirdOption value
 
 **Note**: ``#`` is the default comment character, but you must use the corresponding
-single-line commend character for your language. In cases where there isn't a concept
+single-line comment character for your language. In cases where there isn't a concept
 of comment, the default one must be used.
 
 Examples
