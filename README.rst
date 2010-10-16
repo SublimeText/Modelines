@@ -18,7 +18,8 @@ Usage
 How to declare modelines
 ------------------------
 
-Modelines must be declared in source code files with one of the following syntaxes::
+Modelines must be declared at the top or the bottom of source code files with
+one of the following syntaxes::
 
     # sublime: optionName value
     # sublime: optionName value; anotherOption value; thirdOption value
