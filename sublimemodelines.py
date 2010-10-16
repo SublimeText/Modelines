@@ -83,8 +83,6 @@ class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
 
     def _extractOption(self, view, modeline):
 
-        actualPrefix = buildModelinePrefix(view)
-
         modelineStr = view.substr(modeline)
         name, discard, value = modelineStr.partition(":")[2].lstrip().partition(" ")
 
