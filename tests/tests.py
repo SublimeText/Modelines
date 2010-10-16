@@ -189,18 +189,29 @@ class TestCase_Other(unittest.TestCase):
 
     def setUp(self):
         self.view = mock.Mock()
+        self.view.substr.side_effect = lambda x: x
+        self.c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
 
     def test_WellFormedOptionIsParsedCorrectly(self):
 
-        self.view.substr.side_effect = lambda x: x
-
-        c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
-        actual = c._extractOption(self.view, "sublime: drawWhiteSpace all")
-        expected = "drawWhiteSpace", "all"
+        actual = self.c._extractOptions(self.view, "sublime: drawWhiteSpace all")
+        expected = (("drawWhiteSpace", "all"),)
 
         self.assertEquals(expected, actual)
 
+    def test_MultipleOptionsAreParsedCorrectly(self):
 
+        actual = self.c._extractOptions(self.view, "sublime: drawWhiteSpace all; gutter false")
+        expected = (('drawWhiteSpace', 'all'), ('gutter', 'false'))
+
+        self.assertEquals(expected, actual)
+
+    def test_MultipleOptionsWithFalseSepAreParsedCorrectly(self):
+
+        actual = self.c._extractOptions(self.view, "sublime: drawWhiteSpace all; wordSeparators $%&:;")
+        expected = (('drawWhiteSpace', 'all'), ('wordSeparators', '$%&:;'))
+
+        self.assertEquals(expected, actual)
 
 if __name__ == "__main__":
     unittest.main()
