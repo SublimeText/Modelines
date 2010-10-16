@@ -29,4 +29,4 @@ Examples::
     # sublime: translateTabsToSpaces false
     # sublime: font Comic Sans 8
 
-..
+(Empty)
