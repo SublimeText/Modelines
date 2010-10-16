@@ -2,7 +2,8 @@ import sublime, sublimeplugin
 import re
 
 SUBLIMETEXT_MODELINE_PREFIX_TPL = "%s\s*(st|sublime): "
-DEFAULT_LINE_COMMENT = "#"
+DEFAULT_LINE_COMMENT = '#'
+MULTIOPT_SEP = '; '
 
 def getLineCommentCharacter(view):
 
@@ -46,7 +47,7 @@ class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
     def _getCandidatesTop(self, view):
         endBoundary = min(self.MAX_LINES_TO_CHECK *
                                             self.LINE_LENGTH, view.size())
-        # TODO: use lines() here instead.
+
         candidates = view.lines(sublime.Region(0,
                                             view.fullLine(endBoundary).end()))
 
@@ -81,22 +82,27 @@ class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
         if re.match(actualPrefix, candidateString):
             return True
 
-    def _extractOption(self, view, modeline):
+    def _extractOptions(self, view, modeline):
 
-        modelineStr = view.substr(modeline)
-        name, discard, value = modelineStr.partition(":")[2].lstrip().partition(" ")
+        # We want the modeline without prefix.
+        modelineStr = view.substr(modeline).partition(":")[2].lstrip()
 
-        # spaces in option are illegal in sublime text
-        return (name.strip(), value)
+        # Multioption modelines contain the MULTIOPT_SEP.
+        opts = (modelineStr,)
+        if MULTIOPT_SEP in modelineStr:
+            opts = modelineStr.split(MULTIOPT_SEP)
+
+        # Spaces in option names are illegal in sublime text, hence name.strip().
+        return tuple((name.strip(), value) for name, discard, value in
+                                            [opt.partition(" ") for opt in opts]
+                    )
 
     def onLoad(self, view):
 
-        options = [self._extractOption(view, modeline)
-                                    for modeline in self._getModelines(view)]
-
         try:
-            for name, value in options:
-                view.options().set(name, value)
+            for modeline in self._getModelines(view):
+                for name, value in self._extractOptions(view, modeline):
+                    view.options().set(name, value)
         except ValueError, e:
             print "Sublime Modelines plugin -- Bad option detected: %s, %s\n%s" % (name, value)
             print "Check your file's modelines. Keys cannot be empty strings."
