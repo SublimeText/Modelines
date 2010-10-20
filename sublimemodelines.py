@@ -7,6 +7,8 @@ MULTIOPT_SEP = '; '
 MAX_LINES_TO_CHECK = 50
 LINE_LENGTH = 80
 MODELINES_REG_SIZE = MAX_LINES_TO_CHECK * LINE_LENGTH
+WINDOW_OPT_PREFIX = 'win:'
+APP_OPT_PREFIX = 'app:'
 
 def isModeline(view, line):
     return bool(re.match(buildModelinePrefix(view), view.substr(line)))
@@ -38,10 +40,10 @@ def genModelineOpts(view):
     modelines = genModelines(view)
     for opt in genExtractRawOpts(modelines):
         name, sep, value = opt.partition(' ')
-        if name.startswith("app:"):
-            yield sublime.options().set, name[4:], value
-        elif name.startswith("win:"):
-            yield view.window().options().set, name[4:], value
+        if name.startswith(APP_OPT_PREFIX):
+            yield sublime.options().set, name[len(APP_OPT_PREFIX):], value
+        elif name.startswith(WINDOW_OPT_PREFIX):
+            yield view.window().options().set, name[len(WINDOW_OPT_PREFIX):], value
         else:
             yield view.options().set, name, value
 
@@ -69,7 +71,7 @@ class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
 
         Example:
         mysourcecodefile.py
-        # sublime: gutter false
+        # sublime: gutter false; app:showMinimap true
         # sublime: autoIndent false
 
     The top as well as the bottom of the buffer is scanned for modelines.
