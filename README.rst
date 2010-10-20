@@ -12,6 +12,9 @@ Side effects
 Buffers will be scanned ``onLoad`` for modelines and preferences will be set
 accordingly. Preferences will apply **only** to the buffer declaring them.
 
+**Note**: Application- and Window-level options declared in modelines are
+obviously global.
+
 Usage
 *****
 
@@ -37,6 +40,11 @@ Examples
     # sublime: translateTabsToSpaces false
     # sublime: font Comic Sans 8
     # sublime: drawWhiteSpace select; wordSeparators &%$·/;?!; translateTabsToSpaces true
+
+Application and Window options
+------------------------------
+
+To set Application and Window options, prefix the option name with ``app:`` or ``win:``.
 
 Caveats
 *******
