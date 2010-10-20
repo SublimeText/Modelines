@@ -1,14 +1,52 @@
 import sublime, sublimeplugin
 import re
 
-SUBLIMETEXT_MODELINE_PREFIX_TPL = "%s\s*(st|sublime): "
+MODELINE_PREFIX_TPL = "%s\s*(st|sublime): "
 DEFAULT_LINE_COMMENT = '#'
 MULTIOPT_SEP = '; '
+MAX_LINES_TO_CHECK = 50
+LINE_LENGTH = 80
+MODELINES_REG_SIZE = MAX_LINES_TO_CHECK * LINE_LENGTH
+
+def isModeline(view, line):
+    return bool(re.match(buildModelinePrefix(view), view.substr(line)))
+
+def genModelines(view):
+    topRegEnd = min(MODELINES_REG_SIZE, view.size())
+    candidates = view.lines(sublime.Region(0, view.fullLine(topRegEnd).end()))
+
+    # Consider modelines at the end of the buffer too.
+    # There might be overlap with the top region, but it doesn't matter because
+    # it means the buffer is tiny.
+    bottomRegStart = filter(lambda x: x > -1,
+                                ((view.size() - MODELINES_REG_SIZE), 0))[0]
+    candidates += view.lines(sublime.Region(bottomRegStart, view.size()))
+
+    for modeline in (view.substr(c) for c in candidates if isModeline(view, c)):
+        yield modeline
+
+def genExtractRawOpts(modelines):
+    for m in modelines:
+        opt = m.partition(':')[2].strip()
+        if MULTIOPT_SEP in opt:
+            for subopt in (s for s in opt.split(MULTIOPT_SEP)):
+                yield subopt
+        else:
+            yield opt
+
+def genModelineOpts(view):
+    modelines = genModelines(view)
+    for opt in genExtractRawOpts(modelines):
+        name, sep, value = opt.partition(' ')
+        if name.startswith("app:"):
+            yield sublime.options().set, name[4:], value
+        elif name.startswith("win:"):
+            yield view.window().options().set, name[4:], value
+        else:
+            yield view.options().set, name, value
 
 def getLineCommentCharacter(view):
-
     commentChar = ""
-
     try:
         for pair in view.metaInfo("shellVariables", 0):
             if pair["name"] == "TM_COMMENT_START":
@@ -21,88 +59,31 @@ def getLineCommentCharacter(view):
 
 def buildModelinePrefix(view):
     lineComment = getLineCommentCharacter(view).lstrip() or DEFAULT_LINE_COMMENT
-    return (SUBLIMETEXT_MODELINE_PREFIX_TPL % lineComment)
+    return (MODELINE_PREFIX_TPL % lineComment)
 
 
 class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
-    """
-    This plugin provides a feature similar to vim modelines.
+    """This plugin provides a feature similar to vim modelines.
     Modelines set options local to the view by declaring them in the
     source code file itself.
 
         Example:
         mysourcecodefile.py
-        # st: gutter false
-        # st: autoIndent false
+        # sublime: gutter false
+        # sublime: autoIndent false
 
-    Note that only the range spanning from 0 to MAX_LINES_TO_CHECK * LINE_LENGTH
-    are searched for modelines.
-
-    TODO: let user declare multiple options per line.
-    TODO: let user declare modelines in block comments
+    The top as well as the bottom of the buffer is scanned for modelines.
+    MAX_LINES_TO_CHECK * LINE_LENGTH defines the size of the regions to be
+    scanned.
     """
     MAX_LINES_TO_CHECK = 50
     LINE_LENGTH = 80
 
-    def _getCandidatesTop(self, view):
-        endBoundary = min(self.MAX_LINES_TO_CHECK *
-                                            self.LINE_LENGTH, view.size())
-
-        candidates = view.lines(sublime.Region(0,
-                                            view.fullLine(endBoundary).end()))
-
-        return candidates
-
-    def _getCandidatesBottom(self, view, topCandidatesEnd):
-
-        candidates = []
-        # Add region at bottom of file if the file is large enough.
-        if topCandidatesEnd + 1 < view.size():
-
-            bottomRegion = sublime.Region(topCandidatesEnd + 1, view.size())
-            candidates = view.lines(bottomRegion)
-
-        return candidates
-
-    def _getModelines(self, view):
-
-        candidates = self._getCandidatesTop(view)
-        candidates += self._getCandidatesBottom(view, candidates[-1].end())
-
-        return [candidate for candidate in candidates
-                                            if self.isModeline(view, candidate)]
-
-    def isModeline(self, view, regionLine):
-
-        if regionLine.empty(): return False
-
-        actualPrefix = buildModelinePrefix(view)
-
-        candidateString = view.substr(regionLine)
-        if re.match(actualPrefix, candidateString):
-            return True
-
-    def _extractOptions(self, view, modeline):
-
-        # We want the modeline without prefix.
-        modelineStr = view.substr(modeline).partition(":")[2].lstrip()
-
-        # Multioption modelines contain the MULTIOPT_SEP.
-        opts = (modelineStr,)
-        if MULTIOPT_SEP in modelineStr:
-            opts = modelineStr.split(MULTIOPT_SEP)
-
-        # Spaces in option names are illegal in sublime text, hence name.strip().
-        return tuple((name.strip(), value) for name, discard, value in
-                                            [opt.partition(" ") for opt in opts]
-                    )
-
     def onLoad(self, view):
-
         try:
-            for modeline in self._getModelines(view):
-                for name, value in self._extractOptions(view, modeline):
-                    view.options().set(name, value)
+            for setter, name, value in genModelineOpts(view):
+                setter(name, value)
         except ValueError, e:
+            sublime.statusMessage("Sublime Modelines: Bad modeline.")
             print "Sublime Modelines plugin -- Bad option detected: %s, %s\n%s" % (name, value)
             print "Check your file's modelines. Keys cannot be empty strings."
