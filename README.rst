@@ -10,7 +10,7 @@ Side effects
 ************
 
 Buffers will be scanned ``onLoad`` for modelines and preferences will be set
-accordingly. Preferences will apply **only** for the buffer declaring them.
+accordingly. Preferences will apply **only** to the buffer declaring them.
 
 Usage
 *****
@@ -24,9 +24,9 @@ one of the following syntaxes::
     # sublime: optionName value
     # sublime: optionName value; anotherOption value; thirdOption value
 
-**Note**: ``#`` is the default comment character, but you must use the corresponding
-single-line comment character for your language. In cases where there isn't a concept
-of comment, the default one must be used.
+**Note**: ``#`` is the default comment character. Use the corresponding single-line
+comment character for your language. When there isn't a concept of comment, the
+default comment character must be used.
 
 Examples
 ********
