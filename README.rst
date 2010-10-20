@@ -31,6 +31,11 @@ one of the following syntaxes::
 comment character for your language. When there isn't a concept of comment, the
 default comment character must be used.
 
+Application and Window options
+------------------------------
+
+To set Application and Window options, prefix the option name with ``app:`` or ``win:``.
+
 Examples
 ********
 ::
@@ -40,11 +45,8 @@ Examples
     # sublime: translateTabsToSpaces false
     # sublime: font Comic Sans 8
     # sublime: drawWhiteSpace select; wordSeparators &%$·/;?!; translateTabsToSpaces true
+    # sublime: app:showMinimap true
 
-Application and Window options
-------------------------------
-
-To set Application and Window options, prefix the option name with ``app:`` or ``win:``.
 
 Caveats
 *******
