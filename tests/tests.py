@@ -1,6 +1,9 @@
 import unittest
 import mock
 import sublime
+import sys
+
+sys.path.extend("..")
 
 sublime.packagesPath = mock.Mock()
 sublime.packagesPath.return_value = "XXX"
@@ -8,210 +11,207 @@ sublime.packagesPath.return_value = "XXX"
 import sublimeplugin
 import sublimemodelines
 
-class TestCase_getLineCommentCharacter(unittest.TestCase):
+def test_getLineCommentCharacter_Does_metaInfo_GetCorrectArgs():
+    view = mock.Mock()
+    sublimemodelines.getLineCommentCharacter(view)
 
-    def setUp(self):
-        self.view = mock.Mock()
+    actual = view.metaInfo.call_args
+    expected = (("shellVariables", 0), {})
 
-    def test_AreWeCalling_metaInfo_WithCorrectArgs(self):
+    assert actual == expected
 
-        sublimemodelines.getLineCommentCharacter(self.view)
+def test_getLineCommentCharacter_DoWeGetLineCommentCharIfExists():
+    view = mock.Mock()
+    view.metaInfo.return_value = [{ "name": "TM_COMMENT_START", "value": "#"}]
 
-        actual = self.view.metaInfo.call_args
-        expected = (("shellVariables", 0), {})
+    expected = "#"
+    actual = sublimemodelines.getLineCommentCharacter(view)
 
-        self.assertEquals(actual, expected)
+    assert expected == actual
 
-    def test_DoWeGetLineCommentCharIfExists(self):
-        self.view.metaInfo.return_value = [{ "name": "TM_COMMENT_START", "value": "#"}]
+def test_getLineCommentCharacter_DoWeGetEmptyLineIfLineCommentCharDoesntExist():
+    view = mock.Mock()
+    view.metaInfo.return_value = [{ "name": "NOT_TM_COMMENT_START", "value": "#"}]
 
-        expected = "#"
-        actual = sublimemodelines.getLineCommentCharacter(self.view)
+    expected = ""
+    actual = sublimemodelines.getLineCommentCharacter(view)
 
-        self.assertEquals(expected, actual)
+    assert expected == actual
 
-    def test_DoWeGetEmptyLineIfLineCommentCharDoesntExist(self):
-        self.view.metaInfo.return_value = [{ "name": "NOT_TM_COMMENT_START", "value": "#"}]
+def test_getLineCommentCharacter_ShouldReturnEmptyStringIfNoExtraVariablesExist():
+    view = mock.Mock()
+    view.metaInfo.return_value = None
 
-        expected = ""
-        actual = sublimemodelines.getLineCommentCharacter(self.view)
+    expected = ""
+    actual = sublimemodelines.getLineCommentCharacter(view)
 
-        self.assertEquals(expected, actual)
+    assert expected == actual
 
-    def test_IfNoVariablesExistWeShouldReturnEmptyString(self):
-        self.view.metaInfo.return_value = None
+# class TestCase_buildModelinePrefix(unittest.TestCase):
 
-        expected = ""
-        actual = sublimemodelines.getLineCommentCharacter(self.view)
+#     def setUp(self):
+#         self.view = mock.Mock()
+#         self.DEFAULT_LINE_CHAR = "#"
+#         self.DEFAULT_PREFIX_TEMPLATE = "%s\\s*(st|sublime): "
 
-        self.assertEquals(expected, actual)
+#     def test_AreDefaultsCorrect(self):
 
+#         actual = sublimemodelines.SUBLIMETEXT_MODELINE_PREFIX_TPL % "TEST", sublimemodelines.DEFAULT_LINE_COMMENT
+#         expected = self.DEFAULT_PREFIX_TEMPLATE % "TEST", self.DEFAULT_LINE_CHAR
 
-class TestCase_buildModelinePrefix(unittest.TestCase):
+#         self.assertEquals(actual, expected)
 
-    def setUp(self):
-        self.view = mock.Mock()
-        self.DEFAULT_LINE_CHAR = "#"
-        self.DEFAULT_PREFIX_TEMPLATE = "%s\\s*(st|sublime): "
+#     def test_BuildPrefixWithDynamicLineCommentChar(self):
 
-    def test_AreDefaultsCorrect(self):
+#         self.view.metaInfo.return_value = [{ "name": "TM_COMMENT_START", "value": "//"}]
 
-        actual = sublimemodelines.SUBLIMETEXT_MODELINE_PREFIX_TPL % "TEST", sublimemodelines.DEFAULT_LINE_COMMENT
-        expected = self.DEFAULT_PREFIX_TEMPLATE % "TEST", self.DEFAULT_LINE_CHAR
+#         expected = self.DEFAULT_PREFIX_TEMPLATE % "//"
+#         actual = sublimemodelines.buildModelinePrefix(self.view)
 
-        self.assertEquals(actual, expected)
+#         self.assertEquals(expected, actual)
 
-    def test_BuildPrefixWithDynamicLineCommentChar(self):
+#     def test_BuildPrefixWithDefaultLineCommentChar(self):
 
-        self.view.metaInfo.return_value = [{ "name": "TM_COMMENT_START", "value": "//"}]
+#         self.view.metaInfo.return_value = None
 
-        expected = self.DEFAULT_PREFIX_TEMPLATE % "//"
-        actual = sublimemodelines.buildModelinePrefix(self.view)
+#         expected = "%s\\s*(st|sublime): " % self.DEFAULT_LINE_CHAR
+#         actual = sublimemodelines.buildModelinePrefix(self.view)
 
-        self.assertEquals(expected, actual)
+#         self.assertEquals(expected, actual)
 
-    def test_BuildPrefixWithDefaultLineCommentChar(self):
 
-        self.view.metaInfo.return_value = None
+# class TestCase_GettingModelines(unittest.TestCase):
 
-        expected = "%s\\s*(st|sublime): " % self.DEFAULT_LINE_CHAR
-        actual = sublimemodelines.buildModelinePrefix(self.view)
+#     def setUp(self):
+#         self.view = mock.Mock()
+#         self.command = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
+#         self.sublime = sublime
+#         self.sublime.Region = mock.Mock()
 
-        self.assertEquals(expected, actual)
+#     def test_getCandidatesBottom_TopRegionLargerThanBuffer(self):
+#         self.view.size.return_value = 100
 
+#         actual = self.command._getCandidatesBottom(self.view, 200)
+#         expected = []
 
-class TestCase_GettingModelines(unittest.TestCase):
+#         self.assertEquals(expected, actual)
 
-    def setUp(self):
-        self.view = mock.Mock()
-        self.command = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
-        self.sublime = sublime
-        self.sublime.Region = mock.Mock()
+#     def test_getCandidatesBottom_MakeSureWeCall_sublime_Region_Correctly(self):
 
-    def test_getCandidatesBottom_TopRegionLargerThanBuffer(self):
-        self.view.size.return_value = 100
+#         self.view.size.return_value = 200
 
-        actual = self.command._getCandidatesBottom(self.view, 200)
-        expected = []
+#         self.command._getCandidatesBottom(self.view, 100)
+#         actual = self.sublime.Region.call_args
+#         expected = ((101, 200), {})
 
-        self.assertEquals(expected, actual)
+#         self.assertEquals(expected, actual)
 
-    def test_getCandidatesBottom_MakeSureWeCall_sublime_Region_Correctly(self):
 
-        self.view.size.return_value = 200
+#     def test_getCandidatesBottom_MakeSureWeReturnFrom_view_lines(self):
 
-        self.command._getCandidatesBottom(self.view, 100)
-        actual = self.sublime.Region.call_args
-        expected = ((101, 200), {})
+#         self.view.size.return_value = 200
 
-        self.assertEquals(expected, actual)
+#         self.view.lines.return_value = [1, 2]
+#         actual = self.command._getCandidatesBottom(self.view, 100)
+#         expected = [1, 2]
 
+#         self.assertEquals(expected, actual)
 
-    def test_getCandidatesBottom_MakeSureWeReturnFrom_view_lines(self):
+#     def test_getCandidatesTop_MakeSureWeGetCorrectDefaultBottomBoundary(self):
 
-        self.view.size.return_value = 200
+#         self.view.size.return_value = 5000
 
-        self.view.lines.return_value = [1, 2]
-        actual = self.command._getCandidatesBottom(self.view, 100)
-        expected = [1, 2]
+#         self.command._getCandidatesTop(self.view)
 
-        self.assertEquals(expected, actual)
+#         actual = self.view.fullLine.call_args
+#         expected = ((4000,), {})
 
-    def test_getCandidatesTop_MakeSureWeGetCorrectDefaultBottomBoundary(self):
+#         self.assertEquals(expected, actual)
 
-        self.view.size.return_value = 5000
+#     def test_getCandidatesTop_MakeSureWeReturnFrom_view_lines(self):
 
-        self.command._getCandidatesTop(self.view)
+#         self.view.size.return_value = 5000
 
-        actual = self.view.fullLine.call_args
-        expected = ((4000,), {})
+#         self.view.lines.return_value = [1, 2]
 
-        self.assertEquals(expected, actual)
+#         actual = self.command._getCandidatesTop(self.view)
+#         expected = [1, 2]
 
-    def test_getCandidatesTop_MakeSureWeReturnFrom_view_lines(self):
+#         self.assertEquals(expected, actual)
 
-        self.view.size.return_value = 5000
+# class TestCase_isModeline(unittest.TestCase):
 
-        self.view.lines.return_value = [1, 2]
+#     def setUp(self):
+#         self.view = mock.Mock()
+#         self.regionLine = mock.Mock()
+#         self.command = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
 
-        actual = self.command._getCandidatesTop(self.view)
-        expected = [1, 2]
+#     def test_isModeline_EmptyLine(self):
 
-        self.assertEquals(expected, actual)
+#         self.regionLine.emtpy.return_value = True
 
-class TestCase_isModeline(unittest.TestCase):
+#         expected = False
+#         actual = self.command.isModeline(self.view, self.regionLine)
 
-    def setUp(self):
-        self.view = mock.Mock()
-        self.regionLine = mock.Mock()
-        self.command = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
+#         self.assertEquals(expected, actual)
 
-    def test_isModeline_EmptyLine(self):
+#     def test_isModeline_BadPrefix(self):
 
-        self.regionLine.emtpy.return_value = True
+#         self.view.substr.return_value = "NOT A MODELINE!"
 
-        expected = False
-        actual = self.command.isModeline(self.view, self.regionLine)
+#         expected = False
+#         actual = self.command.isModeline(self.view, self.regionLine)
 
-        self.assertEquals(expected, actual)
+#         self.assertEquals(expected, actual)
 
-    def test_isModeline_BadPrefix(self):
+#     def test_isModeline_Good_st_Style(self):
 
-        self.view.substr.return_value = "NOT A MODELINE!"
+#         self.regionLine.empty.return_value = False
+#         self.view.substr.return_value = "# st: A MODELINE!"
 
-        expected = False
-        actual = self.command.isModeline(self.view, self.regionLine)
+#         expected = True
+#         actual = self.command.isModeline(self.view, self.regionLine)
 
-        self.assertEquals(expected, actual)
+#         self.assertEquals(expected, actual)
 
-    def test_isModeline_Good_st_Style(self):
+#     def test_isModeline_Good_sublime_Style(self):
 
-        self.regionLine.empty.return_value = False
-        self.view.substr.return_value = "# st: A MODELINE!"
+#         self.regionLine.empty.return_value = False
+#         self.view.substr.return_value = "# sublime: A MODELINE!"
 
-        expected = True
-        actual = self.command.isModeline(self.view, self.regionLine)
+#         expected = True
+#         actual = self.command.isModeline(self.view, self.regionLine)
 
-        self.assertEquals(expected, actual)
+#         self.assertEquals(expected, actual)
 
-    def test_isModeline_Good_sublime_Style(self):
 
-        self.regionLine.empty.return_value = False
-        self.view.substr.return_value = "# sublime: A MODELINE!"
+# class TestCase_Other(unittest.TestCase):
 
-        expected = True
-        actual = self.command.isModeline(self.view, self.regionLine)
+#     def setUp(self):
+#         self.view = mock.Mock()
+#         self.view.substr.side_effect = lambda x: x
+#         self.c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
 
-        self.assertEquals(expected, actual)
+#     def test_WellFormedOptionIsParsedCorrectly(self):
 
+#         actual = self.c._extractOptions(self.view, "sublime: drawWhiteSpace all")
+#         expected = (("drawWhiteSpace", "all"),)
 
-class TestCase_Other(unittest.TestCase):
+#         self.assertEquals(expected, actual)
 
-    def setUp(self):
-        self.view = mock.Mock()
-        self.view.substr.side_effect = lambda x: x
-        self.c = sublimemodelines.ExecuteSublimeTextModeLinesCommand()
+#     def test_MultipleOptionsAreParsedCorrectly(self):
 
-    def test_WellFormedOptionIsParsedCorrectly(self):
+#         actual = self.c._extractOptions(self.view, "sublime: drawWhiteSpace all; gutter false")
+#         expected = (('drawWhiteSpace', 'all'), ('gutter', 'false'))
 
-        actual = self.c._extractOptions(self.view, "sublime: drawWhiteSpace all")
-        expected = (("drawWhiteSpace", "all"),)
+#         self.assertEquals(expected, actual)
 
-        self.assertEquals(expected, actual)
+#     def test_MultipleOptionsWithFalseSepAreParsedCorrectly(self):
 
-    def test_MultipleOptionsAreParsedCorrectly(self):
+#         actual = self.c._extractOptions(self.view, "sublime: drawWhiteSpace all; wordSeparators $%&:;")
+#         expected = (('drawWhiteSpace', 'all'), ('wordSeparators', '$%&:;'))
 
-        actual = self.c._extractOptions(self.view, "sublime: drawWhiteSpace all; gutter false")
-        expected = (('drawWhiteSpace', 'all'), ('gutter', 'false'))
+#         self.assertEquals(expected, actual)
 
-        self.assertEquals(expected, actual)
-
-    def test_MultipleOptionsWithFalseSepAreParsedCorrectly(self):
-
-        actual = self.c._extractOptions(self.view, "sublime: drawWhiteSpace all; wordSeparators $%&:;")
-        expected = (('drawWhiteSpace', 'all'), ('wordSeparators', '$%&:;'))
-
-        self.assertEquals(expected, actual)
-
-if __name__ == "__main__":
-    unittest.main()
+# if __name__ == "__main__":
+#     unittest.main()
