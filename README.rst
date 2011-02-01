@@ -12,8 +12,8 @@ Side effects
 Buffers will be scanned ``on_load()`` for modelines and settings will be set
 accordingly. Settings will apply **only** to the buffer declaring them.
 
-..**Note**: Application- and Window-level options declared in modelines are
-..obviously global.
+.. **Note**: Application- and Window-level options declared in modelines are
+.. obviously global.
 
 Usage
 *****
