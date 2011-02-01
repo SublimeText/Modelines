@@ -13,5 +13,5 @@ if ($LASTEXITCODE -ne 0) { "7-zip error!"; $out; return }
                     (get-location).providerpath `
                     $targetDir)).path | clip.exe
 
-start-process chrome -arg "https://bitbucket.org/guillermooo/projectmanager/downloads"
+start-process chrome -arg "https://bitbucket.org/guillermooo/sublimemodelines/downloads"
 
