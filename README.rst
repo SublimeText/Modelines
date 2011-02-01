@@ -9,7 +9,7 @@ Inspired in Vim's modelines feature.
 Getting Started
 ***************
 
-Download the `latest release`_.
+Download the `latest release`_ and install it (double-click).
 
 .. _latest release: https://bitbucket.org/guillermooo/sublimemodelines/downloads/SublimeModelines.sublime-package
 
