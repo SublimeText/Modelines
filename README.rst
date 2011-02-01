@@ -31,8 +31,8 @@ How to Declare Modelines
 Modelines must be declared at the top or the bottom of source code files with
 one of the following syntaxes::
 
-    # sublime: optionName value
-    # sublime: optionName value; anotherOption value; thirdOption value
+    # sublime: option_name value
+    # sublime: option_name value; another_option value; third_option value
 
 **Note**: ``#`` is the default comment character. Use the corresponding
 single-line comment character for your language. When there isn't a concept of
