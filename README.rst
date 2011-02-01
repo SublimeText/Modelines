@@ -6,6 +6,13 @@ than the per file type ``.sublime-settings`` files.
 
 Inspired in Vim's modelines feature.
 
+Getting Started
+***************
+
+Download the `latest release`_.
+
+.. _latest release: https://bitbucket.org/guillermooo/sublimemodelines/downloads/SublimeModelines.sublime-package
+
 Side effects
 ************
 
