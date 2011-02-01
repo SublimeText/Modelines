@@ -4,7 +4,7 @@ remove-item "./build" -recurse
 new-item -itemtype dir -path "./build" -force > $null
 
 # XXX: Build docs with Sphinx and provide those.
-$targetDir = "./build/ProjectManager.sublime-package"
+$targetDir = "./build/SublimeModelines.sublime-package"
 $out = & $zipExe a -r "-x!.*" -tzip $targetDir "*.py" "*.txt" "*.rst"
 
 if ($LASTEXITCODE -ne 0) { "7-zip error!"; $out; return }
