@@ -1,4 +1,4 @@
-import sublime, sublimeplugin
+import sublime, sublime_plugin
 import re
 
 MODELINE_PREFIX_TPL = "%s\s*(st|sublime): "
@@ -15,7 +15,7 @@ def isModeline(view, line):
 
 def genModelines(view):
     topRegEnd = min(MODELINES_REG_SIZE, view.size())
-    candidates = view.lines(sublime.Region(0, view.fullLine(topRegEnd).end()))
+    candidates = view.lines(sublime.Region(0, view.full_line(topRegEnd).end()))
 
     # Consider modelines at the end of the buffer too.
     # There might be overlap with the top region, but it doesn't matter because
@@ -41,16 +41,18 @@ def genModelineOpts(view):
     for opt in genExtractRawOpts(modelines):
         name, sep, value = opt.partition(' ')
         if name.startswith(APP_OPT_PREFIX):
-            yield sublime.options().set, name[len(APP_OPT_PREFIX):], value
+            # yield sublime.settings().set, name[len(APP_OPT_PREFIX):], value
+            pass
         elif name.startswith(WINDOW_OPT_PREFIX):
-            yield view.window().options().set, name[len(WINDOW_OPT_PREFIX):], value
+            # yield view.window().settings().set, name[len(WINDOW_OPT_PREFIX):], value
+            pass
         else:
-            yield view.options().set, name, value
+            yield view.settings().set, name, value
 
 def getLineCommentCharacter(view):
     commentChar = ""
     try:
-        for pair in view.metaInfo("shellVariables", 0):
+        for pair in view.meta_info("shellVariables", 0):
             if pair["name"] == "TM_COMMENT_START":
                 commentChar = pair["value"]
                 break
@@ -64,7 +66,7 @@ def buildModelinePrefix(view):
     return (MODELINE_PREFIX_TPL % lineComment)
 
 
-class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
+class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
     """This plugin provides a feature similar to vim modelines.
     Modelines set options local to the view by declaring them in the
     source code file itself.
@@ -81,11 +83,15 @@ class ExecuteSublimeTextModeLinesCommand(sublimeplugin.Plugin):
     MAX_LINES_TO_CHECK = 50
     LINE_LENGTH = 80
 
-    def onLoad(self, view):
+    def on_load(self, view):
         try:
             for setter, name, value in genModelineOpts(view):
-                setter(name, value)
+                try:
+                    setter, name, value
+                    setter(name, float(value))
+                except ValueError:
+                    setter(name, value)
         except ValueError, e:
-            sublime.statusMessage("Sublime Modelines: Bad modeline.")
+            sublime.status_message("Sublime Modelines: Bad modeline.")
             print "Sublime Modelines plugin -- Bad option detected: %s, %s\n%s" % (name, value)
             print "Check your file's modelines. Keys cannot be empty strings."
