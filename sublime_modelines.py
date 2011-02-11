@@ -42,10 +42,10 @@ def gen_modeline_options(view):
         name, sep, value = opt.partition(' ')
         if name.startswith(APP_OPT_PREFIX):
             # yield sublime.settings().set, name[len(APP_OPT_PREFIX):], value
-            pass
+            raise NotImplementedError
         elif name.startswith(WINDOW_OPT_PREFIX):
             # yield view.window().settings().set, name[len(WINDOW_OPT_PREFIX):], value
-            pass
+            raise NotImplementedError
         else:
             yield view.settings().set, name, value
 
@@ -98,8 +98,9 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
             for setter, name, value in gen_modeline_options(view):
                 setter, name, value
                 setter(name, to_json_type(value))
-                print type(to_json_type(value))
         except ValueError, e:
             sublime.status_message("SublimeModelines: Bad modeline detected.")
             print "SublimeModelines: Bad option detected: %s, %s\n%s" % (name, value)
             print "SublimeModelines: Tip: Keys cannot be empty strings."
+        except NotImplementedError, e:
+            sublime.status_message("SublimeModelines: Unable to process window or app modeline.")
