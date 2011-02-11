@@ -1,5 +1,7 @@
 $zipExe = "$env:ProgramFiles/7-zip/7z.exe"
 
+start-process -filepath "hg" -args "update","release" -wait
+
 remove-item "./build" -recurse
 new-item -itemtype dir -path "./build" -force > $null
 

@@ -1,5 +1,7 @@
 import sublime, sublime_plugin
+
 import re
+
 
 MODELINE_PREFIX_TPL = "%s\s*(st|sublime): "
 DEFAULT_LINE_COMMENT = '#'
@@ -10,8 +12,10 @@ MODELINES_REG_SIZE = MAX_LINES_TO_CHECK * LINE_LENGTH
 WINDOW_OPT_PREFIX = 'win:'
 APP_OPT_PREFIX = 'app:'
 
+
 def is_modeline(view, line):
     return bool(re.match(build_modeline_prefix(view), view.substr(line)))
+
 
 def gen_modelines(view):
     topRegEnd = min(MODELINES_REG_SIZE, view.size())
@@ -27,6 +31,7 @@ def gen_modelines(view):
     for modeline in (view.substr(c) for c in candidates if is_modeline(view, c)):
         yield modeline
 
+
 def gen_raw_options(modelines):
     for m in modelines:
         opt = m.partition(':')[2].strip()
@@ -35,6 +40,7 @@ def gen_raw_options(modelines):
                 yield subopt
         else:
             yield opt
+
 
 def gen_modeline_options(view):
     modelines = gen_modelines(view)
@@ -49,6 +55,7 @@ def gen_modeline_options(view):
         else:
             yield view.settings().set, name, value
 
+
 def get_line_comment_char(view):
     commentChar = ""
     try:
@@ -60,6 +67,7 @@ def get_line_comment_char(view):
         pass
 
     return commentChar.strip()
+
 
 def build_modeline_prefix(view):
     lineComment = get_line_comment_char(view).lstrip() or DEFAULT_LINE_COMMENT
