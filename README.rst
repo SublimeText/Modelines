@@ -13,7 +13,7 @@ Download the `latest release`_ and install it (double-click).
 
 .. _latest release: https://bitbucket.org/guillermooo/sublimemodelines/downloads/SublimeModelines.sublime-package
 
-Side effects
+Side Effects
 ************
 
 Buffers will be scanned ``on_load()`` for modelines and settings will be set
