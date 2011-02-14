@@ -1,6 +1,6 @@
 $zipExe = "$env:ProgramFiles/7-zip/7z.exe"
 
-start-process -filepath "hg" -args "update","release" -wait
+& "hg" "update" "release"
 
 remove-item "./build" -recurse
 new-item -itemtype dir -path "./build" -force > $null
@@ -17,3 +17,4 @@ if ($LASTEXITCODE -ne 0) { "7-zip error!"; $out; return }
 
 start-process chrome -arg "https://bitbucket.org/guillermooo/sublimemodelines/downloads"
 
+& "hg" "update" "default"
