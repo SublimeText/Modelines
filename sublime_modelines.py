@@ -77,12 +77,16 @@ def build_modeline_prefix(view):
 def to_json_type(v):
     """"Convert string value to proper JSON type.
     """
-    if v.lower() in ("false", "true"):
-        v = (True if v == "true" else False)
-    elif v.isdigit():
-        v = int(v)
-    elif v.replace(".").isdigit():
-        v = float(v)
+    try:
+        if v.lower() in ("false", "true"):
+            v = (True if v == "true" else False)
+        elif v.isdigit():
+            v = int(v)
+        elif v.replace(".").isdigit():
+            v = float(v)
+    except AttributeError:
+        # Not a string, so return as-is.
+        pass
     # ...
     return v
 
@@ -104,11 +108,12 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
     def on_load(self, view):
         try:
             for setter, name, value in gen_modeline_options(view):
-                setter, name, value
                 setter(name, to_json_type(value))
         except ValueError, e:
-            sublime.status_message("SublimeModelines: Bad modeline detected.")
-            print "SublimeModelines: Bad option detected: %s, %s\n%s" % (name, value)
-            print "SublimeModelines: Tip: Keys cannot be empty strings."
+            sublime.status_message("[SublimeModelines] Bad modeline detected.")
+            print "[SublimeModelines] Bad option detected: %s, %s\n%s" % (name, value)
+            print "[SublimeModelines] Tip: Keys cannot be empty strings."
         except NotImplementedError, e:
-            sublime.status_message("SublimeModelines: Unable to process window or app modeline.")
+            msg = "[SublimeModelines] Unable to process window or app modeline. (Not implemented.)"
+            print msg
+            sublime.status_message(msg)
