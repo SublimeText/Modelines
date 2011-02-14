@@ -9,8 +9,8 @@ MULTIOPT_SEP = '; '
 MAX_LINES_TO_CHECK = 50
 LINE_LENGTH = 80
 MODELINES_REG_SIZE = MAX_LINES_TO_CHECK * LINE_LENGTH
-WINDOW_OPT_PREFIX = 'win:'
-APP_OPT_PREFIX = 'app:'
+# WINDOW_OPT_PREFIX = 'win:' # Doesn't make much sense for modelines.
+# APP_OPT_PREFIX = 'app:' # Doesn't make much sense for modelines.
 
 
 def is_modeline(view, line):
@@ -46,14 +46,12 @@ def gen_modeline_options(view):
     modelines = gen_modelines(view)
     for opt in gen_raw_options(modelines):
         name, sep, value = opt.partition(' ')
-        if name.startswith(APP_OPT_PREFIX):
+        # if name.startswith(APP_OPT_PREFIX):
             # yield sublime.settings().set, name[len(APP_OPT_PREFIX):], value
-            raise NotImplementedError
-        elif name.startswith(WINDOW_OPT_PREFIX):
+        # elif name.startswith(WINDOW_OPT_PREFIX):
             # yield view.window().settings().set, name[len(WINDOW_OPT_PREFIX):], value
-            raise NotImplementedError
-        else:
-            yield view.settings().set, name, value
+        # else:
+        yield view.settings().set, name, value
 
 
 def get_line_comment_char(view):
@@ -106,14 +104,10 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
     scanned.
     """
     def on_load(self, view):
-        try:
-            for setter, name, value in gen_modeline_options(view):
+        for setter, name, value in gen_modeline_options(view):
+            try:
                 setter(name, to_json_type(value))
-        except ValueError, e:
-            sublime.status_message("[SublimeModelines] Bad modeline detected.")
-            print "[SublimeModelines] Bad option detected: %s, %s\n%s" % (name, value)
-            print "[SublimeModelines] Tip: Keys cannot be empty strings."
-        except NotImplementedError, e:
-            msg = "[SublimeModelines] Unable to process window or app modeline. (Not implemented.)"
-            print msg
-            sublime.status_message(msg)
+            except ValueError, e:
+                sublime.status_message("[SublimeModelines] Bad modeline detected.")
+                print "[SublimeModelines] Bad option detected: %s, %s\n%s" % (name, value)
+                print "[SublimeModelines] Tip: Keys cannot be empty strings."
