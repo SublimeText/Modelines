@@ -2,14 +2,16 @@ import unittest
 import mock
 import sublime
 import sys
+import os
 
-sys.path.extend("..")
+sys.path.extend([".."])
+print sys.path
 
 sublime.packagesPath = mock.Mock()
 sublime.packagesPath.return_value = "XXX"
 
-import sublimeplugin
-import sublimemodelines
+import sublime_plugin
+import sublime_modelines
 
 def test_getLineCommentCharacter_Does_metaInfo_GetCorrectArgs():
     view = mock.Mock()
