@@ -1,4 +1,6 @@
-push-location ".."
+$script:here = split-path $MyInvocation.MyCommand.Definition -parent
+push-location "$script:here/.."
+
 $zipExe = "$env:ProgramFiles/7-zip/7z.exe"
 
 & "hg" "update" "release"
