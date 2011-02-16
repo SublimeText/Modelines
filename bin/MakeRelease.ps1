@@ -1,3 +1,4 @@
+push-location ".."
 $zipExe = "$env:ProgramFiles/7-zip/7z.exe"
 
 & "hg" "update" "release"
@@ -18,3 +19,4 @@ if ($LASTEXITCODE -ne 0) { "7-zip error!"; $out; return }
 start-process chrome -arg "https://bitbucket.org/guillermooo/sublimemodelines/downloads"
 
 & "hg" "update" "default"
+pop-location

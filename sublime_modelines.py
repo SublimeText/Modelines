@@ -3,7 +3,7 @@ import sublime, sublime_plugin
 import re
 
 
-MODELINE_PREFIX_TPL = "%s\s*(st|sublime): "
+MODELINE_PREFIX_TPL = "%s\\s*(st|sublime): "
 DEFAULT_LINE_COMMENT = '#'
 MULTIOPT_SEP = '; '
 MAX_LINES_TO_CHECK = 50
@@ -80,7 +80,7 @@ def to_json_type(v):
             v = (True if v == "true" else False)
         elif v.isdigit():
             v = int(v)
-        elif v.replace(".").isdigit():
+        elif v.replace(".", "").isdigit():
             v = float(v)
     except AttributeError:
         # Not a string, so return as-is.
