@@ -14,4 +14,5 @@ class TextCommand(Plugin):
    pass
 
 
-class EventListener(Plugin)
+class EventListener(Plugin):
+    pass
