@@ -26,3 +26,5 @@ start-process chrome -arg "https://bitbucket.org/guillermooo/sublimemodelines/do
 
 & "hg" "update" "default"
 pop-location
+
+Write-Host "Don't forget to tag release." -foreground yellow
