@@ -3,7 +3,6 @@ syntax: glob
 *.pyc
 _*.txt
 
-# distutils manifest file
 MANIFEST
 
 build/
