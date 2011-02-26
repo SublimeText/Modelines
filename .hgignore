@@ -3,4 +3,7 @@ syntax: glob
 *.pyc
 _*.txt
 
+MANIFEST
+
 build/
+dist/

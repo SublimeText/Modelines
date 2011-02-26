@@ -77,13 +77,14 @@ def to_json_type(v):
     """
     try:
         if v.lower() in ("false", "true"):
-            v = (True if v == "true" else False)
+            v = (True if v.lower() == "true" else False)
         elif v.isdigit():
             v = int(v)
         elif v.replace(".", "").isdigit():
             v = float(v)
     except AttributeError:
         # Not a string, so return as-is.
+        # XXX raise ValueError
         pass
     # ...
     return v
