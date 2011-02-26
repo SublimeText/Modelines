@@ -5,7 +5,9 @@ push-location "$script:here/.."
 
 $zipExe = "$env:ProgramFiles/7-zip/7z.exe"
 
-$rv = & "hg" "pull" "--update" "release" 2>&1
+& "hg" "pull" "--update" "release"
+$rv = & "hg" "merge" "release" 2>&1
+
 if ($rv.exception -like "*unresolved*") {
 	write-host "hg pull --update failed. Take a look." -foreground yellow
 	break
