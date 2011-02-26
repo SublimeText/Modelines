@@ -6,7 +6,7 @@ push-location "$script:here/.."
 $zipExe = "$env:ProgramFiles/7-zip/7z.exe"
 
 & "hg" "update" "release"
-& "hg" "merge" "release"
+& "hg" "merge" "default"
 & "hg" "commit" "-m" "Merged with default." 2>&1
 
 if ($rv.exception -like "*unresolved*") {
@@ -26,3 +26,5 @@ start-process chrome -arg "https://bitbucket.org/guillermooo/sublimemodelines/do
 
 & "hg" "update" "default"
 pop-location
+
+Write-Host "Don't forget to tag release." -foreground yellow
