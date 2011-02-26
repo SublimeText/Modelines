@@ -13,14 +13,7 @@ if ($rv.exception -like "*unresolved*") {
 	break
 }
 
-# remove-item "./build" -recurse -erroraction silentlycontinue
-# new-item -itemtype dir -path "./build" -force > $null
-
-# XXX: Build docs with Sphinx and provide those.
 $targetDir = "./dist/SublimeModelines.sublime-package"
-# $out = & $zipExe a "-x!.*" "-x!_*.txt" -tzip $targetDir "*.py" "*.txt" "*.rst"
-
-# if ($LASTEXITCODE -ne 0) { "7-zip error!"; $out; return }
 
 & "python.exe" ".\setup.py" "spa" "--no-defaults"
 
