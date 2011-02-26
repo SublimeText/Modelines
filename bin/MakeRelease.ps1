@@ -5,7 +5,7 @@ push-location "$script:here/.."
 
 $zipExe = "$env:ProgramFiles/7-zip/7z.exe"
 
-& "hg" "pull" "--update" "release"
+& "hg" "update" "release"
 $rv = & "hg" "merge" "release" 2>&1
 
 if ($rv.exception -like "*unresolved*") {
@@ -22,7 +22,7 @@ $targetDir = "./dist/SublimeModelines.sublime-package"
 
 # if ($LASTEXITCODE -ne 0) { "7-zip error!"; $out; return }
 
-& "python.exe" ".\setup.py" "spa"
+& "python.exe" ".\setup.py" "spa" "--no-defaults"
 
 (resolve-path (join-path `
                     (get-location).providerpath `
