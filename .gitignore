@@ -1,0 +1,13 @@
+*.hgignore
+*.hgtags
+*.pyc
+*.cache
+*.sublime-project
+
+_*.txt
+sample-grammar.js
+Manifest
+MANIFEST
+
+dist/
+build/
