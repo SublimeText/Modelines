@@ -9,8 +9,6 @@ MULTIOPT_SEP = '; '
 MAX_LINES_TO_CHECK = 50
 LINE_LENGTH = 80
 MODELINES_REG_SIZE = MAX_LINES_TO_CHECK * LINE_LENGTH
-# WINDOW_OPT_PREFIX = 'win:' # Doesn't make much sense for modelines.
-# APP_OPT_PREFIX = 'app:' # Doesn't make much sense for modelines.
 
 
 def is_modeline(view, line):
@@ -46,11 +44,6 @@ def gen_modeline_options(view):
     modelines = gen_modelines(view)
     for opt in gen_raw_options(modelines):
         name, sep, value = opt.partition(' ')
-        # if name.startswith(APP_OPT_PREFIX):
-            # yield sublime.settings().set, name[len(APP_OPT_PREFIX):], value
-        # elif name.startswith(WINDOW_OPT_PREFIX):
-            # yield view.window().settings().set, name[len(WINDOW_OPT_PREFIX):], value
-        # else:
         yield view.settings().set, name, value
 
 
@@ -83,10 +76,8 @@ def to_json_type(v):
         elif v.replace(".", "").isdigit():
             v = float(v)
     except AttributeError:
-        # Not a string, so return as-is.
-        # XXX raise ValueError
-        pass
-    # ...
+        raise ValueError("Conversion to JSON failed for: %s" % v)
+
     return v
 
 
