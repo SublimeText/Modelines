@@ -12,7 +12,7 @@ Getting Started
 Download and install `SublimeModelines`_.
 
 If you're running a full installation of Sublime Text, simply doubleclick on the ``.sublime-package`` file.
-If you're running a portable installation, you need to do the `installation by hand`_ for ``.sublime-package``\ s.
+If you're running a portable installation, you need to perform an `installation by hand`_ for ``.sublime-package``\ s.
 
 .. _installation by hand: http://sublimetext.info/docs/extensibility/packages.html#installation-of-packages-with-sublime-package-archives
 .. _SublimeModelines: https://bitbucket.org/guillermooo/sublimemodelines/downloads/SublimeModelines.sublime-package
@@ -20,7 +20,7 @@ If you're running a portable installation, you need to do the `installation by h
 Side Effects
 ************
 
-Buffers will be scanned ``on_load()`` for modelines and settings will be set
+Buffers will be scanned ``.on_load()`` for modelines and settings will be set
 accordingly. Settings will apply **only** to the buffer declaring them.
 
 .. **Note**: Application- and Window-level options declared in modelines are
