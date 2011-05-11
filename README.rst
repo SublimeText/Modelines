@@ -9,9 +9,13 @@ Inspired in Vim's modelines feature.
 Getting Started
 ***************
 
-Download the `latest release`_ and install it (double-click).
+Download and install `SublimeModelines`_.
 
-.. _latest release: https://bitbucket.org/guillermooo/sublimemodelines/downloads/SublimeModelines.sublime-package
+If you're running a full installation of Sublime Text, simply doubleclick on the ``.sublime-package`` file.
+If you're running a portable installation, you need to do the `installation by hand`_ for ``.sublime-package``\ s.
+
+.. _installation by hand: http://sublimetext.info/docs/extensibility/packages.html#installation-of-packages-with-sublime-package-archives
+.. _SublimeModelines: https://bitbucket.org/guillermooo/sublimemodelines/downloads/SublimeModelines.sublime-package
 
 Side Effects
 ************
@@ -38,21 +42,16 @@ one of the following syntaxes::
 single-line comment character for your language. When there isn't a concept of
 comment, the default comment character must be used.
 
-.. Application and Window options
-.. ------------------------------
-.. 
-.. To set Application and Window options, prefix the option name with ``app:`` or ``win:``.
-.. 
-.. Examples
-.. ********
-.. ::
-.. 
-..     # sublime: drawWhiteSpace all
-..     # sublime: gutter false
-..     # sublime: translateTabsToSpaces false
-..     # sublime: font Comic Sans 8
-..     # sublime: drawWhiteSpace select; wordSeparators &%$·/;?!; translateTabsToSpaces true
-..     # sublime: app:showMinimap true
+How to Define Comment Characters in Sublime Text
+------------------------------------------------
+
+SublimeModelines finds the appropriate single-line comment character by inspecting
+the ``shellVariables`` preference, which must be defined in a ``.tmPreferences``
+file. To see an example of how this is done, open ``Packages/Python/Miscellaneous.tmPreferences``.
+
+Many packages giving support for programming languages already include this, but
+you might need to create a ``.tmPreferences`` file for the language you're working
+with if you want SublimeModelines to be available.
 
 
 Caveats
