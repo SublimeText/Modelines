@@ -42,7 +42,7 @@ one of the following syntaxes::
 single-line comment character for your language. When there isn't a concept of
 comment, the default comment character must be used.
 
-How to define comment characters in Sublime Text
+How to Define Comment Characters in Sublime Text
 ------------------------------------------------
 
 SublimeModelines finds the appropriate single-line comment character by inspecting
