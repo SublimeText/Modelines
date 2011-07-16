@@ -68,17 +68,10 @@ def build_modeline_prefix(view):
 def to_json_type(v):
     """"Convert string value to proper JSON type.
     """
-    try:
-        if v.lower() in ("false", "true"):
-            v = (True if v.lower() == "true" else False)
-        elif v.isdigit():
-            v = int(v)
-        elif v.replace(".", "").isdigit():
-            v = float(v)
-    except AttributeError:
-        raise ValueError("Conversion to JSON failed for: %s" % v)
+    if v.lower() in ('true', 'false'):
+        v = v[0].upper() + v[1:].lower()
 
-    return v
+    return eval(v, {}, {})
 
 
 class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
