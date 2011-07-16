@@ -1,0 +1,4 @@
+include sublime_modelines.py
+include LICENSE.TXT
+include README.rst
+prune setup.py

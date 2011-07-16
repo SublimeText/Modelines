@@ -1,30 +1,61 @@
-SublimeModelines package for Sublime Text
-=========================================
+Sublime Modelines
+=================
 
-Vim-like modelines for the Sublime Text editor. With this plugin you can apply settings to files selectively.
+Set settings local to a single buffer. A more granular approach to settings
+than the per file type ``.sublime-settings`` files.
 
-Side effects
+Inspired in Vim's modelines feature.
+
+Getting Started
+***************
+
+Download and install `SublimeModelines`_.
+
+If you're running a full installation of Sublime Text, simply doubleclick on the ``.sublime-package`` file.
+If you're running a portable installation, you need to perform an `installation by hand`_ for ``.sublime-package``\ s.
+
+.. _installation by hand: http://sublimetext.info/docs/extensibility/packages.html#installation-of-packages-with-sublime-package-archives
+.. _SublimeModelines: https://bitbucket.org/guillermooo/sublimemodelines/downloads/SublimeModelines.sublime-package
+
+Side Effects
 ************
 
-All opened files will be scanned ``onLoad`` for modelines and settings defined in them will be applied. Other than that, there shouldn't be any side effects.
+Buffers will be scanned ``.on_load()`` for modelines and settings will be set
+accordingly. Settings will apply **only** to the buffer declaring them.
+
+.. **Note**: Application- and Window-level options declared in modelines are
+.. obviously global.
 
 Usage
 *****
 
-How to declare modelines
+How to Declare Modelines
 ------------------------
 
-Modelines must be declared in source code files with one of the following syntaxes::
+Modelines must be declared at the top or the bottom of source code files with
+one of the following syntaxes::
 
-    # sublime: optionName value
-    # st: optionName value
+    # sublime: option_name value
+    # sublime: option_name value; another_option value; third_option value
 
-**Note**: ``#`` is the default comment character, but you must use the corresponding single-line commend character for your language. In cases where there isn't a concept of comment, the default one must be used.
+**Note**: ``#`` is the default comment character. Use the corresponding
+single-line comment character for your language. When there isn't a concept of
+comment, the default comment character must be used.
 
-Examples::
-**********
+How to Define Comment Characters in Sublime Text
+------------------------------------------------
 
-    # sublime: drawWhiteSpace all
-    # sublime: gutter false
-    # sublime: translateTabsToSpaces false
-    # sublime: font Comic Sans 8
+SublimeModelines finds the appropriate single-line comment character by inspecting
+the ``shellVariables`` preference, which must be defined in a ``.tmPreferences``
+file. To see an example of how this is done, open ``Packages/Python/Miscellaneous.tmPreferences``.
+
+Many packages giving support for programming languages already include this, but
+you might need to create a ``.tmPreferences`` file for the language you're working
+with if you want SublimeModelines to be available.
+
+
+Caveats
+*******
+
+If the option's value contains a semicolon (``;``), make sure it isn't followed
+by a blank space. Otherwise it will be interpreted as a multioption separator.
