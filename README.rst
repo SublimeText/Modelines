@@ -11,10 +11,9 @@ Getting Started
 
 Download and install `SublimeModelines`_.
 
-If you're running a full installation of Sublime Text, simply doubleclick on the ``.sublime-package`` file.
-If you're running a portable installation, you need to perform an `installation by hand`_ for ``.sublime-package``\ s.
+See the `installation instructions`_ for ``.sublime-package``\ s.
 
-.. _installation by hand: http://sublimetext.info/docs/extensibility/packages.html#installation-of-packages-with-sublime-package-archives
+.. _installation instructions: http://sublimetext.info/docs/en/extensibility/packages.html#installation-of-packages
 .. _SublimeModelines: https://bitbucket.org/guillermooo/sublimemodelines/downloads/SublimeModelines.sublime-package
 
 Side Effects
