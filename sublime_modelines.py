@@ -44,7 +44,7 @@ def gen_modeline_options(view):
     modelines = gen_modelines(view)
     for opt in gen_raw_options(modelines):
         name, sep, value = opt.partition(' ')
-        yield view.settings().set, name, value
+        yield view.settings().set, name.rstrip(':'), value.rstrip(';')
 
 
 def get_line_comment_char(view):
