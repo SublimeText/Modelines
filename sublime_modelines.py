@@ -91,7 +91,7 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
     MAX_LINES_TO_CHECK * LINE_LENGTH defines the size of the regions to be
     scanned.
     """
-    def on_load(self, view):
+    def do_modelines(self, view):
         for setter, name, value in gen_modeline_options(view):
             try:
                 setter(name, to_json_type(value))
@@ -99,3 +99,9 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
                 sublime.status_message("[SublimeModelines] Bad modeline detected.")
                 print "[SublimeModelines] Bad option detected: %s, %s" % (name, value)
                 print "[SublimeModelines] Tip: Keys cannot be empty strings."
+
+    def on_load(self, view):
+        self.do_modelines(view)
+
+    def on_post_save(self, view):
+        self.do_modelines(view)
