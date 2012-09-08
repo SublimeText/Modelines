@@ -11,8 +11,8 @@ LINE_LENGTH = 80
 MODELINES_REG_SIZE = MAX_LINES_TO_CHECK * LINE_LENGTH
 
 
-def is_modeline(view, line):
-    return bool(re.match(build_modeline_prefix(view), view.substr(line)))
+def is_modeline(prefix, line):
+    return bool(re.match(prefix, line))
 
 
 def gen_modelines(view):
@@ -26,7 +26,10 @@ def gen_modelines(view):
                                 ((view.size() - MODELINES_REG_SIZE), 0))[0]
     candidates += view.lines(sublime.Region(bottomRegStart, view.size()))
 
-    for modeline in (view.substr(c) for c in candidates if is_modeline(view, c)):
+    prefix = build_modeline_prefix(view)
+    modelines = (view.substr(c) for c in candidates if is_modeline(prefix, view.substr(c)))
+
+    for modeline in modelines:
         yield modeline
 
 
@@ -44,21 +47,27 @@ def gen_modeline_options(view):
     modelines = gen_modelines(view)
     for opt in gen_raw_options(modelines):
         name, sep, value = opt.partition(' ')
-        yield view.settings().set, name, value
+        yield view.settings().set, name.rstrip(':'), value.rstrip(';')
 
 
 def get_line_comment_char(view):
     commentChar = ""
+    commentChar2 = ""
     try:
         for pair in view.meta_info("shellVariables", 0):
             if pair["name"] == "TM_COMMENT_START":
                 commentChar = pair["value"]
+            if pair["name"] == "TM_COMMENT_START_2":
+                commentChar2 = pair["value"]
+            if commentChar and commentChar2:
                 break
     except TypeError:
         pass
 
-    return commentChar.strip()
-
+    if not commentChar2:
+        return re.escape(commentChar.strip())
+    else:
+        return "("+re.escape(commentChar.strip())+"|"+re.escape(commentChar2.strip())+")"
 
 def build_modeline_prefix(view):
     lineComment = get_line_comment_char(view).lstrip() or DEFAULT_LINE_COMMENT
@@ -91,7 +100,7 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
     MAX_LINES_TO_CHECK * LINE_LENGTH defines the size of the regions to be
     scanned.
     """
-    def on_load(self, view):
+    def do_modelines(self, view):
         for setter, name, value in gen_modeline_options(view):
             try:
                 setter(name, to_json_type(value))
@@ -99,3 +108,9 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
                 sublime.status_message("[SublimeModelines] Bad modeline detected.")
                 print "[SublimeModelines] Bad option detected: %s, %s" % (name, value)
                 print "[SublimeModelines] Tip: Keys cannot be empty strings."
+
+    def on_load(self, view):
+        self.do_modelines(view)
+
+    def on_post_save(self, view):
+        self.do_modelines(view)
