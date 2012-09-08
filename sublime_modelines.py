@@ -67,7 +67,7 @@ def get_line_comment_char(view):
     if not commentChar2:
         return re.escape(commentChar.strip())
     else:
-        return "("+re.escape(commentChar.strip())+"|"+re.escape(commentChar2.strip())+")"
+        return "(" + re.escape(commentChar.strip()) + "|" + re.escape(commentChar2.strip()) + ")"
 
 def build_modeline_prefix(view):
     lineComment = get_line_comment_char(view).lstrip() or DEFAULT_LINE_COMMENT
