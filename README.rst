@@ -67,6 +67,6 @@ For some common cases, no directly settable option exists (for example, a
 setting to specify a syntax). For such cases, Sublime Modelines provides
 non-standard accessors as a stop-gap solution.
 
-**x_syntax** *Packages/Foo/Foo.tmLanguage>*
+**x_syntax** *Packages/Foo/Foo.tmLanguage*
 
 Sets the syntax to the specified *.tmLanguage* file.
