@@ -102,12 +102,15 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
     """
     def do_modelines(self, view):
         for setter, name, value in gen_modeline_options(view):
-            try:
-                setter(name, to_json_type(value))
-            except ValueError, e:
-                sublime.status_message("[SublimeModelines] Bad modeline detected.")
-                print "[SublimeModelines] Bad option detected: %s, %s" % (name, value)
-                print "[SublimeModelines] Tip: Keys cannot be empty strings."
+            if name == 'x_syntax':
+                view.set_syntax_file(value)
+            else:
+                try:
+                    setter(name, to_json_type(value))
+                except ValueError, e:
+                    sublime.status_message("[SublimeModelines] Bad modeline detected.")
+                    print "[SublimeModelines] Bad option detected: %s, %s" % (name, value)
+                    print "[SublimeModelines] Tip: Keys cannot be empty strings."
 
     def on_load(self, view):
         self.do_modelines(view)

@@ -58,3 +58,15 @@ Caveats
 
 If the option's value contains a semicolon (``;``), make sure it isn't followed
 by a blank space. Otherwise it will be interpreted as a multioption separator.
+
+
+Non-Standard Options
+********************
+
+For some common cases, no directly settable option exists (for example, a
+setting to specify a syntax). For such cases, Sublime Modelines provides
+non-standard accessors as a stop-gap solution.
+
+**x_syntax** *Packages/Foo/Foo.tmLanguage>*
+
+Sets the syntax to the specified *.tmLanguage* file.
