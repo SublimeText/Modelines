@@ -134,6 +134,10 @@ VIM_MAP = {
 def console_log(s, *args):
     sys.stderr.write('[SublimeModelines] '+(s % args)+"\n")
 
+def debug_log(s, *args):
+    if 0:
+        sys.stderr.write('[SublimeModelines] '+(s % args)+"\n")
+
 def get_language_files(ignored_packages, *paths):
     paths = list(paths)
     tml_files = []
@@ -309,13 +313,10 @@ def to_json_type(v):
     """
     try:
         result = json.loads(v.strip())
-        console_log("json: %s -> %s" % (v, repr(result)))
         return result
     except Exception as e:
-        console_log("json: %s\n" % e)
         if v:
             if v[0] not in "[{":
-                console_log("json: %s -> %s" % (v, repr(v)))
                 return v
         raise ValueError("Could not convert from JSON: %s" % v)
 
@@ -344,12 +345,10 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
 
         base_dir = settings.get('result_base_dir')
 
-        sys.stderr.write("do_modelines\n")
-
         for setter, name, value in gen_modeline_options(view):
             #if 'vim' in MODELINE_PREFIX_TPL: # vimsupport
             #    vim_map.get(name)
-            console_log("modeline: %s = %s" % (name, value))
+            debug_log("modeline: %s = %s", name, value)
 
             if name in ('x_syntax', 'syntax'):
                 syntax_file = None
@@ -396,7 +395,7 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
                     view.set_syntax_file(syntax_file)
 
                 new_keys.add('syntax')
-                console_log("set syntax = %s" % syntax_file)
+                debug_log("set syntax = %s" % syntax_file)
 
             else:
                 try:
