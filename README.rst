@@ -41,6 +41,30 @@ one of the following syntaxes::
 single-line comment character for your language. When there isn't a concept of
 comment, the default comment character must be used.
 
+Vim compatibility
+-----------------
+
+Also following modelines are supported::
+
+    # vim:ai:et:ts=4:
+    # sublime: set color_scheme="Packages/Color Scheme - Default/Monokai.tmTheme":
+    # sublime: set ignored_packages+=['Vintage']:
+
+.. note:: Modeline values are interpreted as JSON, or string as fallback.  If you 
+   use JSON Objects in modeline (like ``[]`` or ``{}``), you can only use this as
+   last value in a line, for quick and easy parsing reasons.
+
+There is full vim-modeline-compatibility implemented.  Only some options are
+mapped to Sublime Text options.  Following options are supported so far:
+
+- autoindent, ai
+- tabstop, ts
+- expandtab, et
+- syntax, syn
+- number, nu
+
+(these are the ones, I used most)
+
 How to Define Comment Characters in Sublime Text
 ------------------------------------------------
 
@@ -70,3 +94,13 @@ non-standard accessors as a stop-gap solution.
 **x_syntax** *Packages/Foo/Foo.tmLanguage*
 
 Sets the syntax to the specified *.tmLanguage* file.
+
+
+Contributers
+------------
+
+Kay-Uwe (Kiwi) Lorenz <kiwi@franka.dyndns.org> (http://quelltexter.org)
+	- added VIM compatibility
+	- smart syntax matching
+	- modelines also parsed on save
+	- settings are erased from view, if removed from modeline
