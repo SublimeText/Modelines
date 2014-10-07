@@ -141,7 +141,7 @@ def debug_log(s, *args):
 def get_language_files(ignored_packages, *paths):
     paths = list(paths)
     tml_files = []
-    if ST3:kj
+    if ST3:
         tml_files.extend(sublime.find_resources('*.tmLanguage'))
     else:
         paths.insert(0, sublime.packages_path())
