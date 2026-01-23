@@ -66,7 +66,9 @@ For some common cases, no directly settable option exists (for example, a settin
 For such cases, Sublime Modelines provides non-standard accessors as a stop-gap solution.
 
 ```text
-x_syntax Packages/Foo/Foo.tmLanguage
+# sublime: x_syntax Foo
+or
+# sublime: x_syntax Packages/Foo/Foo.tmLanguage
 ```
 
 Sets the syntax to the specified `.tmLanguage` file.
