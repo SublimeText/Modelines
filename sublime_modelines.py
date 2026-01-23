@@ -207,41 +207,41 @@ def gen_raw_options(modelines):
         match = MODELINE_TYPE_1.search(m)
         if not match:
             match = MODELINE_TYPE_2.search(m)
-
+        
         if match:
             type, s = match.groups()
-
+            
             while True:
                 if s.startswith(":"): s = s[1:]
-
+                
                 m = KEY_VALUE.match(s)
                 if m:
                     key, op, value = m.groups()
                     yield vim_mapped(type, key), op, value
                     s = s[m.end():]
                     continue
-
+                
                 m = KEY_ONLY.match(s)
                 if m:
                     k, = m.groups()
                     value = "true"
-
+                    
                     _k = vim_mapped(type, k)
                     if (k.startswith("no") and (type == "vim" or (
                         k[2:] in VIM_MAP or len(k) <= 4))):
-
+                        
                         value = "false"
                         _k = vim_mapped(type, k[2:])
-
+                    
                     yield _k, "=", value
-
+                    
                     s = s[m.end():]
                     continue
-
+                
                 break
-
+            
             continue
-
+        
         # original sublime modelines style
         opt = m.partition(":")[2].strip()
         if MULTIOPT_SEP in opt:
@@ -258,10 +258,10 @@ def gen_modeline_options(view):
             #import spdb ; spdb.start()
             name, sep, value = opt.partition(" ")
             yield view.settings().set, name.rstrip(":"), value.rstrip(";")
-
+            
         else:
             name, op, value = opt
-
+            
             def _setter(n,v):
                 if op == "+=":
                     if v.startswith("{"):
@@ -272,12 +272,12 @@ def gen_modeline_options(view):
                         default = ""
                     else:
                         default = 0
-
+                    
                     ov = view.settings().get(n, default)
                     v = ov + v
-
+                
                 view.settings().set(n,v)
-
+            
             yield _setter, name, value
 
 
@@ -294,7 +294,7 @@ def get_line_comment_char(view):
                 break
     except TypeError:
         pass
-
+    
     if not commentChar2:
         return re.escape(commentChar.strip())
     else:
@@ -321,25 +321,25 @@ def to_json_type(v):
 class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
     """This plugin provides a feature similar to vim modelines.
     Modelines set options local to the view by declaring them in the source code file itself.
-
+    
         Example:
         mysourcecodefile.py
         # sublime: gutter false
         # sublime: translate_tab_to_spaces true
-
+    
     The top as well as the bottom of the buffer is scanned for modelines.
     MAX_LINES_TO_CHECK * LINE_LENGTH defines the size of the regions to be scanned.
     """
     def do_modelines(self, view):
         settings = view.settings()
-
+        
         ignored_packages = settings.get("ignored_packages")
-
+        
         keys = set(settings.get("sublime_modelines_keys", []))
         new_keys = set()
-
+        
         base_dir = settings.get("result_base_dir")
-
+        
         for setter, name, value in gen_modeline_options(view):
             #if "vim" in MODELINE_PREFIX_TPL: # vimsupport
             #    vim_map.get(name)
@@ -391,7 +391,7 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
 
                 new_keys.add("syntax")
                 debug_log("set syntax = %s" % syntax_file)
-
+                
             else:
                 try:
                     setter(name, to_json_type(value))
@@ -400,7 +400,7 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
                     sublime.status_message("[SublimeModelines] Bad modeline detected.")
                     console_log("Bad option detected: %s, %s.", name, value)
                     console_log("Tip: Keys cannot be empty strings.")
-
+        
         for k in keys:
             if k not in new_keys:
                 if settings.has(k):
