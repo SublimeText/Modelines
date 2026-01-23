@@ -57,14 +57,10 @@ def gen_modelines(view):
 
     # Consider modelines at the end of the buffer too.
     # There might be overlap with the top region, but it doesn’t matter because it means the buffer is tiny.
-    bottomRegStart = filter(lambda x: x > -1,
-                                ((view.size() - MODELINES_REG_SIZE), 0))
-
     bottomRegStart = view.size() - MODELINES_REG_SIZE
-
     if bottomRegStart < 0: bottomRegStart = 0
 
-    candidates += view.lines( sublime.Region(bottomRegStart, view.size()) )
+    candidates += view.lines(sublime.Region(bottomRegStart, view.size()))
 
     prefix = build_modeline_prefix(view)
     modelines = (view.substr(c) for c in candidates if is_modeline(prefix, view.substr(c)))
