@@ -3,9 +3,10 @@ import re, sys, json, os
 
 
 enable_debug_log = False
+enable_log_to_tmp = False
 
 def log_to_file(str):
-    if enable_debug_log:
+    if enable_log_to_tmp:
         with open("/tmp/modelines_debug.log", "a") as myfile:
             myfile.write(str + "\n")
 
