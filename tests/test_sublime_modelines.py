@@ -1,6 +1,5 @@
 # This is the original test file before ST 3 compatibility was added.
 
-from typing import Any
 from unittest import TestCase
 import sublime
 
@@ -9,13 +8,13 @@ from Modelines import sublime_modelines
 
 class MockView(View):
     
-    comment_start_char: str|None = None
-    latest_meta_info_call_args: tuple[tuple[str, Point], Any]|None = None
+    comment_start_char = None
+    latest_meta_info_call_args = None
     
-    def set_comment_start_char(self, new_char: str|None):
+    def set_comment_start_char(self, new_char):
         self.comment_start_char = new_char
     
-    def meta_info(self, key: str, pt: Point):
+    def meta_info(self, key, pt):
         res = None
         if key != "TM_COMMENT_START" or self.comment_start_char == None: res = super.meta_info(key, pt)
         else:                                                            res = self.comment_start_char
