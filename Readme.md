@@ -1,7 +1,7 @@
 # Sublime Modelines
 
 Set settings local to a single buffer.  
-A more granular approach to settings than the per file type ``.sublime-settings`` files.
+A more granular approach to settings than the per file type `.sublime-settings` files.
 
 Inspired by Vim’s modelines feature.
 
@@ -39,7 +39,7 @@ Modelines must be declared at the top or the bottom of source code files with on
 ```
 
 **Note**:
-``#`` is the default comment character.
+`#` is the default comment character.
 Use the corresponding single-line comment character for your language.
 When there isn't a concept of comment, the default comment character must be used.
 
@@ -50,7 +50,7 @@ SublimeModelines finds the appropriate single-line comment character by inspecti
 To see an example of how this is done, open `Packages/Python/Miscellaneous.tmPreferences`.
 
 Many packages giving support for programming languages already include this,
- but you might need to create a ``.tmPreferences`` file for the language you're working with
+ but you might need to create a `.tmPreferences` file for the language you're working with
  if you want SublimeModelines to be available.
  
 
