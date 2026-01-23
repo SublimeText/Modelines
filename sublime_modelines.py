@@ -16,15 +16,15 @@ KEY_VALUE = re.compile(r"""(?x) \s*
 
 KEY_ONLY  = re.compile(r"""(?x)\s*(?P<key>\w+)""")
 
-DEFAULT_LINE_COMMENT = '#'
-MULTIOPT_SEP = '; '
+DEFAULT_LINE_COMMENT = "#"
+MULTIOPT_SEP = "; "
 MAX_LINES_TO_CHECK = 50
 LINE_LENGTH = 80
 MODELINES_REG_SIZE = MAX_LINES_TO_CHECK * LINE_LENGTH
 
-MONITORED_OUTPUT_PANELS = ['exec']
+MONITORED_OUTPUT_PANELS = ["exec"]
 
-ST3 = sublime.version() >= '3000'
+ST3 = sublime.version() >= "3000"
 
 if ST3:
     basestring = str
@@ -193,7 +193,7 @@ def gen_modelines(view):
         yield modeline
 
 def vim_mapped(t, s):
-    if t == 'vim' or len(s) < 3:
+    if t == "vim" or len(s) < 3:
         while s in VIM_MAP:
             s = VIM_MAP[s]
         return s[0]
@@ -212,7 +212,7 @@ def gen_raw_options(modelines):
             type, s = match.groups()
 
             while True:
-                if s.startswith(':'): s = s[1:]
+                if s.startswith(":"): s = s[1:]
 
                 m = KEY_VALUE.match(s)
                 if m:
@@ -227,13 +227,13 @@ def gen_raw_options(modelines):
                     value = "true"
 
                     _k = vim_mapped(type, k)
-                    if (k.startswith('no') and (type == 'vim' or (
+                    if (k.startswith("no") and (type == "vim" or (
                         k[2:] in VIM_MAP or len(k) <= 4))):
 
                         value = "false"
                         _k = vim_mapped(type, k[2:])
 
-                    yield _k, '=', value
+                    yield _k, "=", value
 
                     s = s[m.end():]
                     continue
@@ -243,7 +243,7 @@ def gen_raw_options(modelines):
             continue
 
         # original sublime modelines style
-        opt = m.partition(':')[2].strip()
+        opt = m.partition(":")[2].strip()
         if MULTIOPT_SEP in opt:
             for subopt in (s for s in opt.split(MULTIOPT_SEP)):
                 yield subopt
@@ -256,17 +256,17 @@ def gen_modeline_options(view):
     for opt in gen_raw_options(modelines):
         if not isinstance(opt, tuple):
             #import spdb ; spdb.start()
-            name, sep, value = opt.partition(' ')
-            yield view.settings().set, name.rstrip(':'), value.rstrip(';')
+            name, sep, value = opt.partition(" ")
+            yield view.settings().set, name.rstrip(":"), value.rstrip(";")
 
         else:
             name, op, value = opt
 
             def _setter(n,v):
-                if op == '+=':
-                    if v.startswith('{'):
+                if op == "+=":
+                    if v.startswith("{"):
                         default = {}
-                    elif v.startswith('['):
+                    elif v.startswith("["):
                         default = []
                     elif isinstance(v, basestring):
                         default = ""
@@ -333,19 +333,19 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
     def do_modelines(self, view):
         settings = view.settings()
 
-        ignored_packages = settings.get('ignored_packages')
+        ignored_packages = settings.get("ignored_packages")
 
-        keys = set(settings.get('sublime_modelines_keys', []))
+        keys = set(settings.get("sublime_modelines_keys", []))
         new_keys = set()
 
-        base_dir = settings.get('result_base_dir')
+        base_dir = settings.get("result_base_dir")
 
         for setter, name, value in gen_modeline_options(view):
-            #if 'vim' in MODELINE_PREFIX_TPL: # vimsupport
+            #if "vim" in MODELINE_PREFIX_TPL: # vimsupport
             #    vim_map.get(name)
             debug_log("modeline: %s = %s", name, value)
 
-            if name in ('x_syntax', 'syntax'):
+            if name in ("x_syntax", "syntax"):
                 syntax_file = None
 
                 if os.path.isabs(value):
@@ -389,7 +389,7 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
                 else:
                     view.set_syntax_file(syntax_file)
 
-                new_keys.add('syntax')
+                new_keys.add("syntax")
                 debug_log("set syntax = %s" % syntax_file)
 
             else:
@@ -398,7 +398,7 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
                     new_keys.add(name)
                 except ValueError as e:
                     sublime.status_message("[SublimeModelines] Bad modeline detected.")
-                    console_log("Bad option detected: %s, %s", name, value)
+                    console_log("Bad option detected: %s, %s.", name, value)
                     console_log("Tip: Keys cannot be empty strings.")
 
         for k in keys:
