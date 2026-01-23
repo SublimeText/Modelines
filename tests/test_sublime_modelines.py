@@ -39,11 +39,14 @@ class SublimeModelinesTest(TestCase):
             self.view.window().focus_view(self.view)
             self.view.window().run_command("close_file")
     
-    def test_get_line_comment_char_does_meta_info_with_correct_args_and_get_correct_result(self):
+    # This test is strange, but it relates to a previous version of Modelines checking the comment char to make it a part of the regex to detect modelines.
+    # We do not do that anymore; let’s make sure of it!
+    # (I like the mock thing I did, I don’t want to remove it…)
+    def test_get_line_comment_char_does_not_call_meta_info(self):
         sublime_modelines.get_line_comment_char(self.view)
 
         actual = self.view.latest_meta_info_call_args
-        expected = (("TM_COMMENT_START", 0), "")
+        expected = None
 
         self.assertEqual(actual, expected)
 
