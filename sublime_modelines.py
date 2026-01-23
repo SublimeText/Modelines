@@ -2,16 +2,19 @@ import sublime, sublime_plugin
 import re, sys, json, os
 
 
+enable_debug_log = False
+
 def log_to_file(str):
-    with open("/tmp/modelines_debug.log", "a") as myfile:
-        myfile.write(str + "\n")
+    if enable_debug_log:
+        with open("/tmp/modelines_debug.log", "a") as myfile:
+            myfile.write(str + "\n")
 
 def log_to_console(s, *args):
     log_to_file("[SublimeModelines] "+(s % args))
     sys.stderr.write("[SublimeModelines] " + (s % args) + "\n")
 
 def debug_log(s, *args):
-    if True:
+    if enable_debug_log:
         log_to_console(s, *args)
 
 
