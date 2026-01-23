@@ -1,8 +1,10 @@
-from sublime_unittest import TestCase
+from tempfile import mkstemp
+from unittest import TestCase
 import sublime, os
 
 
 class ModelinesTest(TestCase):
+    
     def tearDown(self):
         if hasattr(self, 'tempfile'):
             if os.path.exists(self.tempfile):
@@ -12,8 +14,8 @@ class ModelinesTest(TestCase):
         import tempfile
 
         fd, self.tempfile = mkstemp()
-        fd.write(lines)
-        fd.close()
+        os.write(fd, lines)
+        os.close(fd)
 
         view = sublime.active_window().open_file(self.tempfile)
 
@@ -29,11 +31,11 @@ class ModelinesTest(TestCase):
         self._modeline_test(lines)
 
     def _gen_raw_options_test(self, line, expected):
-        from .. import sublime_modelines
+        from Modelines import sublime_modelines
         if isinstance(line, list):
-            self.assertEquals([x for x in sublime_modelines.gen_raw_options(line)], expected)
+            self.assertEqual([x for x in sublime_modelines.gen_raw_options(line)], expected)
         else:
-            self.assertEquals([x for x in sublime_modelines.gen_raw_options([line])], expected)
+            self.assertEqual([x for x in sublime_modelines.gen_raw_options([line])], expected)
 
 
     def test_gen_raw_options_vim_compatibility_1(self):
