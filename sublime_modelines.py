@@ -145,28 +145,8 @@ def gen_modeline_options(view):
             yield _setter, name, value
 
 
-def get_line_comment_char(view):
-    commentChar = ""
-    commentChar2 = ""
-    try:
-        for pair in view.meta_info("shellVariables", 0):
-            if pair["name"] == "TM_COMMENT_START":
-                commentChar = pair["value"]
-            if pair["name"] == "TM_COMMENT_START_2":
-                commentChar2 = pair["value"]
-            if commentChar and commentChar2:
-                break
-    except TypeError:
-        pass
-    
-    if not commentChar2:
-        return re.escape(commentChar.strip())
-    else:
-        return "(" + re.escape(commentChar.strip()) + "|" + re.escape(commentChar2.strip()) + ")"
-
 def build_modeline_prefix(view):
-    lineComment = get_line_comment_char(view).lstrip() or DEFAULT_LINE_COMMENT
-    return (MODELINE_PREFIX_TPL % lineComment)
+    return (MODELINE_PREFIX_TPL % DEFAULT_LINE_COMMENT)
 
 
 def to_json_type(v):

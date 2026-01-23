@@ -43,40 +43,12 @@ class SublimeModelinesTest(TestCase):
     # We do not do that anymore; let’s make sure of it!
     # (I like the mock thing I did, I don’t want to remove it…)
     def test_get_line_comment_char_does_not_call_meta_info(self):
-        sublime_modelines.get_line_comment_char(self.view)
+        sublime_modelines.build_modeline_prefix(self.view)
 
         actual = self.view.latest_meta_info_call_args
         expected = None
 
         self.assertEqual(actual, expected)
-
-
-    # def test_get_line_comment_char_DoWeGetLineCommentCharIfExists(self):
-    #     self.view.set_comment_start_char("#")
-
-    #     expected = "#"
-    #     actual = sublime_modelines.get_line_comment_char(self.view)
-
-    #     self.assertEqual(actual, expected)
-
-
-    # def test_get_line_comment_char_DoWeGetEmptyLineIfLineCommentCharDoesntExist(self):
-    #     self.view.meta_info.return_value = [{ "name": "NOT_TM_COMMENT_START", "value": "#"}]
-
-    #     expected = ""
-    #     actual = sublime_modelines.get_line_comment_char(self.view)
-
-    #     self.assertEqual(actual, expected)
-
-
-    # def test_get_line_comment_char_ShouldReturnEmptyStringIfNoExtraVariablesExist(self):
-    #     self.view.meta_info.return_value = None
-
-    #     expected = ""
-    #     actual = sublime_modelines.get_line_comment_char(self.view)
-
-    #     self.assertEqual(actual, expected)
-
 
     # def test_build_modeline_prefix_AreDefaultsCorrect(self):
     #     actual = sublime_modelines.MODELINE_PREFIX_TPL % "TEST", sublime_modelines.DEFAULT_LINE_COMMENT
