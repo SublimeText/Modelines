@@ -162,14 +162,11 @@ def get_language_files(ignored_packages, *paths):
     return result
 
 def get_output_panel(name):
-    if ST3: 
-        return sublime.active_window().create_output_panel(name)
-    else:
-        return sublime.active_window().get_output_panel(name)
+    if ST3: return sublime.active_window().create_output_panel(name)
+    else:   return sublime.active_window().get_output_panel(name)
 
 def is_modeline(prefix, line):
     return bool(re.match(prefix, line))
-
 
 def gen_modelines(view):
     topRegEnd = min(MODELINES_REG_SIZE, view.size())
@@ -242,7 +239,7 @@ def gen_raw_options(modelines):
             
             continue
         
-        # original sublime modelines style
+        # Original sublime modelines style.
         opt = m.partition(":")[2].strip()
         if MULTIOPT_SEP in opt:
             for subopt in (s for s in opt.split(MULTIOPT_SEP)):
