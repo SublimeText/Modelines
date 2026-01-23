@@ -135,15 +135,15 @@ class SublimeModelinesTest(TestCase):
     #     self.assertTrue(sublime_modelines.is_modeline(self.view, 0))
 
 
-    # def test_to_json_type(self):
-    #     a = "1"
-    #     b = "1.0"
-    #     c = "false"
-    #     d = "true"
-    #     e = list()
+    def test_to_json_type(self):
+        a = "1"
+        b = "1.0"
+        c = "false"
+        d = "true"
+        e = list()
 
-    #     self.assertEqual(sublime_modelines.to_json_type(a), 1)
-    #     self.assertEqual(sublime_modelines.to_json_type(b), 1.0)
-    #     self.assertEqual(sublime_modelines.to_json_type(c), False)
-    #     self.assertEqual(sublime_modelines.to_json_type(d), True)
-    #     self.assertEqual(sublime_modelines.to_json_type(e), e)
+        self.assertEqual(sublime_modelines.to_json_type(a), 1)
+        self.assertEqual(sublime_modelines.to_json_type(b), 1.0)
+        self.assertEqual(sublime_modelines.to_json_type(c), False)
+        self.assertEqual(sublime_modelines.to_json_type(d), True)
+        self.assertEqual(sublime_modelines.to_json_type(e), e)

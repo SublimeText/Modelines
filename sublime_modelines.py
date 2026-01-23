@@ -150,11 +150,12 @@ def build_modeline_prefix(view):
 
 
 def to_json_type(v):
-    """"Convert string value to proper JSON type.
-    """
+    """Convert string value to proper JSON type."""
+    if not isinstance(v, str):
+        return json.loads(json.dumps(v))
+    
     try:
-        result = json.loads(v.strip())
-        return result
+        return json.loads(v.strip())
     except Exception as e:
         if v:
             if v[0] not in "[{":
