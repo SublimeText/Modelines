@@ -1,5 +1,3 @@
-# vim:et:ai:ts=4:syn=python:
-
 import sublime, sublime_plugin
 import re, sys, json, os
 
