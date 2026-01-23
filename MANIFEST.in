@@ -1,4 +1,0 @@
-include sublime_modelines.py
-include License.txt
-include Readme.md
-prune setup.py
