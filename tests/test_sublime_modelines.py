@@ -1,15 +1,34 @@
+# This is the original test file before ST 3 compatibility was added.
+
+from typing import Any
 from unittest import TestCase
 import sublime
 
 from Modelines import sublime_modelines
 
 
-# Original tests.
+class MockView(View):
+    
+    comment_start_char: str|None = None
+    latest_meta_info_call_args: tuple[tuple[str, Point], Any]|None = None
+    
+    def set_comment_start_char(self, new_char: str|None):
+        self.comment_start_char = new_char
+    
+    def meta_info(self, key: str, pt: Point):
+        res = None
+        if key != "TM_COMMENT_START" or self.comment_start_char == None: res = super.meta_info(key, pt)
+        else:                                                            res = self.comment_start_char
+        self.latest_meta_info_call_args = ((key, pt), res)
+        return res
+
 class SublimeModelinesTest(TestCase):
 
     def setUp(self):
-        self.view = sublime.active_window().new_file()
-        # make sure we have a window to work with
+        self.view = sublime.active_window().new_file(NewFileFlags.TRANSIENT, "text")
+        self.view.__class__ = MockView
+        
+        # Make sure we have a window to work with.
         s = sublime.load_settings("Preferences.sublime-settings")
         s.set("close_windows_when_empty", False)
 
@@ -19,17 +38,17 @@ class SublimeModelinesTest(TestCase):
             self.view.window().focus_view(self.view)
             self.view.window().run_command("close_file")
     
-    def test_get_line_comment_char_Does_meta_info_GetCorrectArgs(self):
+    def test_get_line_comment_char_does_meta_info_with_correct_args_and_get_correct_result(self):
         sublime_modelines.get_line_comment_char(self.view)
 
         actual = self.view.meta_info.call_args
-        expected = (("shellVariables", 0), {})
+        expected = (("TM_COMMENT_START", 0), "")
 
         self.assertEqual(actual, expected)
 
 
     def test_get_line_comment_char_DoWeGetLineCommentCharIfExists(self):
-        self.view.meta_info.return_value = [{ "name": "TM_COMMENT_START", "value": "#"}]
+        self.view.set_comment_start_char("#")
 
         expected = "#"
         actual = sublime_modelines.get_line_comment_char(self.view)
@@ -57,13 +76,13 @@ class SublimeModelinesTest(TestCase):
 
     def test_build_modeline_prefix_AreDefaultsCorrect(self):
         actual = sublime_modelines.MODELINE_PREFIX_TPL % "TEST", sublime_modelines.DEFAULT_LINE_COMMENT
-        expected = "%s\\s*(st|sublime): " % "TEST", "#"
+        expected = "%s\\s*(st|sublime):" % "TEST", "#"
         self.assertEqual(actual, expected)
 
 
-    def test_BuildPrefixWithDynamicLineCommentChar(self):
-        self.view.meta_info.return_value = [{ "name": "TM_COMMENT_START", "value": "//"}]
-        expected = "%s\\s*(st|sublime): " % "//"
+    def test_BuildPrefixWithDynamicLineCommentDoubleSlash(self):
+        self.view.set = [{"name": "TM_COMMENT_START", "value": "//"}]
+        expected = "%s\\s*(st|sublime):" % "//"
         actual = sublime_modelines.build_modeline_prefix(self.view)
         assert actual == expected
 
@@ -71,7 +90,7 @@ class SublimeModelinesTest(TestCase):
     def test_BuildPrefixWithDefaultLineCommentChar(self):
         #self.view.meta_info.return_value = None
 
-        expected = "%s\\s*(st|sublime): " % "#"
+        expected = "%s\\s*(st|sublime):" % "#"
         actual = sublime_modelines.build_modeline_prefix(self.view)
 
         self.assertEqual(actual, expected)

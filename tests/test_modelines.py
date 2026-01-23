@@ -1,3 +1,5 @@
+# This is the test file that was added with ST 3 compatibility.
+
 from tempfile import mkstemp
 from unittest import TestCase
 import sublime, os
