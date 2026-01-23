@@ -178,8 +178,7 @@ def gen_modelines(view):
     candidates = view.lines(sublime.Region(0, view.full_line(topRegEnd).end()))
 
     # Consider modelines at the end of the buffer too.
-    # There might be overlap with the top region, but it doesn't matter because
-    # it means the buffer is tiny.
+    # There might be overlap with the top region, but it doesn’t matter because it means the buffer is tiny.
     bottomRegStart = filter(lambda x: x > -1,
                                 ((view.size() - MODELINES_REG_SIZE), 0))
 
@@ -323,8 +322,7 @@ def to_json_type(v):
 
 class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
     """This plugin provides a feature similar to vim modelines.
-    Modelines set options local to the view by declaring them in the
-    source code file itself.
+    Modelines set options local to the view by declaring them in the source code file itself.
 
         Example:
         mysourcecodefile.py
@@ -332,8 +330,7 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
         # sublime: translate_tab_to_spaces true
 
     The top as well as the bottom of the buffer is scanned for modelines.
-    MAX_LINES_TO_CHECK * LINE_LENGTH defines the size of the regions to be
-    scanned.
+    MAX_LINES_TO_CHECK * LINE_LENGTH defines the size of the regions to be scanned.
     """
     def do_modelines(self, view):
         settings = view.settings()
