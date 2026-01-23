@@ -39,8 +39,6 @@ MAX_LINES_TO_CHECK = 50
 LINE_LENGTH = 80
 MODELINES_REG_SIZE = MAX_LINES_TO_CHECK * LINE_LENGTH
 
-MONITORED_OUTPUT_PANELS = ["exec"]
-
 ST3 = sublime.version() >= "3000"
 
 if ST3:
@@ -325,16 +323,6 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
     def on_post_save(self, view):
         debug_log("on_post_save")
         self.do_modelines(view)
-    
-    if 0:
-      def on_modified(self, view):
-        for p in MONITORED_OUTPUT_PANELS:
-            v = get_output_panel(p)
-            if v.id() != view.id(): continue
-            return
-            
-        self.do_modelines(view)
-        return
     
     def do_modelines(self, view):
         if not self._modes:
