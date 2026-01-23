@@ -1,6 +1,23 @@
 import sublime, sublime_plugin
 import re, sys, json, os
 
+
+def log_to_file(str):
+    with open("/tmp/modelines_debug.log", "a") as myfile:
+        myfile.write(str + "\n")
+
+def log_to_console(s, *args):
+    log_to_file("[SublimeModelines] "+(s % args))
+    sys.stderr.write("[SublimeModelines] " + (s % args) + "\n")
+
+def debug_log(s, *args):
+    if True:
+        log_to_console(s, *args)
+
+
+debug_log("Modelines plugin start.")
+
+
 MODELINE_PREFIX_TPL = "%s\\s*(st|sublime|vim):"
 
 MODELINE_TYPE_1  = re.compile(r"[\x20\t](st|sublime|vim):\x20?set\x20(.*):.*$")
@@ -128,38 +145,6 @@ VIM_MAP = {
     # "word_wrap": "auto",
     # "wrap_width": 0,
 }
-
-def console_log(s, *args):
-    sys.stderr.write('[SublimeModelines] '+(s % args)+"\n")
-
-def debug_log(s, *args):
-    if 0:
-        sys.stderr.write('[SublimeModelines] '+(s % args)+"\n")
-
-def get_language_files(ignored_packages, *paths):
-    paths = list(paths)
-    tml_files = []
-    if ST3:
-        tml_files.extend(sublime.find_resources('*.tmLanguage'))
-    else:
-        paths.insert(0, sublime.packages_path())
-
-    for path in paths:
-        for dir, dirs, files in os.walk(path):
-            # TODO: be sure that not tmLanguage from disabled package is taken
-            for fn in files:
-                if fn.endswith('.tmLanguage'):
-                    tml_files.append(os.path.join(dir, fn))
-
-    R = re.compile("Packages[\\/]([^\\/]+)[\\/]")
-    result = []
-    for f in tml_files:
-        m = R.search(f)
-        if m:
-            if m.group(1) not in ignored_packages:
-                result.append(f)
-
-    return result
 
 def get_output_panel(name):
     if ST3: return sublime.active_window().create_output_panel(name)
@@ -327,7 +312,34 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
     The top as well as the bottom of the buffer is scanned for modelines.
     MAX_LINES_TO_CHECK * LINE_LENGTH defines the size of the regions to be scanned.
     """
+    
+    settings = None
+    
+    def __init__(self):
+        self._modes = {}
+    
+    def on_load(self, view):
+        debug_log("on_load")
+        self.do_modelines(view)
+    
+    def on_post_save(self, view):
+        debug_log("on_post_save")
+        self.do_modelines(view)
+    
+    if 0:
+      def on_modified(self, view):
+        for p in MONITORED_OUTPUT_PANELS:
+            v = get_output_panel(p)
+            if v.id() != view.id(): continue
+            return
+            
+        self.do_modelines(view)
+        return
+    
     def do_modelines(self, view):
+        if not self._modes:
+            self.init_syntax_files()
+        
         settings = view.settings()
         
         ignored_packages = settings.get("ignored_packages")
@@ -341,52 +353,16 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
             #if "vim" in MODELINE_PREFIX_TPL: # vimsupport
             #    vim_map.get(name)
             debug_log("modeline: %s = %s", name, value)
-
-            if name in ("x_syntax", "syntax"):
+            
+            if name == "x_syntax":
                 syntax_file = None
-
-                if os.path.isabs(value):
-                    syntax_file = value
-
-                    if not os.path.exists(syntax_file):
-                        console_log("%s does not exist", value)
-                        continue
-
-                else:
-                    # be smart about syntax:
-                    if base_dir: 
-                        lang_files = get_language_files(ignored_packages, base_dir)
-                    else:
-                        lang_files = get_language_files(ignored_packages)
-
-                    #lang_files.sort(key=lambda x: len(os.path.basename(x)))
-
-                    candidates = []
-                    for syntax_file in lang_files:
-                        if value in os.path.basename(syntax_file):
-                            candidates.append(syntax_file)
-
-                    value_lower = value.lower()
-                    if not candidates:
-                        for syntax_file in lang_files:
-                            if value_lower in os.path.basename(syntax_file).lower():
-                                candidates.append(syntax_file)
-
-                    if not candidates:
-                        console_log("%s cannot be resolved to a syntaxfile", value)
-                        syntax_file = None
-                        continue
-
-                    else:
-                        candidates.sort(key=lambda x: len(os.path.basename(x)))
-                        syntax_file = candidates[0]
-
-                if ST3:
-                    view.assign_syntax(syntax_file)
-                else:
-                    view.set_syntax_file(syntax_file)
-
-                new_keys.add("syntax")
+                if value.lower() in self._modes: syntax_file = self._modes[value.lower()]
+                else:                            syntax_file = value
+                
+                if ST3: view.assign_syntax(syntax_file)
+                else:   view.set_syntax_file(syntax_file)
+                
+                new_keys.add("x_syntax")
                 debug_log("set syntax = %s" % syntax_file)
                 
             else:
@@ -395,29 +371,47 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
                     new_keys.add(name)
                 except ValueError as e:
                     sublime.status_message("[SublimeModelines] Bad modeline detected.")
-                    console_log("Bad option detected: %s, %s.", name, value)
-                    console_log("Tip: Keys cannot be empty strings.")
+                    log_to_console("Bad option detected: %s, %s.", name, value)
+                    log_to_console("Tip: Keys cannot be empty strings.")
         
         for k in keys:
             if k not in new_keys:
                 if settings.has(k):
                     settings.erase(k)
-
-        settings.set('sublime_modelines_keys', list(new_keys))
-
-
-    def on_load(self, view):
-        self.do_modelines(view)
-
-    def on_post_save(self, view):
-        self.do_modelines(view)
-
-    if 0:
-      def on_modified(self, view):
-        for p in MONITORED_OUTPUT_PANELS:
-            v = get_output_panel(p)
-            if v.id() != view.id(): continue
-            return
-
-            self.do_modelines(view)
-            return
+        
+        settings.set("sublime_modelines_keys", list(new_keys))
+    
+    
+    # From <https://github.com/kvs/STEmacsModelines>.
+    def init_syntax_files(self):
+        for syntax_file in self.find_syntax_files():
+            name = os.path.splitext(os.path.basename(syntax_file))[0].lower()
+            self._modes[name] = syntax_file
+        
+        # Load custom mappings from the settings file.
+        self.settings = sublime.load_settings("SublimeModelines.sublime-settings")
+        
+        if self.settings.has("mode_mappings"):
+            for modeline, syntax in self.settings.get("mode_mappings").items():
+                self._modes[modeline] = self._modes[syntax.lower()]
+        
+        if self.settings.has("user_mode_mappings"):
+            for modeline, syntax in self.settings.get("user_mode_mappings").items():
+                self._modes[modeline] = self._modes[syntax.lower()]
+    
+    
+    # From <https://github.com/kvs/STEmacsModelines>.
+    def find_syntax_files(self):
+        # ST3
+        if hasattr(sublime, "find_resources"):
+            for f in sublime.find_resources("*.tmLanguage"):
+                yield f
+            for f in sublime.find_resources("*.sublime-syntax"):
+                yield f
+        else:
+            for root, dirs, files in os.walk(sublime.packages_path()):
+                for f in files:
+                    if f.endswith(".tmLanguage") or f.endswith("*.sublime-syntax"):
+                        langfile = os.path.relpath(os.path.join(root, f), sublime.packages_path())
+                        # ST2 (as of build 2181) requires unix/MSYS style paths for the “syntax” view setting.
+                        yield os.path.join("Packages", langfile).replace("\\", "/")
