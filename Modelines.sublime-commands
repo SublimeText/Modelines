@@ -1,5 +1,7 @@
 [
-    { "caption": "Modelines: Run Tests", 
-      "command": "run_plugin_unittest", 
-      "args": {"module": "Modelines.tests"} }
+	{
+		"caption": "Modelines: Run Tests", 
+		"command": "run_plugin_unittest", 
+		"args": {"module": "Modelines.tests"},
+	}
 ]
