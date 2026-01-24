@@ -16,7 +16,7 @@ Use Package Control and install `SublimeModelines`.
 
 Download and install [SublimeModelines](<https://github.com/SublimeText/Modelines>).
 
-See the [installation instructions](http://sublimetext.info/docs/en/extensibility/packages.html#installation-of-packages) for `.sublime-package`s.
+See the [installation instructions](<https://docs.sublimetext.io/guide/extensibility/packages.html#installing-packages>) for `.sublime-package`s.
 
 
 ## Side Effects
