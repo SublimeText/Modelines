@@ -74,7 +74,7 @@ or
 Sets the syntax to the specified `.tmLanguage` file.
 
 
-# Contributers
+# Contributors
 
 Kay-Uwe (Kiwi) Lorenz <kiwi@franka.dyndns.org> (<http://quelltexter.org>):
 - Added VIM compatibility;
