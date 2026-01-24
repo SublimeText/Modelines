@@ -39,7 +39,8 @@ class SublimeModelinesTest(TestCase):
             self.view.window().focus_view(self.view)
             self.view.window().run_command("close_file")
     
-    # This test is strange, but it relates to a previous version of Modelines checking the comment char to make it a part of the regex to detect modelines.
+    # This test is strange, but it relates to a previous version of Modelines 
+    #  that used to check the comment char to make it a part of the regex to detect modelines.
     # We do not do that anymore; let’s make sure of it!
     # (I like the mock thing I did, I don’t want to remove it…)
     def test_get_line_comment_char_does_not_call_meta_info(self):
@@ -49,28 +50,6 @@ class SublimeModelinesTest(TestCase):
         expected = None
 
         self.assertEqual(actual, expected)
-
-    # def test_build_modeline_prefix_AreDefaultsCorrect(self):
-    #     actual = sublime_modelines.MODELINE_PREFIX_TPL % "TEST", sublime_modelines.DEFAULT_LINE_COMMENT
-    #     expected = "%s\\s*(st|sublime):" % "TEST", "#"
-    #     self.assertEqual(actual, expected)
-
-
-    # def test_BuildPrefixWithDynamicLineCommentDoubleSlash(self):
-    #     self.view.set = [{"name": "TM_COMMENT_START", "value": "//"}]
-    #     expected = "%s\\s*(st|sublime):" % "//"
-    #     actual = sublime_modelines.build_modeline_prefix(self.view)
-    #     assert actual == expected
-
-
-    # def test_BuildPrefixWithDefaultLineCommentChar(self):
-    #     #self.view.meta_info.return_value = None
-
-    #     expected = "%s\\s*(st|sublime):" % "#"
-    #     actual = sublime_modelines.build_modeline_prefix(self.view)
-
-    #     self.assertEqual(actual, expected)
-
 
     # def test_gen_modelines(self):
     #     sublime.Region = mock.Mock()
@@ -91,24 +70,24 @@ class SublimeModelinesTest(TestCase):
     #     self.assertEqual([l for l in sublime_modelines.gen_modelines(self.view)], modelines)
 
 
-    # def test_gen_raw_options(self):
-    #     mdls = [
-    #         "# sublime: foo bar",
-    #         "# sublime: bar foo; foo bar",
-    #         "# st: baz foob",
-    #         "# st: fibz zap; zup blah"
-    #     ]
-
-    #     actual = [
-    #         "foo bar",
-    #         "bar foo",
-    #         "foo bar",
-    #         "baz foob",
-    #         "fibz zap",
-    #         "zup blah",
-    #     ]
-
-    #     self.assertEqual([x for x in sublime_modelines.gen_raw_options(mdls)], actual)
+    def test_gen_raw_options(self):
+        mdls = [
+            "# sublime: foo bar",
+            "# sublime: bar foo; foo bar",
+            "# st: baz foob",
+            "# st: fibz zap; zup blah",
+        ]
+        
+        actual = [
+            "foo bar",
+            "bar foo",
+            "foo bar",
+            "baz foob",
+            "fibz zap",
+            "zup blah",
+        ]
+        
+        self.assertEqual([x for x in sublime_modelines.gen_raw_options(mdls)], actual)
 
 
     # def test_gen_modeline_options(self):
