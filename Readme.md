@@ -76,6 +76,9 @@ Sets the syntax to the specified `.tmLanguage` file.
 
 # Contributors
 
+[Guillermo López-Anglada](<https://github.com/guillermooo>):
+- Implemented the first version of this package (for Sublime Text 2).
+
 Kay-Uwe (Kiwi) Lorenz <kiwi@franka.dyndns.org> (<http://quelltexter.org>):
 - Added VIM compatibility;
 - Smart syntax matching;
