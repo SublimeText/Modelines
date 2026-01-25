@@ -1,22 +1,4 @@
-import sublime, sublime_plugin
 import re, sys, json, os
-
-
-enable_debug_log = False
-enable_log_to_tmp = False
-
-def log_to_file(str):
-    if enable_log_to_tmp:
-        with open("/tmp/modelines_debug.log", "a") as myfile:
-            myfile.write(str + "\n")
-
-def log_to_console(s, *args):
-    log_to_file("[SublimeModelines] "+(s % args))
-    sys.stderr.write("[SublimeModelines] " + (s % args) + "\n")
-
-def debug_log(s, *args):
-    if enable_debug_log:
-        log_to_console(s, *args)
 
 
 debug_log("Modelines plugin start.")
@@ -180,14 +162,6 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
     
     def __init__(self):
         self._modes = {}
-    
-    def on_load(self, view):
-        debug_log("on_load")
-        self.do_modelines(view)
-    
-    def on_post_save(self, view):
-        debug_log("on_post_save")
-        self.do_modelines(view)
     
     def do_modelines(self, view):
         if not self._modes:
