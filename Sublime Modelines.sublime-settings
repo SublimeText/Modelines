@@ -1,9 +1,12 @@
 {
-	/* Which types of modelines format are allowed. */
+	/* Which types of modelines format are allowed.
+	 * When multiple formats are specified, the parsing is attempted using the formats in the order they are given. */
 	"formats": [
 		/* `# sublime: key val(; key2 val2)*`
 		 * Usually works well unless putting the modeline in a `/*`-style comment.
-		 * Can also not work when the syntax of the file is not known, because we check the line to begin with the comment char before parsing it. */
+		 * Can also not work when the syntax of the file is not known,
+		 *  because we check the line to begin with the comment char before parsing it
+		 *  (`#` is used when the character is unknown). */
 		"classic",
 		/* `#~~ sublime: key val(; key2 val2)* ~~`
 		 * For this format the comment char does not matter.
