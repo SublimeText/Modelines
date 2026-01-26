@@ -13,25 +13,25 @@ class Logger:
 		raise RuntimeError("Logger is static and thus cannot be instantiated.")
 	
 	@staticmethod
-	def debug(s, *args):
+	def debug(s: str, *args) -> None:
 		if not Logger.enable_debug_log:
 			return
 		Logger._log(Logger._format("", s, *args))
 	
 	@staticmethod
-	def info(s, *args):
+	def info(s: str, *args) -> None:
 		Logger._log(Logger._format("", s, *args))
 	
 	@staticmethod
-	def warning(s, *args):
+	def warning(s: str, *args) -> None:
 		Logger._log(Logger._format("*** ", s, *args))
 	
 	@staticmethod
-	def _format(prefix, s, *args):
+	def _format(prefix: str, s: str, *args) -> str:
 		return "[Sublime Modelines] " + prefix + (s % args) + "\n"
 	
 	@staticmethod
-	def _log(str):
+	def _log(str: str) -> None:
 		if Logger.log_to_tmp:
 			with open("/tmp/sublime_modelines_debug.log", "a") as myfile:
 				myfile.write(str)
