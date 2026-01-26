@@ -56,7 +56,6 @@ class SublimeModelinesPlugin(sublime_plugin.EventListener):
 		Logger.log_to_tmp = False
 		Logger.enable_debug_log = True
 		Logger.debug("Plugin init.")
-		Logger.debug("%s", Settings().modelines_formats())
 	
 	def on_load(self, view):
 		pass
