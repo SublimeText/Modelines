@@ -1,8 +1,6 @@
 from importlib import reload
 import sublime, sublime_plugin
 
-from . import app
-
 from .app.logger import Logger
 from .app.settings import Settings
 
