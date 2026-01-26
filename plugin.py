@@ -1,4 +1,3 @@
-from importlib import reload
 import sublime, sublime_plugin
 
 from .app.logger import Logger
