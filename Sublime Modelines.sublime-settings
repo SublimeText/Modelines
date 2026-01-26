@@ -10,4 +10,8 @@
 		 * All that matter is there is a `~~` token before the 9th char of the line (and another one anywhere in the line). */
 		//"delimited",
 	],
+	
+	/* These two settings determine how far the search for a modeline should be done. */
+	"number_of_lines_to_check_from_beginning": 5,
+	"number_of_lines_to_check_from_end": 5,
 }

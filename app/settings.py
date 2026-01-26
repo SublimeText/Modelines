@@ -41,3 +41,17 @@ class Settings:
 				Logger.warning("Found an invalid value (unknown format) in the “formats” key. Skipping this value.")
 		
 		return formats
+	
+	def number_of_lines_to_check_from_beginning(self):
+		raw_value = self.settings.get("number_of_lines_to_check_from_beginning")
+		if not isinstance(raw_value, int):
+			Logger.warning("Did not get an int in the settings for the number_of_lines_to_check_from_beginning key.")
+			return 5
+		return raw_value
+	
+	def number_of_lines_to_check_from_end(self):
+		raw_value = self.settings.get("number_of_lines_to_check_from_end")
+		if not isinstance(raw_value, int):
+			Logger.warning("Did not get an int in the settings for the number_of_lines_to_check_from_end key.")
+			return 5
+		return raw_value
