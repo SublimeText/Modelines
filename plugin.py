@@ -55,11 +55,9 @@ class SublimeModelinesPlugin(sublime_plugin.EventListener):
 		Logger.debug("Plugin init.")
 	
 	def on_load(self, view):
-		pass
 		Logger.debug("on_load called.")
 		#self.do_modelines(view)
 	
 	def on_post_save(self, view):
-		pass
 		Logger.debug("on_post_save called.")
 		#self.do_modelines(view)
