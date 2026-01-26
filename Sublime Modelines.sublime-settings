@@ -1,0 +1,13 @@
+{
+	/* Which types of modelines format are allowed. */
+	"formats": [
+		/* `# sublime: key val; ...`
+		 * Usually works well unless putting the modeline in a `/*`-style comment.
+		 * Can also not work when the syntax of the file is not known, because we check the line to begin with the comment char before parsing it. */
+		"classic",
+		/* `#~~ sublime: key val; ... ~~`
+		 * For this format the comment char does not matter.
+		 * All that matter is there is a `~~` token before the 9th char of the line (and another one anywhere in the line). */
+		"delimited",
+	],
+}

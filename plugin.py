@@ -1,5 +1,10 @@
+from importlib import reload
 import sublime, sublime_plugin
+
+from . import app
+
 from .app.logger import Logger
+from .app.settings import Settings
 
 
 
@@ -46,18 +51,19 @@ class SublimeModelinesPlugin(sublime_plugin.EventListener):
 	-> `["key1": "hello;semicolon and"]`
 	"""
 	
-	logger = Logger()
-	
 	def __init__(self):
 		super().__init__()
-		self.logger.log_to_tmp = True
-		self.logger.enable_debug_log = True
-		self.logger.debug("Plugin init.")
+		Logger.log_to_tmp = False
+		Logger.enable_debug_log = True
+		Logger.debug("Plugin init.")
+		Logger.debug("%s", Settings().modelines_formats())
 	
 	def on_load(self, view):
-		self.logger.debug("on_load called.")
+		pass
+		Logger.debug("on_load called.")
 		#self.do_modelines(view)
 	
 	def on_post_save(self, view):
-		self.logger.debug("on_post_save called.")
+		pass
+		Logger.debug("on_post_save called.")
 		#self.do_modelines(view)

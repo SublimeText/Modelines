@@ -9,22 +9,30 @@ class Logger:
 	log_to_tmp = False
 	enable_debug_log = False
 	
-	def __init__(self):
-		super().__init__()
+	def __new__(cls, *args, **kwargs):
+		raise RuntimeError("Logger is static and thus cannot be instantiated.")
 	
-	def debug(self, s, *args):
-		if not self.enable_debug_log:
+	@staticmethod
+	def debug(s, *args):
+		if not Logger.enable_debug_log:
 			return
-		self._log(self._format(s, *args))
-
-	def info(self, s, *args):
-		self._log(self._format(s, *args))
+		Logger._log(Logger._format("", s, *args))
 	
-	def _format(self, s, *args):
-		return "[SublimeModelines] " + (s % args) + "\n"
+	@staticmethod
+	def info(s, *args):
+		Logger._log(Logger._format("", s, *args))
 	
-	def _log(self, str):
-		if self.log_to_tmp:
+	@staticmethod
+	def warning(s, *args):
+		Logger._log(Logger._format("*** ", s, *args))
+	
+	@staticmethod
+	def _format(prefix, s, *args):
+		return "[Sublime Modelines] " + prefix + (s % args) + "\n"
+	
+	@staticmethod
+	def _log(str):
+		if Logger.log_to_tmp:
 			with open("/tmp/sublime_modelines_debug.log", "a") as myfile:
 				myfile.write(str)
 		sys.stderr.write(str)
