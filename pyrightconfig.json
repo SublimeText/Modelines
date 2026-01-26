@@ -1,0 +1,8 @@
+{
+	/* Install LSP-json to get validation and auto-completion in this file. */
+	"venvPath": ".",
+	"venv": "sublime-modelines",
+	"extraPaths": [
+		"/Applications/Sublime Text.app/Contents/MacOS/Lib/python38",
+	]
+}
