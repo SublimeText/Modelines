@@ -50,8 +50,7 @@ class SublimeModelinesPlugin(sublime_plugin.EventListener):
 	
 	def __init__(self):
 		super().__init__()
-		Logger.log_to_tmp = False
-		Logger.enable_debug_log = False
+		Logger.updateSettings()
 		Logger.debug("Plugin init.")
 	
 	def on_load(self, view):

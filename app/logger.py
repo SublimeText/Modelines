@@ -1,19 +1,20 @@
 import sys
 
+from .settings import Settings
+
 
 
 class Logger:
 	"""A simple logger."""
 	
-	# Default config for the logger.
-	# Regarding the logging to a tmp file, this dates back to a time where I did not know how to show the console in Sublime (ctrl-`).
-	# I used to log to a temporary file that I tailed.
-	# Now this should probably always be False.
 	enable_debug_log = False
 	log_to_tmp = False
 	
-	def __new__(cls, *args, **kwargs):
-		raise RuntimeError("Logger is static and thus cannot be instantiated.")
+	@staticmethod
+	def updateSettings() -> None:
+		settings = Settings()
+		Logger.enable_debug_log = settings.verbose()
+		Logger.log_to_tmp       = settings.log_to_tmp()
 	
 	@staticmethod
 	def debug(s: str, *args) -> None:
@@ -39,3 +40,6 @@ class Logger:
 			with open("/tmp/sublime_modelines_debug.log", "a") as myfile:
 				myfile.write(str)
 		sys.stderr.write(str)
+	
+	def __new__(cls, *args, **kwargs):
+		raise RuntimeError("Logger is static and thus cannot be instantiated.")

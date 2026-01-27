@@ -17,4 +17,12 @@
 	/* These two settings determine how far the search for a modeline should be done. */
 	"number_of_lines_to_check_from_beginning": 5,
 	"number_of_lines_to_check_from_end": 5,
+	
+	/* Whether debug logs should be enabled. */
+	"verbose": false,
+	/* Whether to log to `/tmp/sublime_modelines_debug.log` in addition to stderr.
+	 * This dates back to a time where I did not know how to show the console in Sublime (ctrl-`).
+	 * I used to log to a temporary file that I tailed.
+	 * Now this should probably always be False. */
+	"log_to_tmp": false,
 }

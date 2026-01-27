@@ -58,3 +58,17 @@ class Settings:
 			Logger.warning("Did not get an int in the settings for the number_of_lines_to_check_from_end key.")
 			return 5
 		return raw_value
+	
+	def verbose(self) -> bool:
+		raw_value = self.settings.get("verbose")
+		if not isinstance(raw_value, bool):
+			Logger.warning("Did not get a bool in the settings for the verbose key.")
+			return False
+		return raw_value
+	
+	def log_to_tmp(self) -> bool:
+		raw_value = self.settings.get("log_to_tmp")
+		if not isinstance(raw_value, bool):
+			Logger.warning("Did not get a bool in the settings for the log_to_tmp key.")
+			return False
+		return raw_value
