@@ -6,8 +6,11 @@ class Logger:
 	"""A simple logger."""
 	
 	# Default config for the logger.
-	log_to_tmp = False
+	# Regarding the logging to a tmp file, this dates back to a time where I did not know how to show the console in Sublime (ctrl-`).
+	# I used to log to a temporary file that I tailed.
+	# Now this should probably always be False.
 	enable_debug_log = False
+	log_to_tmp = False
 	
 	def __new__(cls, *args, **kwargs):
 		raise RuntimeError("Logger is static and thus cannot be instantiated.")
