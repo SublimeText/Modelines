@@ -9,8 +9,10 @@ from .logger import Logger
 
 
 class ModelineFormat(str, Enum):
-	CLASSIC   = "classic"
-	DELIMITED = "delimited"
+	DEFAULT = "default"
+	LEGACY  = "classic"
+	VIM     = "vim"
+	EMACS   = "emacs"
 
 
 class Settings:
@@ -25,7 +27,7 @@ class Settings:
 		self.settings = sublime.load_settings("Sublime Modelines.sublime-settings")
 	
 	def modelines_formats(self) -> List[ModelineFormat]:
-		default_for_syntax_error = [ModelineFormat.CLASSIC]
+		default_for_syntax_error = [ModelineFormat.DEFAULT]
 		
 		raw_formats = self.settings.get("formats")
 		if not isinstance(raw_formats, list):

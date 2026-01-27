@@ -1,22 +1,180 @@
 {
-	/* Which types of modelines format are allowed.
-	 * When multiple formats are specified, the parsing is attempted using the formats in the order they are given. */
-	"formats": [
-		/* `# sublime: key val(; key2 val2)*`
-		 * Usually works well unless putting the modeline in a `/*`-style comment.
-		 * Can also not work when the syntax of the file is not known,
-		 *  because we check the line to begin with the comment char before parsing it
-		 *  (`#` is used when the character is unknown). */
-		"classic",
-		/* `#~~ sublime: key val(; key2 val2)* ~~`
-		 * For this format the comment char does not matter.
-		 * All that matter is there is a `~~` token before the 9th char of the line (and another one anywhere in the line). */
-		//"delimited",
-	],
 	
 	/* These two settings determine how far the search for a modeline should be done. */
 	"number_of_lines_to_check_from_beginning": 5,
 	"number_of_lines_to_check_from_end": 5,
+	
+	/* Which types of modelines format are allowed.
+	 * When multiple formats are specified, the parsing is attempted using the formats in the order they are given. */
+	"formats": [
+		
+		/* Default format.
+		 * Examples:
+		 *   `// ~*~ sublime: key=val; key2=val2 ~*~`
+		 *   `// ~*~ sublime: key = val; key2+=val2; ~*~`
+		 *   `// ~*~ sublime: key=["hello": "world"] ~*~`
+		 * 
+		 * This format is inspired by VIM (`sublime:` prefix, key=val) as well as Emacs (`~*~` delimiters; Emacs uses `-*-`).
+		 *
+		 * Any value that starts with either a double-quote (`"`), a brace (`{`) or a bracket (`[`) is parsed as a JSON string.
+		 * The literal strings `true` and `false` are converted to their boolean values.
+		 * Literal numbers (`42`, `3.14`, `-007`, `+12.345`) are converted to numbers.
+		 * The literal string `null` is converted to None.
+		 * You can use double-quotes for these cases if you need an explicit string instead.
+		 *
+		 * All values are trimmed of their spaces (before being parsed if the value is a JSON string).
+		 * If a value should contain a semicolon (`;`), it should be doubled (included inside a JSON string)
+		 *  to avoid being interpreted as the delimiter for the end of the value. */
+		"default",
+		
+		/* Classic (legacy) format.
+		 * Example: `# sublime: key val(; key2 val2)*`
+		 *
+		 * Usually works well unless putting the modeline in a `/*`-style comment.
+		 *
+		 * Can also not work when the syntax of the file is not known,
+		 *  because we check the line to begin with the comment char before parsing it
+		 *  (`#` is used when the character is unknown).
+		 *
+		 * The parsing algorithm is exactly the same as the old ST2 version of the plugin. */
+		//"classic",
+		
+		/* VIM-like modelines.
+		 * Examples (straight from <https://vim.fandom.com/wiki/Modeline_magic>):
+		 *   - `// vim: noai:ts=4:sw=4`
+		 *   - `/* vim: noai:ts=4:sw=4` (closing comment token is on next line) */
+		 //  - `/* vim: set noai ts=4 sw=4: */`
+		 //  - `/* vim: set fdm=expr fde=getline(v\:lnum)=~'{'?'>1'\:'1': */`
+		/* 
+		 * For this format we map the VIM commands to Sublime Text commands.
+		 * Additional mapping can be added in this config file.
+		 *
+		 * It is also possible to prefix commands with `st-`, `sublime-`, `sublime-text-` or `sublimetext-`
+		 *  to directly execute Sublime Text commands without needing any mapping.
+		 *
+		 * See the Readme for more information. */
+		//"vim",
+		
+		/* Emacs-like modelines.
+		 * Examples:
+		 *   `-*- key: value; key2: value2 -*-`
+		 *   `-*- syntax_name -*-`
+		 *
+		 * Just like for the VIM format, we map the Emacs commands to Sublime Text commands. */
+		//"emacs",
+		
+	],
+	
+	/* Default VIM commands mapping.
+	 * Use can use `vim_mapping_user` to define your own mapping while keeping this one.
+	 * From <https://github.com/pestilence669/VimModelines/tree/b7d499b705277a1aa8ee1dd6387f78b734a8512c>. */
+	"vim_mapping": {
+		/* Enable/disable automatic indentation. */
+		  "autoindent": {"aliases":   ["ai"], "key": "auto_indent", "value": true},
+		"noautoindent": {"aliases": ["noai"], "key": "auto_indent", "value": false},
+		/* Set line endings (DOS, Legacy MacOS, UNIX). */
+		"fileformat": {"aliases": ["ff"], "key": "set_line_endings()", "value-mapping": {"dos": "windows", "mac": "CR"/* unix is not needed, the value is the same */}},
+		/* Set the syntax of the file. */
+		"filetype": {"aliases": ["ft"], "key": "x_syntax"},
+		/* # of columns for each tab character. */
+		"tabstop": {"aliases": ["ts"], "key": "tab_size"},
+		/* # of columns for indent operation. */
+		"shiftwidth": {"aliases": ["sw"], "key": null /* Not supported by Sublime. */},
+		/* # of columns for tab key (space & tab). */
+		"softtab": {"aliases": ["st"], "key": null /* Not supported by Sublime. */},
+		/* Tabs → Spaces enable/disable. */
+		  "expandtab": {"aliases":   ["et"], "key": "translate_tabs_to_spaces", "value": true},
+		"noexpandtab": {"aliases": ["noet"], "key": "translate_tabs_to_spaces", "value": false},
+		/* Show/hide line number. */
+		  "number": {"aliases":   ["nu"], "key": "line_numbers", "value": true},
+		"nonumber": {"aliases": ["nonu"], "key": "line_numbers", "value": false},
+		/* Enable/disable word wrap. */
+		  "wrap": {"key": "word_wrap", "value": true},
+		"nowrap": {"key": "word_wrap", "value": false},
+		/* Set file encoding. */
+		"fileencoding": {"aliases": ["fenc"], "key": "set_encoding()", "value-transforms": [
+			{"type": "lowercase"},
+			{"type": "map", "parameters": {"table": {
+				/* null values are unsupported and will set the status line for the plugin to notify of the failure. */
+				"latin1":      "Western (Windows 1252)",
+				"koi8-r":      "Cyrillic (KOI8-R)",
+				"koi8-u":      "Cyrillic (KOI8-U)",
+				"macroman":    "Western (Mac Roman)",
+				"iso-8859-1":  "Western (ISO 8859-1)",
+				"iso-8859-2":  "Central European (ISO 8859-2)",
+				"iso-8859-3":  "Western (ISO 8859-3)",
+				"iso-8859-4":  "Baltic (ISO 8859-4)",
+				"iso-8859-5":  "Cyrillic (ISO 8859-5)",
+				"iso-8859-6":  "Arabic (ISO 8859-6)",
+				"iso-8859-7":  "Greek (ISO 8859-7)",
+				"iso-8859-8":  "Hebrew (ISO 8859-8)",
+				"iso-8859-9":  "Turkish (ISO 8859-9)",
+				"iso-8859-10": "Nordic (ISO 8859-10)",
+				"iso-8859-13": "Estonian (ISO 8859-13)",
+				"iso-8859-14": "Celtic (ISO 8859-14)",
+				"iso-8859-15": "Western (ISO 8859-15)",
+				"iso-8859-16": "Romanian (ISO 8859-16)",
+				"cp437":       "DOS (CP 437)",
+				"cp737":       null,
+				"cp775":       null,
+				"cp850":       null,
+				"cp852":       null,
+				"cp855":       null,
+				"cp857":       null,
+				"cp860":       null,
+				"cp861":       null,
+				"cp862":       null,
+				"cp863":       null,
+				"cp865":       null,
+				"cp866":       "Cyrillic (Windows 866)",
+				"cp869":       null,
+				"cp874":       null,
+				"cp1250":      "Central European (Windows 1250)",
+				"cp1251":      "Cyrillic (Windows 1251)",
+				"cp1252":      "Western (Windows 1252)",
+				"cp1253":      "Greek (Windows 1253)",
+				"cp1254":      "Turkish (Windows 1254)",
+				"cp1255":      "Hebrew (Windows 1255)",
+				"cp1256":      "Arabic (Windows 1256)",
+				"cp1257":      "Baltic (Windows 1257)",
+				"cp1258":      "Vietnamese (Windows 1258)",
+				"cp932":       null,
+				"euc-jp":      null,
+				"sjis ":       null,
+				"cp949":       null,
+				"euc-kr":      null,
+				"cp936":       null,
+				"euc-cn":      null,
+				"cp950":       null,
+				"big5":        null,
+				"euc-tw":      null,
+				"utf-8":       "utf-8",
+				"ucs-2le":     "utf-16 le",
+				"utf-16":      "utf-16 be",
+				"utf-16le":    "utf-16 le",
+				"ucs-4":       null,
+				"ucs-4le":     null
+			}}},
+		]},
+	},
+	/* User mapping for VIM modelines. */
+	"vim_mapping_user": {},
+	
+	/* Default Emacs commands mapping.
+	 * Use can use `emacs_mapping_user` to define your own mapping while keeping this one.
+	 * From <https://github.com/kvs/STEmacsModelines/blob/0a5487831c6ee5cedb924be4f1c64aa7651a3464/EmacsModelines.py>. */
+	 "emacs_mapping": {
+		/* Set line endings (DOS, Legacy MacOS, UNIX). */
+		"coding": {"key": "set_line_endings()", "value-mapping": {"dos": "windows", "mac": "CR"/* unix is not needed, the value is the same */}},
+		/* Tabs → Spaces enable/disable. */
+		"indent-tabs-mode": {"key": "translate_tabs_to_spaces", "value-mapping": {"nil": true, "0": true}, "value-mapping-default": false},
+		/* Set the syntax of the file. */
+		"mode": {"key": "x_syntax"},
+		/* # of columns for each tab character. */
+		"tab-width": {"key": "tab_size"},
+	 },
+	/* User mapping for Emacs modelines. */
+	 "emacs_mapping_user": {},
 	
 	/* Whether debug logs should be enabled. */
 	"verbose": false,
@@ -25,4 +183,5 @@
 	 * I used to log to a temporary file that I tailed.
 	 * Now this should probably always be False. */
 	"log_to_tmp": false,
+	
 }
