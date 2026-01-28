@@ -1,7 +1,5 @@
 import sys
 
-from .settings import Settings
-
 
 
 class Logger:
@@ -9,12 +7,6 @@ class Logger:
 	
 	enable_debug_log = False
 	log_to_tmp = False
-	
-	@staticmethod
-	def updateSettings() -> None:
-		settings = Settings()
-		Logger.enable_debug_log = settings.verbose()
-		Logger.log_to_tmp       = settings.log_to_tmp()
 	
 	@staticmethod
 	def debug(s: str, *args) -> None:
