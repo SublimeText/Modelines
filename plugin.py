@@ -2,6 +2,7 @@ import sublime, sublime_plugin
 
 from .app.logger import Logger
 from .app.settings import Settings
+from .app.logger_settings import updateLoggerSettings
 
 
 
@@ -9,7 +10,7 @@ class SublimeModelinesPlugin(sublime_plugin.EventListener):
 	
 	def __init__(self):
 		super().__init__()
-		Logger.updateSettings()
+		updateLoggerSettings()
 		Logger.debug("Plugin init.")
 	
 	def on_load(self, view):

@@ -2,6 +2,7 @@ import sys
 
 
 
+# Note: I tried logging with colors, it does not work (in the Sublime console).
 class Logger:
 	"""A simple logger."""
 	
