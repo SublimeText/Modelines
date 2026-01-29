@@ -163,7 +163,7 @@
 	/* Default Emacs commands mapping.
 	 * Use can use `emacs_mapping_user` to define your own mapping while keeping this one.
 	 * From <https://github.com/kvs/STEmacsModelines/blob/0a5487831c6ee5cedb924be4f1c64aa7651a3464/EmacsModelines.py>. */
-	 "emacs_mapping": {
+	"emacs_mapping": {
 		/* Set line endings (DOS, Legacy MacOS, UNIX). */
 		"coding": {"key": "set_line_endings()", "value-mapping": {"dos": "windows", "mac": "CR"/* unix is not needed, the value is the same */}},
 		/* Tabs → Spaces enable/disable. */
@@ -174,14 +174,14 @@
 		"tab-width": {"key": "tab_size"},
 	 },
 	/* User mapping for Emacs modelines. */
-	 "emacs_mapping_user": {},
+	"emacs_mapping_user": {},
 	
 	/* Whether debug logs should be enabled. */
 	"verbose": false,
 	/* Whether to log to `/tmp/sublime_modelines_debug.log` in addition to stderr.
 	 * This dates back to a time where I did not know how to show the console in Sublime (ctrl-`).
 	 * I used to log to a temporary file that I tailed.
-	 * Now this should probably always be False. */
+	 * Now this should probably always be `false`. */
 	"log_to_tmp": false,
 	
 }
