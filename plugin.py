@@ -51,11 +51,13 @@ class SublimeModelinesPlugin(sublime_plugin.EventListener):
 	
 	def on_load(self, view: sublime.View) -> None:
 		Logger.debug("on_load called.")
-		do_modelines(view)
+		if settings.apply_on_load:
+			do_modelines(view)
 	
 	def on_post_save(self, view: sublime.View) -> None:
 		Logger.debug("on_post_save called.")
-		do_modelines(view)
+		if settings.apply_on_save:
+			do_modelines(view)
 
 
 class SublimeModelinesApplyCommand(sublime_plugin.WindowCommand):

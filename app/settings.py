@@ -47,6 +47,20 @@ class Settings:
 		
 		return formats
 	
+	def apply_on_load(self) -> bool:
+		raw_value = self.settings.get("apply_on_load")
+		if not isinstance(raw_value, bool):
+			Logger.warning("Did not get a bool in the settings for the apply_on_load key.")
+			return False
+		return raw_value
+	
+	def apply_on_save(self) -> bool:
+		raw_value = self.settings.get("apply_on_save")
+		if not isinstance(raw_value, bool):
+			Logger.warning("Did not get a bool in the settings for the apply_on_save key.")
+			return False
+		return raw_value
+	
 	def number_of_lines_to_check_from_beginning(self) -> int:
 		raw_value = self.settings.get("number_of_lines_to_check_from_beginning")
 		if not isinstance(raw_value, int):

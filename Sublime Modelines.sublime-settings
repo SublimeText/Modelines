@@ -1,4 +1,8 @@
 {
+	/* Apply modelines on file open. */
+	"apply_on_load": true,
+	/* Apply modelines on file save. */
+	"apply_on_save": true,
 	
 	/* These two settings determine how far the search for a modeline should be done. */
 	"number_of_lines_to_check_from_beginning": 5,
@@ -183,5 +187,4 @@
 	 * I used to log to a temporary file that I tailed.
 	 * Now this should probably always be `false`. */
 	"log_to_tmp": false,
-	
 }
