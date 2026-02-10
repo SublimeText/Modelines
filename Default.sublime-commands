@@ -6,5 +6,9 @@
 			"base_file": "${packages}/Modelines/Sublime Modelines.sublime-settings",
 			"default": "/* See the left pane for the list of settings and valid values. */\n{\n\t$0\n}\n",
 		}
-	}
+	},
+	{
+		"caption": "Sublime Modelines: Apply",
+		"command": "sublime_modelines_apply",
+	},
 ]
