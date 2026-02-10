@@ -60,6 +60,8 @@ class SublimeModelinesPlugin(sublime_plugin.EventListener):
 			do_modelines(view)
 
 
+# The command name will be `sublime_modelines_apply`.
+# See [the rules to get command names](<https://stackoverflow.com/a/63979147>) for more info.
 class SublimeModelinesApplyCommand(sublime_plugin.WindowCommand):
 	"""Apply modelines in the given view."""
 	
