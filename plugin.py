@@ -14,7 +14,8 @@ from .app.logger_settings import updateLoggerSettings
 PLUGIN_NAME: Final[str] = "SublimeModelines"
 
 # Before everything else, update the settings of the logger.
-updateLoggerSettings()
+settings = Settings()
+updateLoggerSettings(settings)
 
 
 def plugin_loaded():
