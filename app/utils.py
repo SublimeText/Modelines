@@ -13,30 +13,30 @@ class Utils:
 	@staticmethod
 	def checked_cast_to_string(variable: object, exception: Exception = ValueError("Given object is not a string.")) -> str:
 		"""Casts the given object to a string; raises the given exception if the given object is not that."""
-		if not isinstance(object, str):
+		if not isinstance(variable, str):
 			raise exception
-		return cast(str, object)
+		return cast(str, variable)
 	
 	@staticmethod
 	def checked_cast_to_list_of_strings(variable: object, exception: Exception = ValueError("Given object is not a list of strings.")) -> List[str]:
 		"""Casts the given object to a list of strings; raises the given exception if the given object is not that."""
 		if not isinstance(variable, list) or not all(isinstance(elem, str) for elem in variable):
 			raise exception
-		return cast(List[str], object)
+		return cast(List[str], variable)
 	
 	@staticmethod
 	def checked_cast_to_dict_with_string_keys(variable: object, exception: Exception = ValueError("Given object is not a dictionary with string keys.")) -> Dict[str, object]:
 		"""Casts the given object to a dictionary with string keys; raises the given exception if the given object is not that."""
-		if not Utils.is_dict_with_string_keys(object):
+		if not Utils.is_dict_with_string_keys(variable):
 			raise exception
-		return cast(Dict[str, object], object)
+		return cast(Dict[str, object], variable)
 	
 	@staticmethod
 	def checked_cast_to_list_of_dict_with_string_keys(variable: object, exception: Exception = ValueError("Given object is not a list of dictionaries with string keys.")) -> List[Dict[str, object]]:
 		"""Casts the given object to a list of dictionaries with string keys; raises the given exception if the given object is not a that."""
 		if not isinstance(variable, list) or not all(Utils.is_dict_with_string_keys(elem) for elem in variable):
 			raise exception
-		return cast(List[Dict[str, object]], object)
+		return cast(List[Dict[str, object]], variable)
 	
 	@staticmethod
 	def checked_cast_to_dict_of_dict_with_string_keys(variable: object, exception: Exception = ValueError("Given object is not a dictionary with string keys of dictionaries with string keys.")) -> Dict[str, Dict[str, object]]:
