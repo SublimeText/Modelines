@@ -1,5 +1,5 @@
 # This can be removed when using Python >= 3.10 (for List at least; the rest idk).
-from typing import cast, Dict, List
+from typing import cast, Dict, List, TypeVar
 
 
 
@@ -37,6 +37,24 @@ class Utils:
 		if not isinstance(variable, list) or not all(Utils.is_dict_with_string_keys(elem) for elem in variable):
 			raise exception
 		return cast(List[Dict[str, object]], object)
+	
+	K = TypeVar("K"); V = TypeVar("V")
+	@staticmethod
+	def merge(a: Dict[K, V], b: Dict[K, V], path=[]) -> Dict[K, V]:
+		"""
+		Merges b in a, in place, and returns a.
+		From <https://stackoverflow.com/a/7205107>, modified (and not extensively tested…).
+		"""
+		for key in b:
+			if key in a:
+				if isinstance(a[key], dict) and isinstance(b[key], dict):
+					Utils.merge(cast(Dict[object, object], a[key]), cast(Dict[object, object], b[key]), path + [str(key)])
+				else:
+					# Original SO source checked whether the values were the same; we do not care and just trump.
+					a[key] = b[key]
+			else:
+				a[key] = b[key]
+		return a
 	
 	def __new__(cls, *args, **kwargs):
 		raise RuntimeError("Utils is static and thus cannot be instantiated.")
