@@ -92,6 +92,21 @@ class Settings:
 		)
 		return ModelineInstructionsMapping(raw_value)
 	
+	def emacsMapping(self) -> ModelineInstructionsMapping:
+		raw_value = Utils.checked_cast_to_dict_with_string_keys(
+			self.settings.get("emacs_mapping"),
+			ValueError("Invalid “emacs_mapping” setting value: not a dict with string keys.")
+		)
+		raw_value_user = Utils.checked_cast_to_dict_with_string_keys(
+			self.settings.get("emacs_mapping_user"),
+			ValueError("Invalid “emacs_mapping_user” setting value: not a dict with string keys.")
+		)
+		raw_value = Utils.checked_cast_to_dict_of_dict_with_string_keys(
+			Utils.merge(raw_value, raw_value_user),
+			ValueError("Invalid “emacs_mapping” or “emacs_mapping_user”: the resulting merged dictionary is not a dictionary with string keys of dictionary with string keys.")
+		)
+		return ModelineInstructionsMapping(raw_value)
+	
 	def verbose(self) -> bool:
 		raw_value = self.settings.get("verbose")
 		if not isinstance(raw_value, bool):
