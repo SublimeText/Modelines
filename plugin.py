@@ -42,7 +42,8 @@ def plugin_unloaded():
 class SublimeModelinesPlugin(sublime_plugin.EventListener):
 	"""Event listener to invoke the command on load & save."""
 	
-	instance: Optional[SublimeModelinesPlugin] = None
+	#instance: Optional[SublimeModelinesPlugin] = None
+	instance = None
 	
 	def __init__(self):
 		super().__init__()
