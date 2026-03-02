@@ -114,10 +114,13 @@ class ModelineInstructionsMapping:
 	
 	mapping: Dict[str, MappingValue] = {}
 	
-	def __init__(self, raw_mapping_object: Dict[str, Dict[str, object]] = {}) -> None:
+	def __init__(self, raw_mapping_object: Dict[str, Dict[str, Optional[object]]] = {}) -> None:
 		super().__init__()
 		
 		for key, val in raw_mapping_object.items():
+			# We must silently skip None values as these are valid overrides for user mappings, to remove a specific mapping.
+			if val is None: continue
+			
 			try:
 				aliases = Utils.checked_cast_to_list_of_strings(
 					val["aliases"] if "aliases" in val else [],
