@@ -105,10 +105,11 @@ class ModelineInstructionsMapping:
 					raw_value_transform["parameters"],
 					ValueError("Invalid “parameters” for a value transform: not a dictionary with string keys.")
 				) if "parameters" in raw_value_transform else {}
-				match Utils.checked_cast_to_string(raw_value_transform["type"]) if "type" in raw_value_transform else None:
-					case "lowercase": self.value_transforms.append(self.ValueTransformLowercase(params))
-					case "map":       self.value_transforms.append(self.ValueTransformMapping(params))
-					case _: raise ValueError("Invalid/unknown type for a value transform.")
+				# The match instruction has been added to Python 3.10 only.
+				type = Utils.checked_cast_to_string(raw_value_transform["type"]) if ("type" in raw_value_transform) else None
+				if   type == "lowercase": self.value_transforms.append(self.ValueTransformLowercase(params))
+				elif type == "map":       self.value_transforms.append(self.ValueTransformMapping(params))
+				else: raise ValueError("Invalid/unknown type for a value transform.")
 	
 	
 	mapping: Dict[str, MappingValue] = {}
