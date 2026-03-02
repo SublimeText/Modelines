@@ -110,6 +110,9 @@ class ModelineInstructionsMapping:
 				if   type == "lowercase": self.value_transforms.append(self.ValueTransformLowercase(params))
 				elif type == "map":       self.value_transforms.append(self.ValueTransformMapping(params))
 				else: raise ValueError("Invalid/unknown type for a value transform.")
+		
+		def __str__(self) -> str:
+			return f"\tkey: {self.key}\n\tvalue: {self.value}\n\ttransforms_count: {len(self.value_transforms)}"
 	
 	
 	mapping: Dict[str, MappingValue] = {}
@@ -133,3 +136,11 @@ class ModelineInstructionsMapping:
 				
 			except ValueError as e:
 				Logger.warning(f"Skipping invalid mapping value for key “{key}”: “{e}”.")
+	
+	def __str__(self) -> str:
+		# There is probably a more Pythonic way of doing this (map + join?), but this works.
+		res = ""
+		for k, v in self.mapping.items():
+			res += k + ":\n" + v.__str__()
+			res += "\n"
+		return res
