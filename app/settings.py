@@ -88,3 +88,21 @@ class Settings:
 			Logger.warning("Did not get a bool in the settings for the log_to_tmp key.")
 			return False
 		return raw_value
+	
+	
+	def __settings_getdict(self, key: str) -> Optional[Dict[str, object]]:
+		"""
+		Get the dictionary value for the setting for the given key, if it is dict like.
+		The whole thing is probably slow af but I don’t know how to do better, nor do I really care tbh.
+		"""
+		setting_value = self.settings.get(key)
+		
+		# Check if value is dict-like (has “items” function).
+		# From <https://stackoverflow.com/a/5268474>.
+		items_attr = getattr(setting_value, "items", None)
+		if not callable(items_attr):
+			return None
+		
+		ret: Dict[str, object] = {}
+		for k, v in cast(Dict[str, object], setting_value).items():
+			ret[k] = v
