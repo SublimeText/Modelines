@@ -161,7 +161,7 @@
 			}}},
 		]},
 	},
-	/* User mapping for VIM modelines. */
+	/* User mapping for VIM modelines (deep-merged for dictionaries; everything else is replaced; set a key to null to remove it from the default mapping). */
 	"vim_mapping_user": {},
 	
 	/* Default Emacs commands mapping.
@@ -177,7 +177,7 @@
 		/* # of columns for each tab character. */
 		"tab-width": {"key": "tab_size"},
 	 },
-	/* User mapping for Emacs modelines. */
+	/* User mapping for Emacs modelines (deep-merged for dictionaries; everything else is replaced; set a key to null to remove it from the default mapping). */
 	"emacs_mapping_user": {},
 	
 	/* Whether debug logs should be enabled. */
