@@ -47,7 +47,7 @@ class ModelineInstructionsMapping:
 					parameters["table"],
 					ValueError("Invalid “table” value: not a dictionary with string keys.")
 				)
-				self.default_on_no_mapping = parameters["default"] if "default" in parameters else None
+				self.default_on_no_mapping = parameters.get("default")
 			
 			def apply(self, str: str) -> Optional[object]:
 				return self.mapping[str] if str in self.mapping else self.default_on_no_mapping
@@ -73,7 +73,7 @@ class ModelineInstructionsMapping:
 			
 			self.key = Utils.checked_cast_to_string(key, ValueError("Invalid “key” value: not a string."))
 			# Note: We do not differentiate a None value and the absence of a value.
-			self.value = raw_mapping_value["value"] if "value" in raw_mapping_value else None
+			self.value = raw_mapping_value.get("value")
 			
 			# Parse transforms shortcut (`value-mapping`).
 			raw_value_transforms: List[Dict[str, object]]
@@ -88,7 +88,7 @@ class ModelineInstructionsMapping:
 							raw_mapping_value["value-mapping"],
 							ValueError("Invalid “value-mapping” value: not a dictionary with string keys.")
 						),
-						"default": raw_mapping_value["value-mapping-default"] if "value-mapping-default" in raw_mapping_value else None
+						"default": raw_mapping_value.get("value-mapping-default")
 					}
 				}]
 				
