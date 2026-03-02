@@ -38,6 +38,14 @@ class Utils:
 			raise exception
 		return cast(List[Dict[str, object]], object)
 	
+	@staticmethod
+	def checked_cast_to_dict_of_dict_with_string_keys(variable: object, exception: Exception = ValueError("Given object is not a dictionary with string keys of dictionaries with string keys.")) -> Dict[str, Dict[str, object]]:
+		"""Casts the given object to a dictionary with string key of dictionaries with string keys; raises the given exception if the given object is not a that."""
+		dict = Utils.checked_cast_to_dict_with_string_keys(variable, exception)
+		if not all(Utils.is_dict_with_string_keys(elem) for elem in dict.values()):
+			raise exception
+		return cast(Dict[str, Dict[str, object]], variable)
+	
 	K = TypeVar("K"); V = TypeVar("V")
 	@staticmethod
 	def merge(a: Dict[K, V], b: Dict[K, V], path=[]) -> Dict[K, V]:
