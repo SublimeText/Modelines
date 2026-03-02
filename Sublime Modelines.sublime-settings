@@ -11,13 +11,13 @@
 	/* Which types of modelines format are allowed.
 	 * When multiple formats are specified, the parsing is attempted using the formats in the order they are given. */
 	"formats": [
-		
 		/* Default format.
 		 * Examples:
 		 *   `// ~*~ sublime: key=val; key2=val2 ~*~`
 		 *   `// ~*~ sublime: key = val; key2+=val2; ~*~`
 		 *   `// ~*~ sublime: key=["hello": "world"] ~*~`
-		 * 
+		 *   (Also works with /*-styled comments, but JSON does not supported nested comments, so I’m skipping this example…)
+		 *  
 		 * This format is inspired by VIM (`sublime:` prefix, key=val) as well as Emacs (`~*~` delimiters; Emacs uses `-*-`).
 		 *
 		 * Any value that starts with either a double-quote (`"`), a brace (`{`) or a bracket (`[`) is parsed as a JSON string.
@@ -46,7 +46,7 @@
 		/* VIM-like modelines.
 		 * Examples (straight from <https://vim.fandom.com/wiki/Modeline_magic>):
 		 *   - `// vim: noai:ts=4:sw=4`
-		 *   - `/* vim: noai:ts=4:sw=4` (closing comment token is on next line) */
+		 *   - `/* vim: noai:ts=4:sw=4` (w/ closing comment token on next line) */
 		 //  - `/* vim: set noai ts=4 sw=4: */`
 		 //  - `/* vim: set fdm=expr fde=getline(v\:lnum)=~'{'?'>1'\:'1': */`
 		/* 
@@ -66,7 +66,6 @@
 		 *
 		 * Just like for the VIM format, we map the Emacs commands to Sublime Text commands. */
 		//"emacs",
-		
 	],
 	
 	/* Default VIM commands mapping.
@@ -99,7 +98,8 @@
 		"fileencoding": {"aliases": ["fenc"], "key": "set_encoding()", "value-transforms": [
 			{"type": "lowercase"},
 			{"type": "map", "parameters": {"table": {
-				/* null values are unsupported and will set the status line for the plugin to notify of the failure. */
+				/* null values are explicitly unsupported and will set the status line for the plugin to notify of the failure.
+				 * If you use an encoding not in the list, it is implicitly unsupported and will also set the status line error. */
 				"latin1":      "Western (Windows 1252)",
 				"koi8-r":      "Cyrillic (KOI8-R)",
 				"koi8-u":      "Cyrillic (KOI8-U)",
