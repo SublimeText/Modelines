@@ -53,6 +53,16 @@ class Utils:
 			raise exception
 		return cast(Dict[str, Dict[str, object]], variable)
 	
+	@staticmethod
+	def as_int_or_none(variable: str) -> Optional[int]:
+		try:               return int(variable)
+		except ValueError: return None
+	
+	@staticmethod
+	def as_float_or_none(variable: str) -> Optional[float]:
+		try:               return float(variable)
+		except ValueError: return None
+	
 	K = TypeVar("K"); V = TypeVar("V")
 	@staticmethod
 	def merge(a: Dict[K, V], b: Dict[K, V], path=[]) -> Dict[K, V]:
