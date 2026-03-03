@@ -13,7 +13,7 @@
 	"formats": [
 		/* Default format.
 		 * Examples:
-		 *   `// ~*~ sublime: key=val; key2=val2 ~*~`
+		 *   `// ~*~ sublime: key=val; key2=val2; key3 ~*~`
 		 *   `// ~*~ sublime: key = val; key2+=val2; ~*~`
 		 *   `// ~*~ sublime: key=["hello": "world"] ~*~`
 		 *   (Also works with /*-styled comments, but JSON does not supported nested comments, so I’m skipping this example…)
@@ -21,8 +21,10 @@
 		 * This format is inspired by VIM (`sublime:` prefix, key=val) as well as Emacs (`~*~` delimiters; Emacs uses `-*-`).
 		 *
 		 * Any value that starts with either a double-quote (`"`), a brace (`{`) or a bracket (`[`) is parsed as a JSON string.
+		 * If the JSON fails to parse, the original string is kept.
 		 * The literal strings `true` and `false` are converted to their boolean values.
-		 * Literal numbers (`42`, `3.14`, `-007`, `+12.345`) are converted to numbers.
+		 * Literal numbers (`42`, `3.14`, `-007`, `+12.345`, `23e32`) are converted to ints or floats.
+		 * The exact rule is: if `int(value)` does not throw, the int value is used, then if `float(value)` does not throw, the float value is used.
 		 * The literal string `null` is converted to None.
 		 * You can use double-quotes for these cases if you need an explicit string instead.
 		 *
