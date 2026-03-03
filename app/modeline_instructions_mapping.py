@@ -19,7 +19,7 @@ class ModelineInstructionsMapping:
 				pass
 			
 			@abstractmethod
-			def apply(self, str: str) -> Optional[object]:
+			def apply(self, value: Optional[object]) -> Optional[object]:
 				pass
 		
 		
@@ -28,8 +28,11 @@ class ModelineInstructionsMapping:
 			def __init__(self, parameters: Dict[str, object]) -> None:
 				super().__init__(parameters)
 			
-			def apply(self, str: str) -> Optional[object]:
-				return str.lower()
+			def apply(self, value: Optional[object]) -> Optional[object]:
+				if not isinstance(value, str):
+					Logger.warning(f"Skipping lowercase transform for value “{value}” because it is not a string.")
+					return None
+				return value.lower()
 		
 		
 		class ValueTransformMapping(ValueTransform):
@@ -49,7 +52,10 @@ class ModelineInstructionsMapping:
 				)
 				self.default_on_no_mapping = parameters.get("default")
 			
-			def apply(self, str: str) -> Optional[object]:
+			def apply(self, value: Optional[object]) -> Optional[object]:
+				if not isinstance(value, str):
+					Logger.warning(f"Skipping lowercase transform for value “{value}” because it is not a string.")
+					return None
 				return self.mapping.get(value, self.default_on_no_mapping)
 		
 		
