@@ -1,5 +1,5 @@
 # This can be removed when using Python >= 3.10 (for List at least; the rest idk).
-from typing import cast, Dict, List, TypeVar
+from typing import cast, Dict, List, Optional, TypeVar
 
 
 
@@ -16,6 +16,13 @@ class Utils:
 		if not isinstance(variable, str):
 			raise exception
 		return cast(str, variable)
+	
+	@staticmethod
+	def checked_cast_to_optional_string(variable: object, exception: Exception = ValueError("Given object is not an optional string.")) -> Optional[str]:
+		"""Casts the given object to an optional string; raises the given exception if the given object is not that."""
+		if object is None:
+			return None
+		return Utils.checked_cast_to_string(variable, exception)
 	
 	@staticmethod
 	def checked_cast_to_list_of_strings(variable: object, exception: Exception = ValueError("Given object is not a list of strings.")) -> List[str]:

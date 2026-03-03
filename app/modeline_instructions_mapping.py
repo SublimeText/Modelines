@@ -50,7 +50,7 @@ class ModelineInstructionsMapping:
 				self.default_on_no_mapping = parameters.get("default")
 			
 			def apply(self, str: str) -> Optional[object]:
-				return self.mapping[str] if str in self.mapping else self.default_on_no_mapping
+				return self.mapping.get(value, self.default_on_no_mapping)
 		
 		
 		# This is `None` if the mapped instruction is unsupported (e.g. vim’s “softtab” which is unsupported in Sublime).
@@ -94,19 +94,19 @@ class ModelineInstructionsMapping:
 				
 			else:
 				raw_value_transforms = Utils.checked_cast_to_list_of_dict_with_string_keys(
-					raw_mapping_value["value-transforms"],
+					raw_mapping_value.get("value-transforms", []),
 					ValueError("")
-				) if "value-transforms" in raw_mapping_value else []
+				)
 			
 			# Parse transforms from `raw_value_transforms`.
 			self.value_transforms = []
 			for raw_value_transform in raw_value_transforms:
 				params: Dict[str, object] = Utils.checked_cast_to_dict_with_string_keys(
-					raw_value_transform["parameters"],
+					raw_value_transform.get("parameters", {}),
 					ValueError("Invalid “parameters” for a value transform: not a dictionary with string keys.")
-				) if "parameters" in raw_value_transform else {}
+				)
 				# The match instruction has been added to Python 3.10 only.
-				type = Utils.checked_cast_to_string(raw_value_transform["type"]) if ("type" in raw_value_transform) else None
+				type = Utils.checked_cast_to_optional_string(raw_value_transform.get("type"))
 				if   type == "lowercase": self.value_transforms.append(self.ValueTransformLowercase(params))
 				elif type == "map":       self.value_transforms.append(self.ValueTransformMapping(params))
 				else: raise ValueError("Invalid/unknown type for a value transform.")
@@ -126,7 +126,7 @@ class ModelineInstructionsMapping:
 			
 			try:
 				aliases = Utils.checked_cast_to_list_of_strings(
-					val["aliases"] if "aliases" in val else [],
+					val.get("aliases", []),
 					ValueError("Invalid “aliases” value: not a list of strings.")
 				)
 				
