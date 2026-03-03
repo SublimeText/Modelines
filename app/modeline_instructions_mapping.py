@@ -1,5 +1,5 @@
 # This can be removed when using Python >= 3.10 (for List at least; the rest idk).
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 from abc import ABC, abstractmethod
 
@@ -150,3 +150,22 @@ class ModelineInstructionsMapping:
 			res += k + ":\n" + v.__str__()
 			res += "\n"
 		return res
+	
+	# Returns `None` if the mapping tells the key is unsupported.
+	def apply(self, key: str, value: Optional[object]) -> Optional[Tuple[str, Optional[object]]]:
+		mapping_value = self.mapping.get(key)
+		if mapping_value is None: return (key, value)
+		
+		# If there is a None key in the mapping value, the key is unsupported: we return None.
+		if mapping_value.key is None:
+			return None
+		key = mapping_value.key
+		
+		# Replace the value if the mapping has a forced value.
+		if not mapping_value.value is None:
+			if not value is None:
+				Logger.warning(f"Replacing value “{value}” for key “{key}” with “{mapping_value.value}”: the key is mapped with a forced value.")
+			value = mapping_value.value
+		
+		for transform in mapping_value.value_transforms:
+			value = transform.apply(value)
