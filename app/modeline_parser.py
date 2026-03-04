@@ -6,6 +6,8 @@ from enum import Enum
 import json
 
 from .modeline import Modeline
+from .modeline_instructions.set_view_setting import ModelineInstruction_SetViewSetting
+from .modeline_instructions.call_view_function import ModelineInstruction_CallViewFunction
 from .modeline_instructions_mapping import ModelineInstructionsMapping
 from .utils import Utils
 
@@ -31,27 +33,36 @@ class ModelineParser(ABC):
 			return None
 		
 		res = Modeline()
-		for key, value, modifier in instructions_raw:
+		for key, raw_value, modifier in instructions_raw:
 			# Let’s parse the value.
 			# It should already be trimmed (`parse_line_raw` should do it).
 			# See the Sublime settings file for the rules (and update it if they change).
-			if not value is None:
-				if   j:= self.__parse_jsonesque_str(value): value = j
-				elif value == "true":                       value = True
-				elif value == "false":                      value = False
-				elif i := Utils.as_int_or_none  (value):    value = i
-				elif f := Utils.as_float_or_none(value):    value = f
-				elif value == "null":                       value = None
+			if not raw_value is None:
+				if   j := self.__parse_jsonesque_str(raw_value): value = j
+				elif raw_value == "true":                        value = True
+				elif raw_value == "false":                       value = False
+				elif i := Utils.as_int_or_none  (raw_value):     value = i
+				elif f := Utils.as_float_or_none(raw_value):     value = f
+				elif raw_value == "null":                        value = None
+				else:                                            value = raw_value
+			else:
+				value = None # aka. raw_value
 			
 			# Apply the mapping to the key and value.
-			key_value = self.mapping.apply(key, value)
-			if key_value is None: return None # Unsupported key
-			(key, value) = key_value
+			key_value_pair = self.mapping.apply(key, value)
+			if key_value_pair is None: return None # Unsupported key
+			(key, value) = key_value_pair
 			
 			# Apply the post-mapping transform on the key.
 			key = self.transform_key_post_mapping(key)
+			sublime_value = Utils.checked_cast_to_sublime_value(
+				value,
+				ValueError("Post-mapped value is invalid (not a SublimeValue).")
+			)
 			
-			# TODO
+			if key.endswith("()"): res.instructions.append(ModelineInstruction_CallViewFunction(key[:-2], sublime_value))
+			else:                  res.instructions.append(ModelineInstruction_SetViewSetting  (key,      sublime_value))
+		return res
 	
 	@abstractmethod
 	def parse_line_raw(self, line: str) -> Optional[List[Tuple[str, Optional[str], ValueModifier]]]:
@@ -71,7 +82,7 @@ class ModelineParser(ABC):
 	
 	
 	# Parse strings that starts with either a double-quote (`"`), a brace (`{`) or a bracket (`[`) as a JSON string.
-	def __parse_jsonesque_str(self, str: str) -> Optional[object]:
+	def __parse_jsonesque_str(self, str: str) -> object:
 		if not str.startswith('"') and not str.startswith('{') and not str.startswith('['):
 			return None
 		
