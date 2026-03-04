@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 
 from enum import Enum
-import sublime
+from sublime import View as SublimeView
+from sublime_types import Value as SublimeValue
 
 
 
@@ -13,5 +14,9 @@ class ModelineInstruction(ABC):
 		REMOVE = "-"
 	
 	@abstractmethod
-	def apply(self, view: sublime.View) -> None:
+	def __init__(self, key: str, value: SublimeValue, modifier: ValueModifier) -> None:
+		pass
+	
+	@abstractmethod
+	def apply(self, view: SublimeView) -> None:
 		pass

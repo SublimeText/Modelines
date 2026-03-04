@@ -62,8 +62,8 @@ class ModelineParser(ABC):
 					ValueError("Post-mapped value is invalid (not a SublimeValue).")
 				)
 				
-				if key.endswith("()"): res.instructions.append(ModelineInstruction_CallViewFunction(key[:-2], sublime_value))
-				else:                  res.instructions.append(ModelineInstruction_SetViewSetting  (key,      sublime_value))
+				if key.endswith("()"): res.instructions.append(ModelineInstruction_CallViewFunction(key[:-2], sublime_value, modifier))
+				else:                  res.instructions.append(ModelineInstruction_SetViewSetting  (key,      sublime_value, modifier))
 			except Exception as e:
 				Logger.warning(f"Failed converting modeline raw instruction to structured instruction. -- key=“{key}”, raw_value=“{raw_value}”, modifier=“{modifier}”, error=“{e}”")
 		return res
