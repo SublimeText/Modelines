@@ -154,11 +154,11 @@ class ModelineInstructionsMapping:
 	# Returns `None` if the mapping tells the key is unsupported.
 	def apply(self, key: str, value: object) -> Optional[Tuple[str, object]]:
 		mapping_value = self.mapping.get(key)
-		if mapping_value is None: return (key, value)
-		
+		# If the mapping value is None, we return the unmodified source.
 		# If there is a None key in the mapping value, the key is unsupported: we return None.
-		if mapping_value.key is None:
-			return None
+		if mapping_value is None: return (key, value)
+		if mapping_value.key is None: return None
+		
 		key = mapping_value.key
 		
 		# Replace the value if the mapping has a forced value.
