@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 import json
 
+from .logger import Logger
 from .modeline import Modeline
 from .modeline_instructions.set_view_setting import ModelineInstruction_SetViewSetting
 from .modeline_instructions.call_view_function import ModelineInstruction_CallViewFunction
@@ -34,34 +35,37 @@ class ModelineParser(ABC):
 		
 		res = Modeline()
 		for key, raw_value, modifier in instructions_raw:
-			# Let’s parse the value.
-			# It should already be trimmed (`parse_line_raw` should do it).
-			# See the Sublime settings file for the rules (and update it if they change).
-			if not raw_value is None:
-				if   j := self.__parse_jsonesque_str(raw_value): value = j
-				elif raw_value == "true":                        value = True
-				elif raw_value == "false":                       value = False
-				elif i := Utils.as_int_or_none  (raw_value):     value = i
-				elif f := Utils.as_float_or_none(raw_value):     value = f
-				elif raw_value == "null":                        value = None
-				else:                                            value = raw_value
-			else:
-				value = None # aka. raw_value
-			
-			# Apply the mapping to the key and value.
-			key_value_pair = self.mapping.apply(key, value)
-			if key_value_pair is None: return None # Unsupported key
-			(key, value) = key_value_pair
-			
-			# Apply the post-mapping transform on the key.
-			key = self.transform_key_post_mapping(key)
-			sublime_value = Utils.checked_cast_to_sublime_value(
-				value,
-				ValueError("Post-mapped value is invalid (not a SublimeValue).")
-			)
-			
-			if key.endswith("()"): res.instructions.append(ModelineInstruction_CallViewFunction(key[:-2], sublime_value))
-			else:                  res.instructions.append(ModelineInstruction_SetViewSetting  (key,      sublime_value))
+			try:
+				# Let’s parse the value.
+				# It should already be trimmed (`parse_line_raw` should do it).
+				# See the Sublime settings file for the rules (and update it if they change).
+				if not raw_value is None:
+					if   j := self.__parse_jsonesque_str(raw_value): value = j
+					elif raw_value == "true":                        value = True
+					elif raw_value == "false":                       value = False
+					elif i := Utils.as_int_or_none  (raw_value):     value = i
+					elif f := Utils.as_float_or_none(raw_value):     value = f
+					elif raw_value == "null":                        value = None
+					else:                                            value = raw_value
+				else:
+					value = None # aka. raw_value
+				
+				# Apply the mapping to the key and value.
+				key_value_pair = self.mapping.apply(key, value)
+				if key_value_pair is None: return None # Unsupported key
+				(key, value) = key_value_pair
+				
+				# Apply the post-mapping transform on the key.
+				key = self.transform_key_post_mapping(key)
+				sublime_value = Utils.checked_cast_to_sublime_value(
+					value,
+					ValueError("Post-mapped value is invalid (not a SublimeValue).")
+				)
+				
+				if key.endswith("()"): res.instructions.append(ModelineInstruction_CallViewFunction(key[:-2], sublime_value))
+				else:                  res.instructions.append(ModelineInstruction_SetViewSetting  (key,      sublime_value))
+			except Exception as e:
+				Logger.warning(f"Failed converting modeline raw instruction to structured instruction. -- key=“{key}”, raw_value=“{raw_value}”, modifier=“{modifier}”, error=“{e}”")
 		return res
 	
 	@abstractmethod
