@@ -26,12 +26,14 @@ class ModelineParser(ABC):
 	
 	@final
 	def parse_line(self, line: str) -> Optional[Modeline]:
-		instructions = self.parse_line_raw(line)
-		if instructions is None:
+		instructions_raw = self.parse_line_raw(line)
+		if instructions_raw is None:
 			return None
 		
-		for key, value, modifier in instructions:
+		res = Modeline()
+		for key, value, modifier in instructions_raw:
 			# Let’s parse the value.
+			# It should already be trimmed (`parse_line_raw` should do it).
 			# See the Sublime settings file for the rules (and update it if they change).
 			if not value is None:
 				if   j:= self.__parse_jsonesque_str(value): value = j
@@ -48,12 +50,15 @@ class ModelineParser(ABC):
 			
 			# Apply the post-mapping transform on the key.
 			key = self.transform_key_post_mapping(key)
+			
+			# TODO
 	
 	@abstractmethod
 	def parse_line_raw(self, line: str) -> Optional[List[Tuple[str, Optional[str], ValueModifier]]]:
 		"""
 		Abstract method whose concrete implementation should parse the given line as a dictionary of key/values if the line is a modeline.
 		No parsing of any sort should be done on the key or value, including mappings; this will be handled by the `parse` function (which calls that function).
+		If applicable, trimming should be done by this function though.
 		"""
 		pass
 	
