@@ -19,7 +19,7 @@ class ModelineInstructionsMapping:
 				pass
 			
 			@abstractmethod
-			def apply(self, value: Optional[object]) -> Optional[object]:
+			def apply(self, value: object) -> object:
 				pass
 		
 		
@@ -28,7 +28,7 @@ class ModelineInstructionsMapping:
 			def __init__(self, parameters: Dict[str, object]) -> None:
 				super().__init__(parameters)
 			
-			def apply(self, value: Optional[object]) -> Optional[object]:
+			def apply(self, value: object) -> object:
 				if not isinstance(value, str):
 					Logger.warning(f"Skipping lowercase transform for value “{value}” because it is not a string.")
 					return None
@@ -39,7 +39,7 @@ class ModelineInstructionsMapping:
 			
 			mapping: Dict[str, object]
 			# If there is no mapping for the given value, the default value is returned.
-			default_on_no_mapping: Optional[object]
+			default_on_no_mapping: object
 			
 			def __init__(self, parameters: Dict[str, object]) -> None:
 				super().__init__(parameters)
@@ -52,7 +52,7 @@ class ModelineInstructionsMapping:
 				)
 				self.default_on_no_mapping = parameters.get("default")
 			
-			def apply(self, value: Optional[object]) -> Optional[object]:
+			def apply(self, value: object) -> object:
 				if not isinstance(value, str):
 					Logger.warning(f"Skipping lowercase transform for value “{value}” because it is not a string.")
 					return None
@@ -63,7 +63,7 @@ class ModelineInstructionsMapping:
 		# If this is `None`, all the other parameters should be ignored.
 		key: Optional[str]
 		# If this is set, the value for the mapped instruction should be unset, and will be overridden by this value.
-		value: Optional[object]
+		value: object
 		# These transforms will be applied to the value.
 		value_transforms: List[ValueTransform]
 		
@@ -152,7 +152,7 @@ class ModelineInstructionsMapping:
 		return res
 	
 	# Returns `None` if the mapping tells the key is unsupported.
-	def apply(self, key: str, value: Optional[object]) -> Optional[Tuple[str, Optional[object]]]:
+	def apply(self, key: str, value: object) -> Optional[Tuple[str, object]]:
 		mapping_value = self.mapping.get(key)
 		if mapping_value is None: return (key, value)
 		
