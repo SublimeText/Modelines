@@ -1,5 +1,7 @@
 # This can be removed when using Python >= 3.10 (for List at least; the rest idk).
-from typing import cast, Dict, List, Optional, TypeVar
+from typing import cast, Any, Dict, List, Optional, TypeVar
+
+from sublime_types import Value as SublimeValue
 
 
 
@@ -52,6 +54,16 @@ class Utils:
 		if not all(Utils.is_dict_with_string_keys(elem) for elem in dict.values()):
 			raise exception
 		return cast(Dict[str, Dict[str, object]], variable)
+	
+	@staticmethod
+	def checked_cast_to_sublime_value(variable: object, exception: Exception = ValueError("Given object is not a Sublime Value.")) -> SublimeValue:
+		"""Casts the given object to a Sublime Value; raises the given exception if the given object is not that."""
+		# I don’t think there is a way to automatically check all the elements of the Value union, so we do them manually.
+		# We’ll have to manually update the checks when the Value type is updated in Sublime.
+		for t in [bool, str, int, float, List[Any], Dict[str, Any], None]:
+			if isinstance(variable, t):
+				return cast(SublimeValue, variable)
+		raise exception
 	
 	@staticmethod
 	def as_int_or_none(variable: str) -> Optional[int]:
