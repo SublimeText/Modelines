@@ -169,3 +169,5 @@ class ModelineInstructionsMapping:
 		
 		for transform in mapping_value.value_transforms:
 			value = transform.apply(value)
+		
+		return (key, value)
