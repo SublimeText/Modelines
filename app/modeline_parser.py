@@ -29,8 +29,13 @@ class ModelineParser(ABC):
 	
 	@final
 	def parse_line(self, line: str) -> Optional[Modeline]:
-		instructions_raw = self.parse_line_raw(line)
-		if instructions_raw is None:
+		instructions_raw: Optional[List[Tuple[str, Optional[str], ModelineParser.ValueModifier]]]
+		try:
+			instructions_raw = self.parse_line_raw(line)
+			if instructions_raw is None:
+				return None
+		except Exception as e:
+			Logger.warning(f"Got an exception while parsing raw modeline instructions from a line. This is an error in the concrete subclass: it should return None instead. -- line=“{line}”, error=“{e}”")
 			return None
 		
 		res = Modeline()
