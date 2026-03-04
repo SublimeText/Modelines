@@ -2,11 +2,11 @@
 from typing import final, List, Optional, Tuple
 
 from abc import ABC, abstractmethod
-from enum import Enum
 import json
 
 from .logger import Logger
 from .modeline import Modeline
+from .modeline_instruction import ModelineInstruction
 from .modeline_instructions.set_view_setting import ModelineInstruction_SetViewSetting
 from .modeline_instructions.call_view_function import ModelineInstruction_CallViewFunction
 from .modeline_instructions_mapping import ModelineInstructionsMapping
@@ -16,11 +16,6 @@ from .utils import Utils
 
 class ModelineParser(ABC):
 	
-	class ValueModifier(str, Enum):
-		NONE   = ""
-		ADD    = "+"
-		REMOVE = "-"
-	
 	def __init__(self):
 		super().__init__()
 	
@@ -29,7 +24,7 @@ class ModelineParser(ABC):
 	
 	@final
 	def parse_line(self, line: str) -> Optional[Modeline]:
-		instructions_raw: Optional[List[Tuple[str, Optional[str], ModelineParser.ValueModifier]]]
+		instructions_raw: Optional[List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]]
 		try:
 			instructions_raw = self.parse_line_raw(line)
 			if instructions_raw is None:
@@ -74,7 +69,7 @@ class ModelineParser(ABC):
 		return res
 	
 	@abstractmethod
-	def parse_line_raw(self, line: str) -> Optional[List[Tuple[str, Optional[str], ValueModifier]]]:
+	def parse_line_raw(self, line: str) -> Optional[List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]]:
 		"""
 		Abstract method whose concrete implementation should parse the given line as a dictionary of key/values if the line is a modeline.
 		No parsing of any sort should be done on the key or value, including mappings; this will be handled by the `parse` function (which calls that function).
