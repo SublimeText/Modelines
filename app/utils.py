@@ -58,9 +58,12 @@ class Utils:
 	@staticmethod
 	def checked_cast_to_sublime_value(variable: object, exception: Exception = ValueError("Given object is not a Sublime Value.")) -> SublimeValue:
 		"""Casts the given object to a Sublime Value; raises the given exception if the given object is not that."""
+		if variable is None:
+			return cast(SublimeValue, variable)
 		# I don’t think there is a way to automatically check all the elements of the Value union, so we do them manually.
 		# We’ll have to manually update the checks when the Value type is updated in Sublime.
-		for t in [bool, str, int, float, List[Any], Dict[str, Any], None]:
+		# Note: We do None separately because NoneType causes issues w/ Python 3.8 apparently.
+		for t in [bool, str, int, float, list, dict]:
 			if isinstance(variable, t):
 				return cast(SublimeValue, variable)
 		raise exception
