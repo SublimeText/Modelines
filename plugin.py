@@ -126,6 +126,7 @@ def do_modelines(view: sublime.View) -> None:
 			if not modeline is None:
 				for instruction in modeline.instructions:
 					try:
+						Logger.debug(f"Applying modeline instruction: {instruction}.")
 						instruction.apply(view)
 					except Exception as e:
 						Logger.warning(f"Got exception while applying modeline instruction. Ignoring. exception=“{e}”, line=“{line}”")

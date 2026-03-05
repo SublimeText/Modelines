@@ -62,3 +62,7 @@ class ModelineInstruction_SetViewSetting(ModelineInstruction):
 			raise Exception("Unknown setting modifier.")
 		
 		settings.set(self.setting_name, new_setting_value)
+	
+	
+	def __str__(self) -> str:
+		return f"ModelineInstruction: SetViewSetting: {self.setting_name}{self.setting_modifier}={self.setting_value}"

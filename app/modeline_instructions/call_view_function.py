@@ -25,3 +25,7 @@ class ModelineInstruction_CallViewFunction(ModelineInstruction):
 	def apply(self, view: SublimeView) -> None:
 		f = getattr(view, self.function_name)
 		f(self.function_arg)
+	
+	
+	def __str__(self) -> str:
+		return f"ModelineInstruction: CallViewFunction: {self.function_name}()={self.function_arg}"
