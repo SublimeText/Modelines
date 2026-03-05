@@ -1,10 +1,16 @@
-from typing import Final, Optional
+from typing import Final, List, Optional
 
 import sublime, sublime_plugin
 
 from .app.logger import Logger
-from .app.settings import Settings
 from .app.logger_settings import updateLoggerSettings
+from .app.modeline import Modeline
+from .app.modeline_parser import ModelineParser
+from .app.modeline_parsers.emacs import ModelineParser_Emacs
+from .app.modeline_parsers.legacy import ModelineParser_Legacy
+from .app.modeline_parsers.sublime import ModelineParser_Sublime
+from .app.modeline_parsers.vim import ModelineParser_VIM
+from .app.settings import ModelineFormat, Settings
 
 
 # The plugin structure is heavily inspired by <https://github.com/pestilence669/VimModelines/blob/b7d499b705277a1aa8ee1dd6387f78b734a8512c/vimmodelines.py>.
@@ -78,3 +84,52 @@ def do_modelines(view: sublime.View) -> None:
 	Logger.debug("Searching for and applying modelines.")
 	
 	view.erase_status(PLUGIN_NAME)
+	
+	nstart = settings.number_of_lines_to_check_from_beginning()
+	nend   = settings.number_of_lines_to_check_from_end()
+	lines: List[sublime.Region] = []
+	if nstart > 0:
+		# Grab lines from beginning of view.
+		regionEnd = view.text_point(nstart, 0)
+		region = sublime.Region(0, regionEnd)
+		lines = view.lines(region)
+	if nend > 0:
+		# Get the last line in the file.
+		line = view.line(view.size())
+		# Add the last N lines of the file to the lines list.
+		for i in range(0, nend):
+			# Add the line to the list of lines
+			lines.append(line)
+			# Move the line to the previous line
+			line = view.line(line.a - 1)
+	
+	parsers: List[ModelineParser] = []
+	for parser_id in settings.modelines_formats():
+		# The “match” instruction has been added to Python 3.10.
+		# We use `if elif else` instead.
+		if   parser_id == ModelineFormat.DEFAULT: parsers.append(ModelineParser_Sublime())
+		elif parser_id == ModelineFormat.VIM:     parsers.append(ModelineParser_VIM())
+		elif parser_id == ModelineFormat.EMACS:   parsers.append(ModelineParser_Emacs())
+		elif parser_id == ModelineFormat.LEGACY:  parsers.append(ModelineParser_Legacy())
+		else: raise Exception("Internal error: Unknown parser ID.")
+	
+	for line in lines:
+		line = view.substr(line)
+		for parser in parsers:
+			modeline: Optional[Modeline]
+			try:
+				modeline = parser.parse_line(line)
+			except Exception as e:
+				Logger.warning(f"Got exception while parsing line with parser “{type(parser)}”. Ignoring. (Note: This should not have happened!) exception=“{e}”, line=“{line}”")
+				continue
+			
+			if not modeline is None:
+				for instruction in modeline.instructions:
+					try:
+						instruction.apply(view)
+					except Exception as e:
+						Logger.warning(f"Got exception while applying modeline instruction. Ignoring. exception=“{e}”, line=“{line}”")
+						continue
+				
+				# We do not continue to the next parser.
+				break
