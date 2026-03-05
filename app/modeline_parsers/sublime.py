@@ -78,4 +78,3 @@ class ModelineParser_Sublime(ModelineParser):
 	__prefix = "sublime"
 	
 	__re__plus_minus_equal = re.compile(r"=|\+=|-=")
-
