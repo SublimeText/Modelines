@@ -15,7 +15,7 @@
 		 * Examples:
 		 *   `// ~*~ sublime: key=val; key2=val2; key3 ~*~`
 		 *   `// ~*~ sublime: key = val; key2+=val2; ~*~`
-		 *   `// ~*~ sublime: key=["hello": "world"] ~*~`
+		 *   `// ~*~ sublime : key=["hello": "world"] ~*~`
 		 *   (Also works with /*-styled comments, but JSON does not supported nested comments, so I’m skipping this example…)
 		 *  
 		 * This format is inspired by VIM (`sublime:` prefix, key=val) as well as Emacs (`~*~` delimiters; Emacs uses `-*-`).
@@ -30,7 +30,9 @@
 		 *
 		 * All values are trimmed of their spaces (before being parsed if the value is a JSON string).
 		 * If a value should contain a semicolon (`;`), it should be doubled (included inside a JSON string)
-		 *  to avoid being interpreted as the delimiter for the end of the value. */
+		 *  to avoid being interpreted as the delimiter for the end of the value.
+		 *
+		 * To avoid ambiguities, if there are multiple `~*~` tokens on the line, only the first and last are considered. */
 		"default",
 		
 		/* Classic (legacy) format.
