@@ -24,6 +24,10 @@ class Logger:
 		Logger._log(Logger._format("*** ", s, *args))
 	
 	@staticmethod
+	def error(s: str, *args) -> None:
+		Logger._log(Logger._format("***** ERROR: ", s, *args))
+	
+	@staticmethod
 	def _format(prefix: str, s: str, *args) -> str:
 		return "[Sublime Modelines] " + prefix + (s % args) + "\n"
 	
