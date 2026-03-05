@@ -7,7 +7,8 @@ from .modeline_instruction import ModelineInstruction
 
 class Modeline:
 	
-	instructions: List[ModelineInstruction] = []
+	instructions: List[ModelineInstruction]
 	
 	def __init__(self):
 		super().__init__()
+		self.instructions = []
