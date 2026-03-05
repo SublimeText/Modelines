@@ -39,7 +39,7 @@ class ModelineInstruction_SetViewSetting(ModelineInstruction):
 				if isinstance(self.setting_value, list): new_setting_value = current_value +  self.setting_value
 				else:                                    new_setting_value = current_value + [self.setting_value]
 			else:
-				# If the current value is not a list, we fail.
+				# If the current value is not a known type, we fail.
 				# Note current_value should never be None as we ask for an empty list for the default value.
 				raise ValueError("Cannot add value to a non list setting.")
 			
@@ -54,7 +54,7 @@ class ModelineInstruction_SetViewSetting(ModelineInstruction):
 				if isinstance(self.setting_value, list): new_setting_value = [v for v in current_value if not v in self.setting_value]
 				else:                                    new_setting_value = [v for v in current_value if not v == self.setting_value]
 			else:
-				# If the current value is not a list, we fail.
+				# If the current value is not a known type, we fail.
 				raise ValueError("Cannot remove value to a non list setting.")
 			
 		else:
