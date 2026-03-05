@@ -56,7 +56,7 @@ class ModelineParser(ABC):
 				(key, value) = key_value_pair
 				
 				# Apply the post-mapping transform on the key.
-				key = self.transform_key_post_mapping(key)
+				key = self.transform_key_postmapping(key)
 				sublime_value = Utils.checked_cast_to_sublime_value(
 					value,
 					ValueError("Post-mapped value is invalid (not a SublimeValue).")
@@ -77,7 +77,7 @@ class ModelineParser(ABC):
 		"""
 		pass
 	
-	def transform_key_post_mapping(self, key: str) -> str:
+	def transform_key_postmapping(self, key: str) -> str:
 		"""
 		Gives an opportunity to concrete sub-classes to post-process the key after the mapping has been applied.
 		This is used for instance by the VIM modeline parser class to implement Sublime commands with a prefix.
@@ -86,6 +86,7 @@ class ModelineParser(ABC):
 	
 	
 	# Parse strings that starts with either a double-quote (`"`), a brace (`{`) or a bracket (`[`) as a JSON string.
+	@final
 	def __parse_jsonesque_str(self, str: str) -> object:
 		if not str.startswith('"') and not str.startswith('{') and not str.startswith('['):
 			return None
