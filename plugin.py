@@ -116,7 +116,7 @@ def do_modelines(view: sublime.View) -> None:
 		# We use `if elif else` instead.
 		if   parser_id == ModelineFormat.DEFAULT: parsers.append(ModelineParser_Sublime())
 		elif parser_id == ModelineFormat.VIM:     parsers.append(ModelineParser_VIM())
-		elif parser_id == ModelineFormat.EMACS:   parsers.append(ModelineParser_Emacs())
+		elif parser_id == ModelineFormat.EMACS:   parsers.append(ModelineParser_Emacs(settings.emacsMapping()))
 		elif parser_id == ModelineFormat.LEGACY:  parsers.append(ModelineParser_Legacy())
 		else: raise Exception("Internal error: Unknown parser ID.")
 	
