@@ -82,7 +82,7 @@
 		/* Set line endings (DOS, Legacy MacOS, UNIX). */
 		"fileformat": {"aliases": ["ff"], "key": "set_line_endings()", "value-mapping": {"dos": "windows", "mac": "CR", "unix": "unix"}},
 		/* Set the syntax of the file. */
-		"filetype": {"aliases": ["ft"], "key": "x_syntax"},
+		"filetype": {"aliases": ["ft"], "key": "syntax"},
 		/* # of columns for each tab character. */
 		"tabstop": {"aliases": ["ts"], "key": "tab_size"},
 		/* # of columns for indent operation. */
@@ -177,7 +177,7 @@
 		/* Tabs → Spaces enable/disable. */
 		"indent-tabs-mode": {"key": "translate_tabs_to_spaces", "value-mapping": {"nil": true, "0": true}, "value-mapping-default": false},
 		/* Set the syntax of the file. */
-		"mode": {"key": "x_syntax"},
+		"mode": {"key": "syntax"},
 		/* # of columns for each tab character. */
 		"tab-width": {"key": "tab_size"},
 	 },
