@@ -8,6 +8,7 @@ from .app.modeline import Modeline
 from .app.modeline_parser import ModelineParser
 from .app.modeline_parsers.emacs import ModelineParser_Emacs
 from .app.modeline_parsers.legacy import ModelineParser_Legacy
+from .app.modeline_parsers.legacy_vim import ModelineParser_LegacyVIM
 from .app.modeline_parsers.sublime import ModelineParser_Sublime
 from .app.modeline_parsers.vim import ModelineParser_VIM
 from .app.settings import ModelineFormat, Settings
@@ -114,10 +115,11 @@ def do_modelines(view: sublime.View) -> None:
 	for parser_id in settings.modelines_formats():
 		# The “match” instruction has been added to Python 3.10.
 		# We use `if elif else` instead.
-		if   parser_id == ModelineFormat.DEFAULT: parsers.append(ModelineParser_Sublime())
-		elif parser_id == ModelineFormat.VIM:     parsers.append(ModelineParser_VIM())
-		elif parser_id == ModelineFormat.EMACS:   parsers.append(ModelineParser_Emacs(settings.emacsMapping()))
-		elif parser_id == ModelineFormat.LEGACY:  parsers.append(ModelineParser_Legacy())
+		if   parser_id == ModelineFormat.DEFAULT:    parsers.append(ModelineParser_Sublime())
+		elif parser_id == ModelineFormat.VIM:        parsers.append(ModelineParser_VIM())
+		elif parser_id == ModelineFormat.EMACS:      parsers.append(ModelineParser_Emacs(settings.emacsMapping()))
+		elif parser_id == ModelineFormat.LEGACY:     parsers.append(ModelineParser_Legacy())
+		elif parser_id == ModelineFormat.LEGACY_VIM: parsers.append(ModelineParser_LegacyVIM())
 		else: raise Exception("Internal error: Unknown parser ID.")
 	
 	for line in lines:

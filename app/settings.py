@@ -11,10 +11,11 @@ from .utils import Utils
 
 
 class ModelineFormat(str, Enum):
-	DEFAULT = "default"
-	LEGACY  = "classic"
-	VIM     = "vim"
-	EMACS   = "emacs"
+	DEFAULT    = "default"
+	VIM        = "vim"
+	EMACS      = "emacs"
+	LEGACY     = "classic"
+	LEGACY_VIM = "classic+vim"
 
 
 class Settings:

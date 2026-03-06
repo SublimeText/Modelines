@@ -15,6 +15,7 @@ class ModelineParser_Emacs(ModelineParser):
 		super().__init__()
 		self.mapping = mapping
 	
+	
 	def parse_line_raw(self, line: str) -> Optional[List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]]:
 		# From <https://github.com/kvs/STEmacsModelines/blob/0a5487831c6ee5cedb924be4f1c64aa7651a3464/EmacsModelines.py#L98-L135>.
 		# We probably should rewrite this properly though…

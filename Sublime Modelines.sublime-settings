@@ -35,18 +35,6 @@
 		 * To avoid ambiguities, if there are multiple `~*~` tokens on the line, only the first and last are considered. */
 		"default",
 		
-		/* Classic (legacy) format.
-		 * Example: `# sublime: key val(; key2 val2)*`
-		 *
-		 * Usually works well unless putting the modeline in a `/*`-style comment.
-		 *
-		 * Can also not work when the syntax of the file is not known,
-		 *  because we check the line to begin with the comment char before parsing it
-		 *  (`#` is used when the character is unknown).
-		 *
-		 * The parsing algorithm is exactly the same as the old ST2 version of the plugin. */
-		//"classic",
-		
 		/* VIM-like modelines.
 		 * Examples (straight from <https://vim.fandom.com/wiki/Modeline_magic>):
 		 *   - `// vim: noai:ts=4:sw=4`
@@ -70,6 +58,23 @@
 		 *
 		 * Just like for the VIM format, we map the Emacs commands to Sublime Text commands. */
 		//"emacs",
+		
+		/* Classic (legacy) format.
+		 * Example: `# sublime: key val(; key2 val2)*`
+		 *
+		 * Usually works well unless putting the modeline in a `/*`-style comment.
+		 *
+		 * Can also not work when the syntax of the file is not known,
+		 *  because we check the line to begin with the comment char before parsing it
+		 *  (`#` is used when the character is unknown).
+		 *
+		 * The parsing algorithm is exactly the same as the old ST2 version of the plugin. */
+		//"classic",
+		
+		/* Classic (legacy) format with VIM support.
+		 *
+		 * Same as previous, with original VIM support implementation. */
+		//"classic+vim",
 	],
 	
 	/* Default VIM commands mapping.
