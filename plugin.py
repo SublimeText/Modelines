@@ -93,6 +93,7 @@ def do_modelines(view: sublime.View) -> None:
 		regionEnd = view.text_point(nstart, 0)
 		region = sublime.Region(0, regionEnd)
 		lines = view.lines(region)
+	last_first_lines = lines[-1] if len(lines) > 0 else None
 	if nend > 0:
 		# Get the last line in the file.
 		line = view.line(view.size())
@@ -100,8 +101,14 @@ def do_modelines(view: sublime.View) -> None:
 		for i in range(0, nend):
 			# Add the line to the list of lines
 			lines.append(line)
+			if line.a == 0:
+				# We are at the first line; let’s stop there.
+				break
 			# Move the line to the previous line
 			line = view.line(line.a - 1)
+			if not last_first_lines is None and line.a < last_first_lines.b:
+				# No overlapping lines.
+				break
 	
 	parsers: List[ModelineParser] = []
 	for parser_id in settings.modelines_formats():
