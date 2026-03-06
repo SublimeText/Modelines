@@ -80,7 +80,8 @@ class ModelineParser(ABC):
 	def transform_key_postmapping(self, key: str) -> str:
 		"""
 		Gives an opportunity to concrete sub-classes to post-process the key after the mapping has been applied.
-		This is used for instance by the VIM modeline parser class to implement Sublime commands with a prefix.
+		This is used for instance by the VIM modeline parser class to implement Sublime commands with a prefix, bypassing the mapping.
+		In practice this is very much useless and only there for full backward compatibility.
 		"""
 		return key
 	
