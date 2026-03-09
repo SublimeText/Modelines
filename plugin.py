@@ -127,7 +127,7 @@ def do_modelines(view: sublime.View) -> None:
 		for parser in parsers:
 			modeline: Optional[Modeline]
 			try:
-				modeline = parser.parse_line(line)
+				modeline = parser.parse_line(line, view)
 			except Exception as e:
 				Logger.warning(f"Got exception while parsing line with parser “{type(parser)}”. Ignoring. (Note: This should not have happened!) exception=“{e}”, line=“{line}”")
 				continue

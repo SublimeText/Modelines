@@ -1,5 +1,6 @@
 from typing import final, List, Optional, Tuple
 
+from sublime import View as SublimeView
 import re
 
 from ..modeline_instruction import ModelineInstruction
@@ -10,7 +11,7 @@ from ..modeline_parser import ModelineParser
 @final
 class ModelineParser_Sublime(ModelineParser):
 	
-	def parse_line_raw(self, line: str) -> Optional[List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]]:
+	def parse_line_raw(self, line: str, view: SublimeView) -> Optional[List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]]:
 		# Find the first and last `~*~` tokens in the line, if any.
 		start = line.find(self.__token)
 		if start == -1: return None
@@ -71,8 +72,8 @@ class ModelineParser_Sublime(ModelineParser):
 		except ValueError:
 			return None
 	
-	def transform_key_postmapping(self, key: str) -> str:
-		return super().transform_key_postmapping(key)
+	def transform_key_postmapping(self, key: str, view: SublimeView) -> str:
+		return super().transform_key_postmapping(key, view)
 	
 	__token = "~*~"
 	__prefix = "sublime"
