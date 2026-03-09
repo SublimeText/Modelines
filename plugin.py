@@ -121,7 +121,7 @@ def do_modelines(view: sublime.View) -> None:
 		elif parser_id == ModelineFormat.VIM:        add_parser(ModelineParser_VIM(settings.vimMapping()))
 		elif parser_id == ModelineFormat.EMACS:      add_parser(ModelineParser_Emacs(settings.emacsMapping()))
 		elif parser_id == ModelineFormat.LEGACY:     add_parser(ModelineParser_Legacy())
-		elif parser_id == ModelineFormat.LEGACY_VIM: add_parser(ModelineParser_LegacyVIM())
+		elif parser_id == ModelineFormat.LEGACY_VIM: add_parser(ModelineParser_LegacyVIM(settings.vimMapping()))
 		else: raise Exception("Internal error: Unknown parser ID.")
 	
 	for line in lines:
