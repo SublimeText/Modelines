@@ -1,5 +1,5 @@
 # This can be removed when using Python >= 3.10 (for List at least; the rest idk).
-from typing import cast, Any, Dict, List, Optional, TypeVar
+from typing import cast, Dict, List, Optional, TypeVar
 
 from sublime_types import Value as SublimeValue
 
