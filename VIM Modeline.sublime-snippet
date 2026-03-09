@@ -1,0 +1,7 @@
+<!--~*~ sublime: tab_size=3; translate_tabs_to_spaces=false ~*~-->
+<snippet>
+	<content><![CDATA[vim: set filetype=$1 tabstop=$2 noexpandtab:
+]]></content>
+	<tabTrigger>vim:</tabTrigger>
+	<description>VIM Modeline</description>
+</snippet>

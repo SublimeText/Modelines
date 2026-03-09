@@ -1,0 +1,7 @@
+<!--~*~ sublime: tab_size=3; translate_tabs_to_spaces=false ~*~-->
+<snippet>
+	<content><![CDATA[-*- mode: $1; tab-width: $2; indent-tabs-mode: $3 -*-
+]]></content>
+	<tabTrigger>-*-</tabTrigger>
+	<description>EMacs Modeline</description>
+</snippet>

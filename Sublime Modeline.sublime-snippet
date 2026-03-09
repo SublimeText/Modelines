@@ -1,0 +1,7 @@
+<!--~*~ sublime: tab_size=3; translate_tabs_to_spaces=false ~*~-->
+<snippet>
+	<content><![CDATA[~*~ sublime: syntax=$1; tab_size=$2; translate_tabs_to_spaces=$3 ~*~
+]]></content>
+	<tabTrigger>~*~</tabTrigger>
+	<description>Sublime Modeline</description>
+</snippet>
