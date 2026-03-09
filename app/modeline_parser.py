@@ -52,7 +52,7 @@ class ModelineParser(ABC):
 				
 				# Apply the mapping to the key and value.
 				key_value_pair = self.mapping.apply(key, value)
-				if key_value_pair is None: return None # Unsupported key
+				if key_value_pair is None: continue # Unsupported key
 				(key, value) = key_value_pair
 				
 				# Apply the post-mapping transform on the key.
