@@ -1,6 +1,5 @@
 from typing import cast, final, List, Optional, Tuple
 
-from sublime import View as SublimeView
 import re
 
 from ..modeline_instruction import ModelineInstruction
@@ -17,7 +16,7 @@ class ModelineParser_VIM(ModelineParser):
 		self.mapping = mapping
 	
 	
-	def parse_line_raw(self, line: str, view: SublimeView) -> Optional[List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]]:
+	def parse_line_raw(self, line: str, parser_data: object) -> Optional[List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]]:
 		match = self.__modeline_re.search(line)
 		
 		if match:
@@ -31,10 +30,6 @@ class ModelineParser_VIM(ModelineParser):
 			) for raw_attr in raw_attrs]
 		
 		return None
-	
-	
-	def transform_key_postmapping(self, key: str, view: SublimeView) -> str:
-		return super().transform_key_postmapping(key, view)
 	
 	
 	__modeline_re = re.compile(r"""

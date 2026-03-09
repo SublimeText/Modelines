@@ -1,4 +1,4 @@
-from typing import Final, List, Optional
+from typing import Final, List, Optional, Tuple
 
 import sublime, sublime_plugin
 
@@ -111,23 +111,25 @@ def do_modelines(view: sublime.View) -> None:
 				# No overlapping lines.
 				break
 	
-	parsers: List[ModelineParser] = []
+	parsers: List[Tuple[ModelineParser, object]] = []
 	for parser_id in settings.modelines_formats():
+		def add_parser(parser: ModelineParser) -> None:
+			parsers.append((parser, parser.parser_data_for_view(view)))
 		# The “match” instruction has been added to Python 3.10.
 		# We use `if elif else` instead.
-		if   parser_id == ModelineFormat.DEFAULT:    parsers.append(ModelineParser_Sublime())
-		elif parser_id == ModelineFormat.VIM:        parsers.append(ModelineParser_VIM(settings.vimMapping()))
-		elif parser_id == ModelineFormat.EMACS:      parsers.append(ModelineParser_Emacs(settings.emacsMapping()))
-		elif parser_id == ModelineFormat.LEGACY:     parsers.append(ModelineParser_Legacy())
-		elif parser_id == ModelineFormat.LEGACY_VIM: parsers.append(ModelineParser_LegacyVIM())
+		if   parser_id == ModelineFormat.DEFAULT:    add_parser(ModelineParser_Sublime())
+		elif parser_id == ModelineFormat.VIM:        add_parser(ModelineParser_VIM(settings.vimMapping()))
+		elif parser_id == ModelineFormat.EMACS:      add_parser(ModelineParser_Emacs(settings.emacsMapping()))
+		elif parser_id == ModelineFormat.LEGACY:     add_parser(ModelineParser_Legacy())
+		elif parser_id == ModelineFormat.LEGACY_VIM: add_parser(ModelineParser_LegacyVIM())
 		else: raise Exception("Internal error: Unknown parser ID.")
 	
 	for line in lines:
 		line = view.substr(line)
-		for parser in parsers:
+		for (parser, parser_info) in parsers:
 			modeline: Optional[Modeline]
 			try:
-				modeline = parser.parse_line(line, view)
+				modeline = parser.parse_line(line, parser_info)
 			except Exception as e:
 				Logger.warning(f"Got exception while parsing line with parser “{type(parser)}”. Ignoring. (Note: This should not have happened!) exception=“{e}”, line=“{line}”")
 				continue

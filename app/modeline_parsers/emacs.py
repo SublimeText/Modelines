@@ -1,6 +1,5 @@
 from typing import final, List, Optional, Tuple
 
-from sublime import View as SublimeView
 import re
 
 from ..modeline_instruction import ModelineInstruction
@@ -17,7 +16,7 @@ class ModelineParser_Emacs(ModelineParser):
 		self.mapping = mapping
 	
 	
-	def parse_line_raw(self, line: str, view: SublimeView) -> Optional[List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]]:
+	def parse_line_raw(self, line: str, parser_data: object) -> Optional[List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]]:
 		# From <https://github.com/kvs/STEmacsModelines/blob/0a5487831c6ee5cedb924be4f1c64aa7651a3464/EmacsModelines.py#L98-L135>.
 		# We probably should rewrite this properly though…
 		m = re.match(self.__modeline_re, line)
@@ -41,11 +40,12 @@ class ModelineParser_Emacs(ModelineParser):
 		return res
 	
 	
-	def transform_key_postmapping(self, key: str, view: SublimeView) -> str:
-		transformed = super().transform_key_postmapping(key, view)
+	def transform_key_postmapping(self, key: str, parser_data: object) -> str:
+		transformed = super().transform_key_postmapping(key, parser_data)
 		if transformed.startswith(self.__sublime_prefix):
 			transformed = transformed[len(self.__sublime_prefix):]
 		return transformed
+	
 	
 	__modeline_re = r".*-\*-\s*(.+?)\s*-\*-.*"
 	__sublime_prefix = "sublimetext--"

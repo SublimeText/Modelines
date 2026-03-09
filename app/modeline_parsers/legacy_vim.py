@@ -10,9 +10,8 @@ from ..modeline_parser import ModelineParser
 @final
 class ModelineParser_LegacyVIM(ModelineParser):
 	
-	def parse_line_raw(self, line: str, view: SublimeView) -> Optional[List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]]:
+	def parse_line_raw(self, line: str, parser_data: object) -> Optional[List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]]:
 		raise Exception("Not Implemented")
 	
-	
-	def transform_key_postmapping(self, key: str, view: SublimeView) -> str:
-		return super().transform_key_postmapping(key, view)
+	def parser_data_for_view(self, view: SublimeView) -> object:
+		raise Exception("Not Implemented")

@@ -24,10 +24,10 @@ class ModelineParser(ABC):
 	mapping = ModelineInstructionsMapping()
 	
 	@final
-	def parse_line(self, line: str, view: SublimeView) -> Optional[Modeline]:
+	def parse_line(self, line: str, parser_data: object) -> Optional[Modeline]:
 		instructions_raw: Optional[List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]]
 		try:
-			instructions_raw = self.parse_line_raw(line, view)
+			instructions_raw = self.parse_line_raw(line, parser_data)
 			if instructions_raw is None:
 				return None
 		except Exception as e:
@@ -57,7 +57,7 @@ class ModelineParser(ABC):
 				(key, value) = key_value_pair
 				
 				# Apply the post-mapping transform on the key.
-				key = self.transform_key_postmapping(key, view)
+				key = self.transform_key_postmapping(key, parser_data)
 				sublime_value = Utils.checked_cast_to_sublime_value(
 					value,
 					ValueError("Post-mapped value is invalid (not a SublimeValue).")
@@ -70,7 +70,7 @@ class ModelineParser(ABC):
 		return res
 	
 	@abstractmethod
-	def parse_line_raw(self, line: str, view: SublimeView) -> Optional[List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]]:
+	def parse_line_raw(self, line: str, parser_data: object) -> Optional[List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]]:
 		"""
 		Abstract method whose concrete implementation should parse the given line as a dictionary of key/values if the line is a modeline.
 		No parsing of any sort should be done on the key or value, including mappings; this will be handled by the `parse` function (which calls that function).
@@ -78,13 +78,20 @@ class ModelineParser(ABC):
 		"""
 		pass
 	
-	def transform_key_postmapping(self, key: str, view: SublimeView) -> str:
+	def transform_key_postmapping(self, key: str, parser_data: object) -> str:
 		"""
 		Gives an opportunity to concrete sub-classes to post-process the key after the mapping has been applied.
 		This is used for instance by the VIM modeline parser class to implement Sublime commands with a prefix, bypassing the mapping.
 		In practice this is very much useless and only there for full backward compatibility.
 		"""
 		return key
+	
+	def parser_data_for_view(self, view: SublimeView) -> object:
+		"""
+		Gives the opportunity to concrete sub-classes to return some view-bound data for parsing lines.
+		The object returned by this method will be passed verbatim to the `parse_line_raw` and `transform_key_postmapping` methods.
+		"""
+		return None
 	
 	
 	# Parse strings that starts with either a double-quote (`"`), a brace (`{`) or a bracket (`[`) as a JSON string.
