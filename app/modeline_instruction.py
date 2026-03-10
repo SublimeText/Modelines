@@ -14,7 +14,7 @@ class ModelineInstruction(ABC):
 		REMOVE = "-"
 	
 	@abstractmethod
-	def __init__(self, key: str, value: SublimeValue, modifier: ValueModifier) -> None:
+	def __init__(self, key: str, value: SublimeValue, modifier: ValueModifier = ValueModifier.NONE) -> None:
 		pass
 	
 	@abstractmethod

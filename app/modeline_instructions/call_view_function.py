@@ -13,7 +13,7 @@ class ModelineInstruction_CallViewFunction(ModelineInstruction):
 	function_name: str
 	function_arg: SublimeValue
 	
-	def __init__(self, key: str, value: SublimeValue, modifier: ModelineInstruction.ValueModifier) -> None:
+	def __init__(self, key: str, value: SublimeValue, modifier: ModelineInstruction.ValueModifier = ModelineInstruction.ValueModifier.NONE) -> None:
 		super().__init__(key, value, modifier)
 		
 		if modifier != ModelineInstruction.ValueModifier.NONE:

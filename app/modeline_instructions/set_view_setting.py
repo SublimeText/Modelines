@@ -17,7 +17,7 @@ class ModelineInstruction_SetViewSetting(ModelineInstruction):
 	setting_value: SublimeValue
 	setting_modifier: ModelineInstruction.ValueModifier
 	
-	def __init__(self, key: str, value: SublimeValue, modifier: ModelineInstruction.ValueModifier) -> None:
+	def __init__(self, key: str, value: SublimeValue, modifier: ModelineInstruction.ValueModifier = ModelineInstruction.ValueModifier.NONE) -> None:
 		super().__init__(key, value, modifier)
 		self.setting_name = key
 		self.setting_value = value
