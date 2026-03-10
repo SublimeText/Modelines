@@ -92,9 +92,11 @@ class ModelineParser_LegacyVIM(ModelineParser):
 					value = "true"
 					
 					_k = k
-					if k.startswith("no") and (type == "vim" or len(k) <= 4):
-						value = "false"
-						_k = k[2:]
+					# Original implementation dropped the prefix `no` and set the value to false.
+					# We do that in the mapping now, which IMHO is better because some `no` prefix don’t make sense (`nots`? what would that mean?).
+					#if k.startswith("no") and (type == "vim" or len(k) <= 4):
+					#	value = "false"
+					#	_k = k[2:]
 					
 					yield _k, "=", value
 					
