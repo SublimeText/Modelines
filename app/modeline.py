@@ -13,3 +13,12 @@ class Modeline:
 		super().__init__()
 		# We copy the list because otherwise the _default argument_ can get modified…
 		self.instructions = instructions.copy()
+	
+	
+	def __str__(self) -> str:
+		# There is probably a more Pythonic way of doing this (map + join?), but this works.
+		res = "Modeline:\n"
+		for i in self.instructions:
+			res += "   - " + i.__str__()
+			res += "\n"
+		return res

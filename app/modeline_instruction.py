@@ -20,3 +20,7 @@ class ModelineInstruction(ABC):
 	@abstractmethod
 	def apply(self, view: SublimeView) -> None:
 		pass
+	
+	
+	def __str__(self) -> str:
+		return f"{type(self)}"
