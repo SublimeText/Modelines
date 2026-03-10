@@ -1,7 +1,7 @@
 # This is the test file that was added with ST3+vim compatibility (heavily edited).
 from tempfile import mkstemp
 from unittest import TestCase
-import sublime, os, sys
+import sublime, os
 
 from ..app.modeline import Modeline
 from ..app.modeline_instruction import ModelineInstruction
