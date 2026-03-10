@@ -17,11 +17,12 @@ from .utils import Utils
 
 class ModelineParser(ABC):
 	
+	# Concrete sub-classes should set the value of this variable if they have a custom mapping (e.g. for the vim format, “filetype” -> “syntax”).
+	mapping: ModelineInstructionsMapping
+	
 	def __init__(self):
 		super().__init__()
-	
-	# Concrete sub-classes should set the value of this variable if they have a custom mapping (e.g. for the vim format, “filetype” -> “x_syntax”).
-	mapping = ModelineInstructionsMapping()
+		self.mapping = ModelineInstructionsMapping()
 	
 	@final
 	def parse_line(self, line: str, parser_data: object) -> Optional[Modeline]:
