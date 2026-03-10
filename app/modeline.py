@@ -9,6 +9,7 @@ class Modeline:
 	
 	instructions: List[ModelineInstruction]
 	
-	def __init__(self):
+	def __init__(self, instructions: List[ModelineInstruction] = []):
 		super().__init__()
-		self.instructions = []
+		# We copy the list because otherwise the _default argument_ can get modified…
+		self.instructions = instructions.copy()
