@@ -84,5 +84,12 @@ class ModelineInstruction_SetViewSetting(ModelineInstruction):
 		settings.set(self.setting_name, new_setting_value)
 	
 	
+	def __eq__(self, other: object):
+		if not isinstance(other, ModelineInstruction_SetViewSetting):
+			return False
+		return (self.setting_name     == other.setting_name     and
+				  self.setting_value    == other.setting_value    and
+				  self.setting_modifier == other.setting_modifier)
+	
 	def __str__(self) -> str:
 		return f"ModelineInstruction: SetViewSetting: {self.setting_name}{self.setting_modifier}={self.setting_value}"

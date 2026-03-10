@@ -27,5 +27,11 @@ class ModelineInstruction_CallViewFunction(ModelineInstruction):
 		f(self.function_arg)
 	
 	
+	def __eq__(self, other: object):
+		if not isinstance(other, ModelineInstruction_CallViewFunction):
+			return False
+		return (self.function_name == other.function_name and
+				  self.function_arg  == other.function_arg)
+	
 	def __str__(self) -> str:
 		return f"ModelineInstruction: CallViewFunction: {self.function_name}()={self.function_arg}"

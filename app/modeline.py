@@ -15,6 +15,13 @@ class Modeline:
 		self.instructions = instructions.copy()
 	
 	
+	def __eq__(self, other: object) -> bool:
+		if not isinstance(other, Modeline):
+			return False
+		print(len(self.instructions))
+		print(len(other.instructions))
+		return (self.instructions == other.instructions)
+	
 	def __str__(self) -> str:
 		# There is probably a more Pythonic way of doing this (map + join?), but this works.
 		res = "Modeline:\n"
