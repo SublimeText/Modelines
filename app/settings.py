@@ -1,5 +1,5 @@
 # This can be removed when using Python >= 3.10.
-from typing import List, Tuple
+from typing import List, NewType, Tuple
 
 from enum import Enum
 import sublime
@@ -22,6 +22,9 @@ class ModelineFormat(str, Enum):
 	EMACS      = "emacs"
 	LEGACY     = "classic"
 	LEGACY_VIM = "classic+vim"
+	
+	# Forward declare Settings because we use it in ModelineFormat (and reciprocally).
+	Settings = NewType("Settings", None)
 	
 	def get_parser_with_data(self, settings: Settings, view: sublime.View) -> Tuple[ModelineParser, object]:
 		def add_data(parser: ModelineParser) -> Tuple[ModelineParser, object]:
