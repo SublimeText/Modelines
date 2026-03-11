@@ -69,7 +69,7 @@ class LegacyModelineParsingTest(TestCase):
 		view = Mock()
 		parser = ModelineParser_Legacy()
 		view.meta_info = Mock(return_value=[{"name": "TM_COMMENT_START", "value": comment_char}])
-		print(parser.parse_line(line, parser.parser_data_for_view(view)))
+		#print(parser.parse_line(line, parser.parser_data_for_view(view)))
 		self.assertEqual(parser.parse_line(line, parser.parser_data_for_view(view)), expected)
 
 # Note: We don’t do another integration test as we have done it in the Sublime parser test (and the legacy+vim one).
