@@ -57,6 +57,7 @@ class SublimeModelineParsingTest(TestCase):
 	
 	def __test_parsing(self, line: str, expected: Modeline):
 		parser = ModelineParser_Sublime()
+		#print(parser.parse_line(line, None))
 		self.assertEqual(parser.parse_line(line, None), expected)
 
 

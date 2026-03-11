@@ -88,6 +88,7 @@ class LegacyVIMModelineParsingTest(TestCase):
 	
 	def __test_parsing(self, comment_char: str, line: str, expected: Modeline):
 		parser = ModelineParser_LegacyVIM(ModelineInstructionsMapping())
+		#print(parser.parse_line(line, comment_char))
 		self.assertEqual(parser.parse_line(line, comment_char), expected)
 
 
