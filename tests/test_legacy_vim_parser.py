@@ -1,6 +1,4 @@
-from tempfile import mkstemp
 from unittest import TestCase
-import os
 
 from sublime import View as SublimeView
 from unittesting import DeferrableTestCase
