@@ -26,7 +26,7 @@ class ModelineParser_Legacy(ModelineParser):
 		res: List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]] = []
 		for opt in self.__gen_raw_options(line):
 			name, _, value = opt.partition(" ")
-			res.append((name.rstrip(":"), value.rstrip(";"), ModelineInstruction.ValueModifier.NONE))
+			res.append((name.rstrip(":").strip(), value.rstrip(";").strip(), ModelineInstruction.ValueModifier.NONE))
 		return res
 	
 	
