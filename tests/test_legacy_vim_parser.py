@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from sublime import View as SublimeView
+from sublime import Window as SublimeWindow
 from unittesting import DeferrableTestCase
 import sublime
 
@@ -89,40 +90,40 @@ class LegacyVIMModelineParsingTest(TestCase):
 class LegacyVIMModelineIntegrationTest(DeferrableTestCase):
 	
 	view: SublimeView
+	window: SublimeWindow
 	
 	def setUp(self):
 		# Make sure we have a window to work with.
 		s = sublime.load_settings("Preferences.sublime-settings")
 		s.set("close_windows_when_empty", False)
 		
-		self.view = sublime.active_window().new_file()
+		# Set some plugin settings we require for the tests.
+		s = sublime.load_settings("Sublime Modelines.sublime-settings")
+		s.set("formats", ["classic+vim"])
+		s.set("number_of_lines_to_check_from_beginning", 3)
+		s.set("number_of_lines_to_check_from_end", 3)
+		s.set("verbose", True)
+		
+		self.window = sublime.active_window()
+		self.view = self.window.new_file()
 		while self.view.is_loading():
 			yield
 	
 	def tearDown(self):
 		if self.view:
 			self.view.set_scratch(True)
-			if window := self.view.window():
-				window.focus_view(self.view)
-				window.run_command("close_file")
+			self.window.focus_view(self.view)
+			self.window.run_command("close_file")
 	
 	def test_modelines_1(self):
-		window = self.view.window()
-		if window is None:
-			self.fail("The view does not have a window.")
-			return
-		
-		s = sublime.load_settings("Sublime Modelines.sublime-settings")
-		s.set("formats", ["classic+vim"])
-		
 		self.view.run_command("insert", {"characters": "# sublime:noet:ai:ts=3:\n"})
-		window.run_command("sublime_modelines_apply")
+		self.window.run_command("sublime_modelines_apply")
 		self.assertEqual(self.view.settings().get("tab_size"), 3)
 		self.assertEqual(self.view.settings().get("auto_indent"), True)
 		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), False)
 		
 		self.view.run_command("insert", {"characters": "# vim: ts=7:noai:et:\n"})
-		window.run_command("sublime_modelines_apply")
+		self.window.run_command("sublime_modelines_apply")
 		self.assertEqual(self.view.settings().get("tab_size"), 7)
 		self.assertEqual(self.view.settings().get("auto_indent"), False)
 		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), True)
