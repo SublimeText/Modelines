@@ -31,7 +31,7 @@ class ModelineParser_Legacy(ModelineParser):
 	
 	
 	def parser_data_for_view(self, view: SublimeView) -> object:
-		line_comment = self.__get_line_comment_char_re(view).lstrip() or self.__DEFAULT_LINE_COMMENT
+		line_comment = self.__get_line_comment_char_re(view).lstrip() or re.escape(self.__DEFAULT_LINE_COMMENT)
 		return (self.__MODELINE_PREFIX_TPL % line_comment)
 	
 	
