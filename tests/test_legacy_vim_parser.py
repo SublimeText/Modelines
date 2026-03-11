@@ -1,7 +1,10 @@
-# This is the test file that was added with ST3+vim compatibility (heavily edited).
 from tempfile import mkstemp
 from unittest import TestCase
-import sublime, os
+import os
+
+from sublime import View as SublimeView
+from unittesting import DeferrableTestCase
+import sublime
 
 from ..app.modeline import Modeline
 from ..app.modeline_instruction import ModelineInstruction
@@ -11,30 +14,7 @@ from ..app.modeline_parsers.legacy_vim import ModelineParser_LegacyVIM
 
 
 
-class ModelinesTest(TestCase):
-	
-	def tearDown(self):
-		if hasattr(self, "tempfile"):
-			if os.path.exists(self.tempfile):
-				os.remove(self.tempfile)
-	
-	def _modeline_test(self, lines):
-		fd, self.tempfile = mkstemp()
-		os.write(fd, lines)
-		os.close(fd)
-		
-		view = sublime.active_window().open_file(self.tempfile)
-		
-		while view.is_loading():
-			yield
-		
-		# here test view’s settings
-		
-		# in the end remove tempfile
-	
-	#def test_modelines_1(self):
-	#	lines = ("# sublime:et:ai:ts=4:\n")
-	#	self._modeline_test(lines)
+class LegacyVIMModelineParsingTest(TestCase):
 	
 	def test_parsing_vim_compatibility_1(self):
 		self.__test_parsing(
@@ -89,24 +69,60 @@ class ModelinesTest(TestCase):
 			Modeline([ModelineInstruction_SetViewSetting("color_scheme", "Packages/Color Scheme - Default/Monokai.tmTheme")])
 		)
 	
-	#def test_parsing(self):
-	#	mdls = [
-	#		"# sublime: foo bar",
-	#		"# sublime: bar foo; foo bar",
-	#		"# st: baz foob",
-	#		"# st: fibz zap; zup blah",
-	#	]
-	#	actual = [
-	#		"foo bar",
-	#		"bar foo",
-	#		"foo bar",
-	#		"baz foob",
-	#		"fibz zap",
-	#		"zup blah",
-	#	]
-	#	self.__test_parsing(mdls, actual)
+	def test_parsing_legacy_compatibility(self):
+		# Note: The original test was more interesting.
+		# It parsed multiple lines at once and verified the resulting instructions contained all of the instructions from all of the lines.
+		# We have strayed too far from the original implementation for the test to make sense, so we do this middle ground instead.
+		# We could also remove the test completely, I guess…
+		for l, r in [
+			("# sublime: foo bar",          Modeline([ModelineInstruction_SetViewSetting("foo",  "bar")])),
+			("# sublime: bar foo; foo bar", Modeline([ModelineInstruction_SetViewSetting("bar",  "foo"), ModelineInstruction_SetViewSetting("foo", "bar")])),
+			("# st: baz foob",              Modeline([ModelineInstruction_SetViewSetting("baz",  "foob")])),
+			("# st: fibz zap; zup blah",    Modeline([ModelineInstruction_SetViewSetting("fibz", "zap"), ModelineInstruction_SetViewSetting("zup", "blah")])),
+		]:
+			self.__test_parsing("#", l, r)
 	
 	
 	def __test_parsing(self, comment_char: str, line: str, expected: Modeline):
 		parser = ModelineParser_LegacyVIM(ModelineInstructionsMapping())
 		self.assertEqual(parser.parse_line(line, comment_char), expected)
+
+
+class LegacyVIMModelineIntegrationTest(DeferrableTestCase):
+	
+	view: SublimeView
+	
+	def setUp(self):
+		# Make sure we have a window to work with.
+		s = sublime.load_settings("Preferences.sublime-settings")
+		s.set("close_windows_when_empty", False)
+		
+		self.view = sublime.active_window().new_file()
+		while self.view.is_loading():
+			yield
+	
+	def tearDown(self):
+		if self.view:
+			self.view.set_scratch(True)
+			if window := self.view.window():
+				window.focus_view(self.view)
+				window.run_command("close_file")
+	
+	def test_modelines_1(self):
+		window = self.view.window()
+		if window is None:
+			self.fail("The view does not have a window.")
+			return
+		
+		s = sublime.load_settings("Sublime Modelines.sublime-settings")
+		s.set("formats", ["classic+vim"])
+		
+		self.view.run_command("insert", {"characters": "# sublime:noet:ai:ts=3:\n"})
+		window.run_command("sublime_modelines_apply")
+		self.assertEqual(self.view.settings().get("tab_size"), 3)
+		self.assertEqual(self.view.settings().get("auto_indent"), True)
+		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), False)
+		
+		self.view.run_command("insert", {"characters": "# sublime:et:\n"})
+		window.run_command("sublime_modelines_apply")
+		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), True)
