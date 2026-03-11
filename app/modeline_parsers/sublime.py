@@ -23,11 +23,12 @@ class ModelineParser_Sublime(ModelineParser):
 		line = line[len(self.__prefix):].strip()
 		
 		if not line.startswith(":"): return None
-		line = line[1:].strip()
+		line = line[1:]
 		
 		def find_next_tuple() -> Optional[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]]:
 			nonlocal line
 			
+			line = line.strip()
 			if len(line) == 0:
 				return None
 			
@@ -61,7 +62,7 @@ class ModelineParser_Sublime(ModelineParser):
 				value += line
 				line = ""
 			
-			return (key, value, modifer)
+			return (key.strip(), value.strip(), modifer)
 		
 		try:
 			res: List[Tuple[str, Optional[str], ModelineInstruction.ValueModifier]] = []
