@@ -123,6 +123,8 @@ class LegacyVIMModelineIntegrationTest(DeferrableTestCase):
 		self.assertEqual(self.view.settings().get("auto_indent"), True)
 		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), False)
 		
-		self.view.run_command("insert", {"characters": "# sublime:et:\n"})
+		self.view.run_command("insert", {"characters": "# vim: ts=7:noai:et:\n"})
 		window.run_command("sublime_modelines_apply")
+		self.assertEqual(self.view.settings().get("tab_size"), 7)
+		self.assertEqual(self.view.settings().get("auto_indent"), False)
 		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), True)
