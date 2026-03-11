@@ -51,6 +51,22 @@ This is a simple example, that disable tabs auto-translation to spaces, set the 
 # ~*~ sublime: syntax=Python; tab_size=3; translate_tabs_to_spaces=false ~*~
 ```
 
+## Developer Note
+
+To get proper completion and errors in the editor when working on this repo,
+ one can create a `pyrightconfig.json` file at the root of the repo,
+ containing something like this (on macOS; adjust paths accordingly depending on your environment):
+```json
+{
+  "venvPath": ".",
+  "venv": "sublime-modelines",
+  "extraPaths": [
+    "/Applications/Sublime Text.app/Contents/MacOS/Lib/python38",
+    "/Users/YOUR_USER_NAME/Library/Application Support/Sublime Text/Lib/python38",
+  ]
+}
+```
+
 
 # Contributors
 
