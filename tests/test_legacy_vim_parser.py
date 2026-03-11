@@ -1,4 +1,7 @@
+from typing import cast, Any, Optional
+
 from unittest import TestCase
+from unittest.mock import Mock
 
 from sublime import View as SublimeView
 from sublime import Window as SublimeWindow
@@ -10,6 +13,7 @@ from ..app.modeline_instruction import ModelineInstruction
 from ..app.modeline_instructions.set_view_setting import ModelineInstruction_SetViewSetting
 from ..app.modeline_instructions_mapping import ModelineInstructionsMapping
 from ..app.modeline_parsers.legacy_vim import ModelineParser_LegacyVIM
+from ..plugin import do_modelines
 
 
 
@@ -127,3 +131,40 @@ class LegacyVIMModelineIntegrationTest(DeferrableTestCase):
 		self.assertEqual(self.view.settings().get("tab_size"), 7)
 		self.assertEqual(self.view.settings().get("auto_indent"), False)
 		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), True)
+	
+	def test_modelines_2(self):
+		self.view.run_command("insert", {"characters": "# sublime:noet:ai:ts=3:\n"})
+		self.window.run_command("sublime_modelines_apply")
+		self.assertEqual(self.view.settings().get("tab_size"), 3)
+		self.assertEqual(self.view.settings().get("auto_indent"), True)
+		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), False)
+		
+		self.view.run_command("insert", {"characters": "// vim: ts=7:noai:et:\n"})
+		self.window.run_command("sublime_modelines_apply")
+		self.assertEqual(self.view.settings().get("tab_size"), 3)
+		self.assertEqual(self.view.settings().get("auto_indent"), True)
+		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), False)
+		
+		self.view.meta_info = Mock(return_value=[{"name": "TM_COMMENT_START", "value": "//"}])
+		self.assertEqual(self.__find_comment_start(), "//")
+		# Call `do_modelines` directly instead of running the `sublime_modelines_apply` command.
+		# `do_modelines` is the underlying function that is called when running the command,
+		#  however we need to pass our mocked view in order for the comment change to work.
+		do_modelines(self.view)
+		self.assertEqual(self.view.settings().get("tab_size"), 7)
+		self.assertEqual(self.view.settings().get("auto_indent"), False)
+		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), True)
+	
+	
+	def __find_comment_start(self) -> Optional[str]:
+		commentChar = ""
+		try:
+			for pair in cast(Any, self.view.meta_info("shellVariables", 0)):
+				if pair["name"] == "TM_COMMENT_START":
+					commentChar = pair["value"]
+				if commentChar:
+					break
+		except TypeError:
+			pass
+		
+		return commentChar
