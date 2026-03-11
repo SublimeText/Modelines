@@ -150,6 +150,8 @@ class LegacyVIMModelineIntegrationTest(DeferrableTestCase):
 		# Call `do_modelines` directly instead of running the `sublime_modelines_apply` command.
 		# `do_modelines` is the underlying function that is called when running the command,
 		#  however we need to pass our mocked view in order for the comment change to work.
+		# I tried changing the comment start another way, but that does not seem possible.
+		# Here’s a guy asking for something related <https://forum.sublimetext.com/t/7178>.
 		do_modelines(self.view)
 		self.assertEqual(self.view.settings().get("tab_size"), 7)
 		self.assertEqual(self.view.settings().get("auto_indent"), False)
