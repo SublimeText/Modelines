@@ -75,8 +75,7 @@ class SublimeModelinesApplyCommand(sublime_plugin.WindowCommand):
 	
 	def run(self):
 		view = self.window.active_view()
-		if view is None or view.is_scratch():
-			return
+		if view is None: return
 		
 		do_modelines(view)
 
