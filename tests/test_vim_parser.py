@@ -1,7 +1,6 @@
 from unittest import TestCase
 
 from ..app.modeline import Modeline
-from ..app.modeline_instructions.call_view_function import ModelineInstruction_CallViewFunction
 from ..app.modeline_instructions.set_view_setting import ModelineInstruction_SetViewSetting
 from ..app.modeline_instructions_mapping import ModelineInstructionsMapping
 from ..app.modeline_parsers.vim import ModelineParser_VIM
