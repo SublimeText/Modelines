@@ -10,7 +10,7 @@ Inspired by Vim’s modelines feature.
 
 ### Recommended Installation
 
-Use Package Control and install `SublimeModelines`.
+Use Package Control and install `SublimeModelines` (compatibility starts at Sublime Text 4).
 
 ### Manual Installation
 
@@ -21,8 +21,10 @@ See the [installation instructions](<https://docs.sublimetext.io/guide/extensibi
 
 ## Side Effects
 
-Buffers will be scanned `.on_load()` for modelines and settings will be set accordingly.
+Buffers will be scanned `.on_load()` and `.on_post_save()` (by default, customizable) for modelines and settings will be set accordingly.
 Settings will apply **only** to the buffer declaring them.
+
+There is also a command to manually apply modelines.
 
 **Note**: Application- and window-level options declared in modelines are obviously global.
 
@@ -31,50 +33,34 @@ Settings will apply **only** to the buffer declaring them.
 
 ### How to Declare Modelines
 
-Modelines must be declared at the top or the bottom of source code files with one of the following syntaxes:
+Modelines must be declared at the top or the bottom of source code files with the following default syntax:
 
 ```text
-# sublime: option_name value
-# sublime: option_name value; another_option value; third_option value
+# ~*~ sublime: key=val; key2=val2; key3 ~*~
 ```
 
-**Note**:
-`#` is the default comment character.
-Use the corresponding single-line comment character for your language.
-When there isn't a concept of comment, the default comment character must be used.
-
-### How to Define Comment Characters in Sublime Text
-
-SublimeModelines finds the appropriate single-line comment character by inspecting the `shellVariables` preference,
- which must be defined in a `.tmPreferences` file.
-To see an example of how this is done, open `Packages/Python/Miscellaneous.tmPreferences`.
-
-Many packages giving support for programming languages already include this,
- but you might need to create a `.tmPreferences` file for the language you're working with
- if you want SublimeModelines to be available.
- 
-
-## Caveats
-
-If the option’s value contains a semicolon (`;`), make sure it isn't followed by a blank space.
-Otherwise it will be interpreted as a multi-option separator.
+VIM and Emacs-style syntax are also supported.  
+See the settings file for (a lot) more info.
 
 
-## Non-Standard Options
+## Example
 
-For some common cases, no directly settable option exists (for example, a setting to specify a syntax).
-For such cases, Sublime Modelines provides non-standard accessors as a stop-gap solution.
+This is a simple example, that disable tabs auto-translation to spaces, set the tab size to 3 and set the file syntax to Python.
 
 ```text
-# sublime: x_syntax Foo
-or
-# sublime: x_syntax Packages/Foo/Foo.tmLanguage
+# ~*~ sublime: syntax=Python; tab_size=3; translate_tabs_to_spaces=false ~*~
 ```
-
-Sets the syntax to the specified `.tmLanguage` file.
 
 
 # Contributors
+
+[François Lamboley (Frizlab)](<https://github.com/Frizlab>):
+- Full rewrite featuring:
+  - Sublime Text 4 compatibility;
+  - A whole new modeline syntax;
+  - Better VIM syntax support;
+  - Emacs syntax support;
+  - Legacy syntax support (original modeline syntax from this repo, before the rewrite).
 
 [Guillermo López-Anglada](<https://github.com/guillermooo>):
 - Implemented the first version of this package (for Sublime Text 2).
@@ -84,7 +70,3 @@ Kay-Uwe (Kiwi) Lorenz <kiwi@franka.dyndns.org> (<http://quelltexter.org>):
 - Smart syntax matching;
 - Modelines also parsed on save;
 - Settings are erased from view, if removed from modeline.
-
-[Frizlab](<https://github.com/Frizlab>):
-- Removed VIM compatibility (use `VimModelines` if you need that);
-- Modernize/clean the project, and make sure it works with SublimeText 4.
