@@ -5,13 +5,7 @@ import sublime, sublime_plugin
 from .app.logger import Logger
 from .app.logger_settings import updateLoggerSettings
 from .app.modeline import Modeline
-from .app.modeline_parser import ModelineParser
-from .app.modeline_parsers.emacs import ModelineParser_Emacs
-from .app.modeline_parsers.legacy import ModelineParser_Legacy
-from .app.modeline_parsers.legacy_vim import ModelineParser_LegacyVIM
-from .app.modeline_parsers.sublime import ModelineParser_Sublime
-from .app.modeline_parsers.vim import ModelineParser_VIM
-from .app.settings import ModelineFormat, Settings
+from .app.settings import Settings
 
 
 # The plugin structure is heavily inspired by <https://github.com/pestilence669/VimModelines/blob/b7d499b705277a1aa8ee1dd6387f78b734a8512c/vimmodelines.py>.
@@ -110,18 +104,7 @@ def do_modelines(view: sublime.View) -> None:
 				# No overlapping lines.
 				break
 	
-	parsers: List[Tuple[ModelineParser, object]] = []
-	for parser_id in settings.modelines_formats():
-		def add_parser(parser: ModelineParser) -> None:
-			parsers.append((parser, parser.parser_data_for_view(view)))
-		# The “match” instruction has been added to Python 3.10.
-		# We use `if elif else` instead.
-		if   parser_id == ModelineFormat.DEFAULT:    add_parser(ModelineParser_Sublime())
-		elif parser_id == ModelineFormat.VIM:        add_parser(ModelineParser_VIM(settings.vimMapping()))
-		elif parser_id == ModelineFormat.EMACS:      add_parser(ModelineParser_Emacs(settings.emacsMapping()))
-		elif parser_id == ModelineFormat.LEGACY:     add_parser(ModelineParser_Legacy())
-		elif parser_id == ModelineFormat.LEGACY_VIM: add_parser(ModelineParser_LegacyVIM(settings.vimMapping()))
-		else: raise Exception("Internal error: Unknown parser ID.")
+	parsers = [parser_id.get_parser_with_data(settings, view) for parser_id in settings.modelines_formats()]
 	
 	for line in lines:
 		line = view.substr(line)

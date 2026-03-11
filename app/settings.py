@@ -1,11 +1,17 @@
 # This can be removed when using Python >= 3.10.
-from typing import List
+from typing import List, Tuple
 
 from enum import Enum
 import sublime
 
 from .logger import Logger
 from .modeline_instructions_mapping import ModelineInstructionsMapping
+from .modeline_parser import ModelineParser
+from .modeline_parsers.emacs import ModelineParser_Emacs
+from .modeline_parsers.legacy import ModelineParser_Legacy
+from .modeline_parsers.legacy_vim import ModelineParser_LegacyVIM
+from .modeline_parsers.sublime import ModelineParser_Sublime
+from .modeline_parsers.vim import ModelineParser_VIM
 from .utils import Utils
 
 
@@ -16,6 +22,18 @@ class ModelineFormat(str, Enum):
 	EMACS      = "emacs"
 	LEGACY     = "classic"
 	LEGACY_VIM = "classic+vim"
+	
+	def get_parser_with_data(self, settings: Settings, view: sublime.View) -> Tuple[ModelineParser, object]:
+		def add_data(parser: ModelineParser) -> Tuple[ModelineParser, object]:
+			return (parser, parser.parser_data_for_view(view))
+		# The “match” instruction has been added to Python 3.10.
+		# We use `if elif else` instead.
+		if   self == ModelineFormat.DEFAULT:    return add_data(ModelineParser_Sublime())
+		elif self == ModelineFormat.VIM:        return add_data(ModelineParser_VIM(settings.vimMapping()))
+		elif self == ModelineFormat.EMACS:      return add_data(ModelineParser_Emacs(settings.emacsMapping()))
+		elif self == ModelineFormat.LEGACY:     return add_data(ModelineParser_Legacy())
+		elif self == ModelineFormat.LEGACY_VIM: return add_data(ModelineParser_LegacyVIM(settings.vimMapping()))
+		else: raise Exception("Internal error: Unknown parser ID.")
 
 
 class Settings:
