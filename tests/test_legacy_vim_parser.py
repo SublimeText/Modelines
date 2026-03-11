@@ -22,7 +22,7 @@ class LegacyVIMModelineParsingTest(TestCase):
 	def test_parsing_vim_compatibility_1(self):
 		self.__test_parsing(
 			"#",
-			"# vim: set ai noet ts=4:", 
+			"# vim: set ai noet ts=4:",
 			Modeline([
 				ModelineInstruction_SetViewSetting("ai",   True),
 				ModelineInstruction_SetViewSetting("noet", True),
@@ -33,7 +33,7 @@ class LegacyVIMModelineParsingTest(TestCase):
 	def test_parsing_vim_compatibility_2(self):
 		self.__test_parsing(
 			"#",
-			"# vim:ai:et:ts=4:", 
+			"# vim:ai:et:ts=4:",
 			Modeline([
 				ModelineInstruction_SetViewSetting("ai", True),
 				ModelineInstruction_SetViewSetting("et", True),
