@@ -7,6 +7,7 @@ import sublime
 
 from ..app.modeline import Modeline
 from ..app.modeline_instruction import ModelineInstruction
+from ..app.modeline_instructions.call_view_function import ModelineInstruction_CallViewFunction
 from ..app.modeline_instructions.set_view_setting import ModelineInstruction_SetViewSetting
 from ..app.modeline_parsers.sublime import ModelineParser_Sublime
 from ..plugin import do_modelines
@@ -34,12 +35,22 @@ class SublimeModelineParsingTest(TestCase):
 	
 	def test_weird_chars(self):
 		self.__test_parsing(
-			'# ~*~ sublime: setting1=key1; setting2=key2  ;	 setting3  =key;;3;  setting4 = " key4" ~*~',
+			'# ~*~ sublime: setting1=key1;setting2=key2  ;	 setting3  =key3;;;  setting4 = " key;;4" ~*~',
 			Modeline([
 				ModelineInstruction_SetViewSetting("setting1", "key1"),
 				ModelineInstruction_SetViewSetting("setting2", "key2"),
-				ModelineInstruction_SetViewSetting("setting3", "key;3"),
-				ModelineInstruction_SetViewSetting("setting4", " key4"),
+				ModelineInstruction_SetViewSetting("setting3", "key3;"),
+				ModelineInstruction_SetViewSetting("setting4", " key;4"),
+			])
+		)
+	
+	def test_settings_and_functions(self):
+		self.__test_parsing(
+			"# ~*~ sublime: setting1=key1; func() =42; setting2=key2 ~*~",
+			Modeline([
+				ModelineInstruction_SetViewSetting("setting1", "key1"),
+				ModelineInstruction_CallViewFunction("func", 42),
+				ModelineInstruction_SetViewSetting("setting2", "key2"),
 			])
 		)
 	
