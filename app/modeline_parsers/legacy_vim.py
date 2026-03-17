@@ -106,7 +106,7 @@ class ModelineParser_LegacyVIM(ModelineParser):
 				break
 			
 		else:
-			# Original sublime modelines style.
+			# Original Sublime modelines style.
 			opt = raw_modeline.partition(":")[2].strip()
 			if self.__MULTIOPT_SEP in opt:
 				for subopt in (s for s in opt.split(self.__MULTIOPT_SEP)):

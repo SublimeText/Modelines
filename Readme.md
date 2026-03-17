@@ -1,4 +1,4 @@
-# Sublime Modelines
+# Modelines
 
 Set settings local to a single buffer.  
 A more granular approach to settings than the per file type `.sublime-settings` files.
@@ -10,11 +10,11 @@ Inspired by Vim’s modelines feature.
 
 ### Recommended Installation
 
-Use Package Control and install `SublimeModelines` (compatibility starts at Sublime Text 4).
+Use Package Control and install `Modelines` (compatibility starts at Sublime Text 4).
 
 ### Manual Installation
 
-Download and install [SublimeModelines](<https://github.com/SublimeText/Modelines>).
+Download and install [Modelines](<https://github.com/SublimeText/Modelines>).
 
 See the [installation instructions](<https://docs.sublimetext.io/guide/extensibility/packages.html#installing-packages>) for `.sublime-package`s.
 

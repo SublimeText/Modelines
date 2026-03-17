@@ -7,11 +7,11 @@
 			"id": "package-settings",
 			"children": [
 				{
-					"caption": "Sublime Modelines",
-					"id": "sublime-modelines-settings",
+					"caption": "Modelines",
+					"id": "modelines-settings",
 					"command": "edit_settings",
 					"args": {
-						"base_file": "${packages}/Modelines/Sublime Modelines.sublime-settings",
+						"base_file": "${packages}/Modelines/Modelines.sublime-settings",
 						"default": "/* See the left pane for the list of settings and valid values. */\n{\n\t$0\n}\n",
 					}
 				}

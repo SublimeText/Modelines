@@ -72,7 +72,7 @@ class SublimeModelineIntegrationTest(DeferrableTestCase):
 		s.set("close_windows_when_empty", False)
 		
 		# Set some plugin settings we require for the tests.
-		s = sublime.load_settings("Sublime Modelines.sublime-settings")
+		s = sublime.load_settings("Modelines.sublime-settings")
 		s.set("formats", ["default"])
 		s.set("number_of_lines_to_check_from_beginning", 3)
 		s.set("number_of_lines_to_check_from_end", 3)
@@ -91,11 +91,11 @@ class SublimeModelineIntegrationTest(DeferrableTestCase):
 	
 	def test_modelines_1(self):
 		self.view.run_command("insert", {"characters": "/* ~*~ sublime: tab_size=7; translate_tabs_to_spaces=true ~*~ */\n"})
-		self.window.run_command("sublime_modelines_apply")
+		self.window.run_command("modelines_apply")
 		self.assertEqual(self.view.settings().get("tab_size"), 7)
 		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), True)
 		
 		self.view.run_command("insert", {"characters": "/* ~*~ sublime: tab_size=3; translate_tabs_to_spaces=false ~*~ */\n"})
-		self.window.run_command("sublime_modelines_apply")
+		self.window.run_command("modelines_apply")
 		self.assertEqual(self.view.settings().get("tab_size"), 3)
 		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), False)

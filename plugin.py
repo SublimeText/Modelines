@@ -12,7 +12,7 @@ from .app.settings import Settings
 # We have mostly added typing, and fixed a potential issue if on_load or on_post_save is called in a view which is not the front-most one in a window.
 
 
-PLUGIN_NAME: Final[str] = "SublimeModelines"
+PLUGIN_NAME: Final[str] = "Modelines"
 
 # Before everything else, update the settings of the logger.
 settings = Settings()
@@ -24,7 +24,7 @@ def plugin_loaded():
 	
 	# Call on_load() for existing views, since files may load before the plugin.
 	# First we verify the plugin is properly instantiated (it should be).
-	plugin = SublimeModelinesPlugin.instance
+	plugin = ModelinesPlugin.instance
 	if plugin is None:
 		Logger.warning("Plugin instance is not set.")
 		return
@@ -40,16 +40,16 @@ def plugin_unloaded():
 	Logger.debug("Plugin unloaded.")
 
 
-class SublimeModelinesPlugin(sublime_plugin.EventListener):
+class ModelinesPlugin(sublime_plugin.EventListener):
 	"""Event listener to invoke the command on load & save."""
 	
-	#instance: Optional[SublimeModelinesPlugin] = None
+	#instance: Optional[ModelinesPlugin] = None
 	instance = None
 	
 	def __init__(self):
 		super().__init__()
 		Logger.debug("EventListener init.")
-		SublimeModelinesPlugin.instance = self
+		ModelinesPlugin.instance = self
 	
 	def on_load(self, view: sublime.View) -> None:
 		Logger.debug("on_load called.")
@@ -62,9 +62,9 @@ class SublimeModelinesPlugin(sublime_plugin.EventListener):
 			do_modelines(view)
 
 
-# The command name will be `sublime_modelines_apply`.
+# The command name will be `modelines_apply`.
 # See [the rules to get command names](<https://stackoverflow.com/a/63979147>) for more info.
-class SublimeModelinesApplyCommand(sublime_plugin.WindowCommand):
+class ModelinesApplyCommand(sublime_plugin.WindowCommand):
 	"""Apply modelines in the given view."""
 	
 	def run(self):

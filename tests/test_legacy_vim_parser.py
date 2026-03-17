@@ -103,7 +103,7 @@ class LegacyVIMModelineIntegrationTest(DeferrableTestCase):
 		s.set("close_windows_when_empty", False)
 		
 		# Set some plugin settings we require for the tests.
-		s = sublime.load_settings("Sublime Modelines.sublime-settings")
+		s = sublime.load_settings("Modelines.sublime-settings")
 		s.set("formats", ["classic+vim"])
 		s.set("number_of_lines_to_check_from_beginning", 3)
 		s.set("number_of_lines_to_check_from_end", 3)
@@ -122,33 +122,33 @@ class LegacyVIMModelineIntegrationTest(DeferrableTestCase):
 	
 	def test_modelines_1(self):
 		self.view.run_command("insert", {"characters": "# sublime:noet:ai:ts=3:\n"})
-		self.window.run_command("sublime_modelines_apply")
+		self.window.run_command("modelines_apply")
 		self.assertEqual(self.view.settings().get("tab_size"), 3)
 		self.assertEqual(self.view.settings().get("auto_indent"), True)
 		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), False)
 		
 		self.view.run_command("insert", {"characters": "# vim: ts=7:noai:et:\n"})
-		self.window.run_command("sublime_modelines_apply")
+		self.window.run_command("modelines_apply")
 		self.assertEqual(self.view.settings().get("tab_size"), 7)
 		self.assertEqual(self.view.settings().get("auto_indent"), False)
 		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), True)
 	
 	def test_modelines_2(self):
 		self.view.run_command("insert", {"characters": "# sublime:noet:ai:ts=3:\n"})
-		self.window.run_command("sublime_modelines_apply")
+		self.window.run_command("modelines_apply")
 		self.assertEqual(self.view.settings().get("tab_size"), 3)
 		self.assertEqual(self.view.settings().get("auto_indent"), True)
 		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), False)
 		
 		self.view.run_command("insert", {"characters": "// vim: ts=7:noai:et:\n"})
-		self.window.run_command("sublime_modelines_apply")
+		self.window.run_command("modelines_apply")
 		self.assertEqual(self.view.settings().get("tab_size"), 3)
 		self.assertEqual(self.view.settings().get("auto_indent"), True)
 		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), False)
 		
 		self.view.meta_info = Mock(return_value=[{"name": "TM_COMMENT_START", "value": "//"}])
 		self.assertEqual(self.__find_comment_start(), "//")
-		# Call `do_modelines` directly instead of running the `sublime_modelines_apply` command.
+		# Call `do_modelines` directly instead of running the `modelines_apply` command.
 		# `do_modelines` is the underlying function that is called when running the command,
 		#  however we need to pass our mocked view in order for the comment change to work.
 		# I tried changing the comment start another way, but that does not seem possible.

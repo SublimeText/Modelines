@@ -29,7 +29,7 @@ class Logger:
 	
 	@staticmethod
 	def _format(prefix: str, s: str, *args) -> str:
-		return "[Sublime Modelines] " + prefix + (s % args) + "\n"
+		return "[Modelines] " + prefix + (s % args) + "\n"
 	
 	@staticmethod
 	def _log(str: str) -> None:

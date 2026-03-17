@@ -48,7 +48,7 @@ class Settings:
 	
 	def __init__(self):
 		super().__init__()
-		self.settings = sublime.load_settings("Sublime Modelines.sublime-settings")
+		self.settings = sublime.load_settings("Modelines.sublime-settings")
 	
 	def modelines_formats(self) -> List[ModelineFormat]:
 		default_for_syntax_error = [ModelineFormat.DEFAULT]
