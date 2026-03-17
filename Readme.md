@@ -78,11 +78,11 @@ To get proper completion and errors in the editor when working on this repo,
   - Emacs syntax support;
   - Legacy syntax support (original modeline syntax from this repo, before the rewrite).
 
-[Guillermo López-Anglada](<https://github.com/guillermooo>):
-- Implemented the first version of this package (for Sublime Text 2).
-
 Kay-Uwe (Kiwi) Lorenz <kiwi@franka.dyndns.org> (<http://quelltexter.org>):
 - Added VIM compatibility;
 - Smart syntax matching;
 - Modelines also parsed on save;
 - Settings are erased from view, if removed from modeline.
+
+[Guillermo López-Anglada](<https://github.com/guillermooo>):
+- Implemented the first version of this package (for Sublime Text 2).
