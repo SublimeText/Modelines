@@ -78,7 +78,7 @@ To get proper completion and errors in the editor when working on this repo,
   - Emacs syntax support;
   - Legacy syntax support (original modeline syntax from this repo, before the rewrite).
 
-Kay-Uwe (Kiwi) Lorenz <kiwi@franka.dyndns.org> (<http://quelltexter.org>):
+[Kay-Uwe (Kiwi) Lorenz <kiwi@franka.dyndns.org>](<http://quelltexter.org>):
 - Added VIM compatibility;
 - Smart syntax matching;
 - Modelines also parsed on save;
