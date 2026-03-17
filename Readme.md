@@ -80,7 +80,7 @@ Full rewrite featuring:
 - Legacy syntax support (original modeline syntax from this repo, before the rewrite).
 
 
-## [Kay-Uwe (Kiwi) Lorenz <kiwi@franka.dyndns.org>](<http://quelltexter.org>)
+## [Kay-Uwe (Kiwi) Lorenz](<http://quelltexter.org>) <kiwi@franka.dyndns.org>
 
 - Added VIM compatibility;
 - Smart syntax matching;
