@@ -70,19 +70,24 @@ To get proper completion and errors in the editor when working on this repo,
 
 # Contributors
 
-[François Lamboley (Frizlab)](<https://github.com/Frizlab>):
-- Full rewrite featuring:
-  - Sublime Text 4 compatibility;
-  - A whole new modeline syntax;
-  - Better VIM syntax support;
-  - Emacs syntax support;
-  - Legacy syntax support (original modeline syntax from this repo, before the rewrite).
+## [François Lamboley (Frizlab)](<https://github.com/Frizlab>)
 
-[Kay-Uwe (Kiwi) Lorenz <kiwi@franka.dyndns.org>](<http://quelltexter.org>):
+Full rewrite featuring:
+- Sublime Text 4 compatibility;
+- A whole new modeline syntax;
+- Better VIM syntax support;
+- Emacs syntax support;
+- Legacy syntax support (original modeline syntax from this repo, before the rewrite).
+
+
+## [Kay-Uwe (Kiwi) Lorenz <kiwi@franka.dyndns.org>](<http://quelltexter.org>)
+
 - Added VIM compatibility;
 - Smart syntax matching;
 - Modelines also parsed on save;
 - Settings are erased from view, if removed from modeline.
 
-[Guillermo López-Anglada](<https://github.com/guillermooo>):
+
+## [Guillermo López-Anglada](<https://github.com/guillermooo>)
+
 - Implemented the first version of this package (for Sublime Text 2).
