@@ -37,6 +37,7 @@ class ModelineInstruction_SetViewSetting(ModelineInstruction):
 			 hasattr(sublime, "find_resources")
 			):
 			# We modify the value to find the proper file (this avoids specifying `Swift.tmLanguage`; instead we can use `Swift`).
+			# TODO: Case-insensitive search.
 			candidates = sublime.find_resources(f"{self.setting_value}.sublime-syntax") + sublime.find_resources(f"{self.setting_value}.tmLanguage")
 			if len(candidates) > 0:
 				# Note: We only use the basename of the found resource.
