@@ -8,7 +8,7 @@ from ..app.modeline_parsers.legacy import ModelineParser_Legacy
 
 
 
-class LegacyModelineParsingTest(TestCase):
+class LegacyModelineParsingTests(TestCase):
 	
 	def test_parsing_data_retrieval(self):
 		"""Checks whether we retrieve the correct comment char."""

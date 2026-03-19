@@ -7,7 +7,7 @@ from ..app.modeline_parsers.emacs import ModelineParser_Emacs
 
 
 
-class VIMModelineParsingTest(TestCase):
+class VIMModelineParsingTests(TestCase):
 	
 	def test_simple_case(self):
 		self.__test_parsing(

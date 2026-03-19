@@ -16,7 +16,7 @@ from ..plugin import do_modelines
 
 
 
-class SublimeModelineParsingTest(TestCase):
+class SublimeModelineParsingTests(TestCase):
 	
 	def test_simple_case(self):
 		self.__test_parsing(
@@ -63,7 +63,7 @@ class SublimeModelineParsingTest(TestCase):
 		self.assertEqual(parser.parse_line(line, None), expected)
 
 
-class SublimeModelineIntegrationTest(DeferrableTestCase):
+class SublimeModelineIntegrationTests(DeferrableTestCase):
 	
 	view: SublimeView
 	window: SublimeWindow

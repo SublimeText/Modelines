@@ -17,7 +17,7 @@ from ..plugin import do_modelines
 
 
 
-class LegacyVIMModelineParsingTest(TestCase):
+class LegacyVIMModelineParsingTests(TestCase):
 	
 	def test_parsing_vim_compatibility_1(self):
 		self.__test_parsing(
@@ -92,7 +92,7 @@ class LegacyVIMModelineParsingTest(TestCase):
 		self.assertEqual(parser.parse_line(line, comment_char), expected)
 
 
-class LegacyVIMModelineIntegrationTest(DeferrableTestCase):
+class LegacyVIMModelineIntegrationTests(DeferrableTestCase):
 	
 	view: SublimeView
 	window: SublimeWindow
