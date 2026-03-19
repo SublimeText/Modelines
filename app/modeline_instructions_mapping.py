@@ -66,7 +66,7 @@ class ModelineInstructionsMapping:
 				if not isinstance(value, str):
 					Logger.warning(f"Skipping lowercase transform for value “{value}” because it is not a string.")
 					return None
-				return self.mapping.get(value, self.default_on_no_mapping if not self.default_on_no_mapping is self.__NoDefaultValue else value)
+				return self.mapping.get(value, self.default_on_no_mapping if not isinstance(self.default_on_no_mapping, self.__NoDefaultValue) else value)
 		
 		
 		# This is `None` if the mapped instruction is unsupported (e.g. vim’s “softtab” which is unsupported in Sublime).
@@ -183,7 +183,7 @@ class ModelineInstructionsMapping:
 		
 		for transform in mapping_value.value_transforms:
 			value = transform.apply(value)
-			if value is self.MappingValue.UnsupportedValue:
+			if isinstance(value, self.MappingValue.UnsupportedValue):
 				return None
 		
 		return (key, value)
