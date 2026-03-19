@@ -87,7 +87,13 @@
 		/* Set line endings (DOS, Legacy MacOS, UNIX). */
 		"fileformat": {"aliases": ["ff"], "key": "set_line_endings()", "value-mapping": {"dos": "windows", "mac": "CR", "unix": "unix"}},
 		/* Set the syntax of the file. */
-		"filetype": {"aliases": ["ft"], "key": "syntax"},
+		"filetype": {"aliases": ["ft"], "key": "syntax", "value-transforms": [
+			{"type": "map", "parameters": {/* No "default", the value will be pass-through’d if not in the table. */ "table": {
+				"python":  "Python", /* Explicitly set, but would work if not there. */
+				"python2": "Python",
+				"dosini":  "INI", /* Requires INI package. */
+			}}}
+		]},
 		/* # of columns for each tab character. */
 		"tabstop": {"aliases": ["ts"], "key": "tab_size"},
 		/* # of columns for indent operation. */
