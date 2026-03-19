@@ -106,7 +106,7 @@
 		/* Set file encoding. */
 		"fileencoding": {"aliases": ["fenc"], "key": "set_encoding()", "value-transforms": [
 			{"type": "lowercase"},
-			{"type": "map", "parameters": {"table": {
+			{"type": "map", "parameters": {"default": null, "table": {
 				/* null values are explicitly unsupported and will set the status line for the plugin to notify of the failure.
 				 * If you use an encoding not in the list, it is implicitly unsupported and will also set the status line error. */
 				"latin1":      "Western (Windows 1252)",

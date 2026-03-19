@@ -12,6 +12,10 @@ class ModelineInstructionsMapping:
 	
 	class MappingValue:
 		
+		class UnsupportedValue:
+			"""Marker class returned by a mapping when the value is unsupported and should be dropped."""
+			pass
+			
 		class ValueTransform(ABC):
 			
 			@abstractmethod
@@ -37,8 +41,14 @@ class ModelineInstructionsMapping:
 		
 		class ValueTransformMapping(ValueTransform):
 			
+			class __NoDefaultValue:
+				"""Internal marker class set in the default value variable, to signify the source value should be used when there is no mapping for the value."""
+				pass
+			
 			mapping: Dict[str, object]
-			# If there is no mapping for the given value, the default value is returned.
+			# If there is no mapping for the given value, the default value is returned,
+			#  unless no default is specified, in which case the original value is returned.
+			# The “no default” case is represented by the `__NoDefaultValue()` value.
 			default_on_no_mapping: object
 			
 			def __init__(self, parameters: Dict[str, object]) -> None:
@@ -50,13 +60,13 @@ class ModelineInstructionsMapping:
 					parameters["table"],
 					ValueError("Invalid “table” value: not a dictionary with string keys.")
 				)
-				self.default_on_no_mapping = parameters.get("default")
+				self.default_on_no_mapping = parameters.get("default", self.__NoDefaultValue())
 			
 			def apply(self, value: object) -> object:
 				if not isinstance(value, str):
 					Logger.warning(f"Skipping lowercase transform for value “{value}” because it is not a string.")
 					return None
-				return self.mapping.get(value, self.default_on_no_mapping)
+				return self.mapping.get(value, self.default_on_no_mapping if not self.default_on_no_mapping is self.__NoDefaultValue else value)
 		
 		
 		# This is `None` if the mapped instruction is unsupported (e.g. vim’s “softtab” which is unsupported in Sublime).
@@ -94,7 +104,9 @@ class ModelineInstructionsMapping:
 							raw_mapping_value["value-mapping"],
 							ValueError("Invalid “value-mapping” value: not a dictionary with string keys.")
 						),
-						"default": raw_mapping_value.get("value-mapping-default")
+						# If we want a “pass-through” mapping for unmapped values, we have to go through the verbose syntax:
+						#  using “value-mapping” the default default value is always “unsupported.”
+						"default": raw_mapping_value.get("value-mapping-default", None)
 					}
 				}]
 				
@@ -171,5 +183,7 @@ class ModelineInstructionsMapping:
 		
 		for transform in mapping_value.value_transforms:
 			value = transform.apply(value)
+			if value is self.MappingValue.UnsupportedValue:
+				return None
 		
 		return (key, value)
