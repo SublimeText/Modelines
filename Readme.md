@@ -67,6 +67,10 @@ To get proper completion and errors in the editor when working on this repo,
 }
 ```
 
+⚠️ The tests require the `UnitTesting` package.
+I have not added it to `dependencies.json` because I don’t know how to add a dependency for tests only.
+A PR is welcome if there is a way to do it.
+
 
 # Contributors
 
