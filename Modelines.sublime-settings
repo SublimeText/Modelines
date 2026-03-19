@@ -189,7 +189,8 @@
 	/* User mapping for Emacs modelines (deep-merged for dictionaries; everything else is replaced; set a key to null to remove it from the default mapping). */
 	"emacs_mapping_user": {},
 	
-	/* Whether debug logs should be enabled. */
+	/* Whether debug logs should be enabled.
+	 * Needs full plugin reload for the setting to take effect. */
 	"verbose": false,
 	/* Whether to log to `/tmp/sublime_modelines_debug.log` in addition to stderr.
 	 * This dates back to a time where I did not know how to show the console in Sublime (ctrl-`).
