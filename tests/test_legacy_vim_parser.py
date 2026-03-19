@@ -97,7 +97,9 @@ class LegacyVIMModelineIntegrationTest(DeferrableTestCase):
 	view: SublimeView
 	window: SublimeWindow
 	
-	def setUp(self):
+	# It seems `DeferrableTestCase` uses setUp “incorrectly” (expects a possible generator returned while base class returns `None`).
+	# To hide a warning we force returning `Any` which disables type-checking.
+	def setUp(self) -> Any:
 		# Make sure we have a window to work with.
 		s = sublime.load_settings("Preferences.sublime-settings")
 		s.set("close_windows_when_empty", False)
