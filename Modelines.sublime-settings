@@ -107,7 +107,10 @@
 			"value-mapping": {
 				/* We do not put the full list of file types supported by VIM here, because it is huge.
 				 * PRs are welcome to add common ones.
-				 * You can also use `vim_mapping_user` in your local settings file to add your own mapping. */
+				 * You can also use `vim_mapping_user` in your local settings file to add your own mapping.
+				 * Note:
+				 * <https://vi.stackexchange.com/a/5782> says: to get the full list of supported file types on your system,
+				 *  go in VIM, type `:setfiletype ` (with the space), then type `ctrl-d`. */
 				"bash":    "Bash",   /* Explicitly set, but would work if not there. */
 				"python":  "Python", /* Explicitly set, but would work if not there. */
 				"python2": "Python",
