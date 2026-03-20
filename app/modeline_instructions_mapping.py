@@ -97,12 +97,12 @@ class ModelineInstructionsMapping:
 			self.value = raw_mapping_value.get("value")
 			
 			# Parse transforms shortcut (`value-mapping`).
-			raw_value_transforms: List[Dict[str, object]]
+			raw_value_transforms: List[Dict[str, object]] = Utils.checked_cast_to_list_of_dict_with_string_keys(
+				raw_mapping_value.get("value-transforms", []),
+				ValueError("")
+			)
 			if "value-mapping" in raw_mapping_value:
-				if "value-transforms" in raw_mapping_value:
-					raise ValueError("“value-transforms” must not be in mapping if “value-mapping” exists.")
-				
-				raw_value_transforms = [{
+				raw_value_transforms.append({
 					"type": "map",
 					"parameters": {
 						"table": Utils.checked_cast_to_dict_with_string_keys(
@@ -113,13 +113,7 @@ class ModelineInstructionsMapping:
 						#  using “value-mapping” the default default value is always “unsupported.”
 						"default": raw_mapping_value.get("value-mapping-default", self.ValueTransformMapping.UnsupportedValue())
 					}
-				}]
-				
-			else:
-				raw_value_transforms = Utils.checked_cast_to_list_of_dict_with_string_keys(
-					raw_mapping_value.get("value-transforms", []),
-					ValueError("")
-				)
+				})
 			
 			# Parse transforms from `raw_value_transforms`.
 			# These transforms will be applied to the value.

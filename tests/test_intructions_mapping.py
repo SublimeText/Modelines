@@ -164,3 +164,21 @@ class InstructionsMappingTests(TestCase):
 		self.assertEqual(mapping.apply("to_map", "v2m-1"), ("mapped", "m-1"))
 		self.assertEqual(mapping.apply("to_map", "v2m-2"), None)
 		self.assertEqual(mapping.apply("to_map", "v2m-3"), ("mapped", {"v": "m-3"}))
+	
+	def test_both_short_and_long_forms(self):
+		mapping = ModelineInstructionsMapping({
+			"to_map": {
+				"key": "mapped",
+				"value-mapping-default": None,
+				"value-mapping": {
+					"v2m-1": "m-1",
+					"v2m-2": None,
+					"v2m-3": {"v": "m-3"},
+				},
+				"value-transforms": [{"type": "lowercase"}],
+			},
+		})
+		self.assertEqual(mapping.apply("to_map", "v2M-0"), ("mapped", "v2m-0"))
+		self.assertEqual(mapping.apply("to_map", "v2M-1"), ("mapped", "m-1"))
+		self.assertEqual(mapping.apply("to_map", "v2M-2"), None)
+		self.assertEqual(mapping.apply("to_map", "v2M-3"), ("mapped", {"v": "m-3"}))
