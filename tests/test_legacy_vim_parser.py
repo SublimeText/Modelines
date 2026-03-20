@@ -94,9 +94,6 @@ class LegacyVIMModelineParsingTests(TestCase):
 
 class LegacyVIMModelineIntegrationTests(DeferrableTestCase):
 	
-	view: SublimeView
-	window: SublimeWindow
-	
 	# It seems `DeferrableTestCase` uses setUp “incorrectly” (expects a possible generator returned while base class returns `None`).
 	# To hide a warning we force returning `Any` which disables type-checking.
 	def setUp(self) -> Any:

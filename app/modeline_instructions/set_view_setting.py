@@ -13,10 +13,6 @@ from ..modeline_instruction import ModelineInstruction
 @final
 class ModelineInstruction_SetViewSetting(ModelineInstruction):
 	
-	setting_name: str
-	setting_value: SublimeValue
-	setting_modifier: ModelineInstruction.ValueModifier
-	
 	def __init__(self, key: str, value: SublimeValue, modifier: ModelineInstruction.ValueModifier = ModelineInstruction.ValueModifier.NONE) -> None:
 		super().__init__(key, value, modifier)
 		self.setting_name = key
