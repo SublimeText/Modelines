@@ -1,0 +1,11 @@
+<!--~*~ sublime: tab_size=3; translate_tabs_to_spaces=false ~*~-->
+<!-- Here is a little space to avoid automatic detection of the modeline in the content of the snippet! -->
+
+<snippet>
+	<content><![CDATA[-*- mode: $1; tab-width: $2; indent-tabs-mode: $3 -*-
+]]></content>
+	<tabTrigger>-*-</tabTrigger>
+	<description>EMacs Modeline</description>
+</snippet>
+
+<!-- Here is a little space to avoid automatic detection of the modeline in the content of the snippet! -->

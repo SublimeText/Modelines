@@ -1,0 +1,24 @@
+name: tests
+
+on: [push, pull_request]
+
+jobs:
+  run-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        st-version: [4]
+        os: ["ubuntu-latest", "macOS-latest", "windows-latest"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: SublimeText/UnitTesting/actions/setup@v1
+        with:
+          sublime-text-version: ${{ matrix.st-version }}
+      - uses: SublimeText/UnitTesting/actions/run-tests@v1
+        with:
+          coverage: true
+      # We do not have a codecov token; let’s not do this.
+      # I’m still keeping it around as we might want it later;
+      #  after must have been in the source file this action is from for a reason, I guess…
+      #- uses: codecov/codecov-action@v4

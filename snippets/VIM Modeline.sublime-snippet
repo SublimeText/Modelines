@@ -1,0 +1,11 @@
+<!--~*~ sublime: tab_size=3; translate_tabs_to_spaces=false ~*~-->
+<!-- Here is a little space to avoid automatic detection of the modeline in the content of the snippet! -->
+
+<snippet>
+	<content><![CDATA[vim: set filetype=$1 tabstop=$2 noexpandtab:
+]]></content>
+	<tabTrigger>vim:</tabTrigger>
+	<description>VIM Modeline</description>
+</snippet>
+
+<!-- Here is a little space to avoid automatic detection of the modeline in the content of the snippet! -->
