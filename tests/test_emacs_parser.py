@@ -40,7 +40,7 @@ class VIMModelineParsingTests(TestCase):
 	
 	def __test_parsing(self, line: str, expected: Modeline):
 		parser = ModelineParser_Emacs(ModelineInstructionsMapping())
-		print(parser.parse_line(line, None))
+		#print(parser.parse_line(line, None))
 		self.assertEqual(parser.parse_line(line, None), expected)
 
 # Note: We don’t do another integration test as we have done it in the Sublime parser test (and the legacy+vim one).
