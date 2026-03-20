@@ -63,6 +63,7 @@ To get proper completion and errors in the editor when working on this repo,
   "extraPaths": [
     "/Applications/Sublime Text.app/Contents/MacOS/Lib/python38",
     "/Users/YOUR_USER_NAME/Library/Application Support/Sublime Text/Lib/python38",
+    "/Users/YOUR_USER_NAME/Library/Application Support/Sublime Text/Packages/UnitTesting",
   ]
 }
 ```
