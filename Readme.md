@@ -56,6 +56,7 @@ This is a simple example, that disable tabs auto-translation to spaces, set the 
 To get proper completion and errors in the editor when working on this repo,
  one can create a `pyrightconfig.json` file at the root of the repo,
  containing something like this (on macOS; adjust paths accordingly depending on your environment):
+
 ```json
 {
   "venvPath": ".",
