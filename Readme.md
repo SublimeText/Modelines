@@ -79,6 +79,7 @@ A PR is welcome if there is a way to do it.
 ## [François Lamboley (Frizlab)](<https://github.com/Frizlab>)
 
 Full rewrite featuring:
+
 - Sublime Text 4 compatibility;
 - A whole new modeline syntax;
 - Better VIM syntax support;
