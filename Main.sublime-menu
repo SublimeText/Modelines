@@ -8,7 +8,7 @@
 					"caption": "Modelines",
 					"children": [
 						{
-							"caption": "Settings…",
+							"caption": "Settings",
 							"id": "modelines-settings",
 							"command": "edit_settings",
 							"args": {
