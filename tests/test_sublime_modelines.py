@@ -2,7 +2,7 @@ import unittest
 import sys
 import os
 
-import mock
+import unittest.mock as mock
 
 import sublime
 
@@ -14,7 +14,7 @@ sublime.packagesPath.return_value = "XXX"
 
 
 import sublime_plugin
-import sublime_modelines
+from ..sublime_modelines import get_line_comment_char
 
 
 def pytest_funcarg__view(request):
@@ -23,7 +23,7 @@ def pytest_funcarg__view(request):
 
 
 def test_get_line_comment_char_Does_meta_info_GetCorrectArgs(view):
-    sublime_modelines.get_line_comment_char(view)
+    get_line_comment_char(view)
 
     actual = view.meta_info.call_args
     expected = (("shellVariables", 0), {})
@@ -35,7 +35,7 @@ def test_get_line_comment_char_DoWeGetLineCommentCharIfExists(view):
     view.meta_info.return_value = [{ "name": "TM_COMMENT_START", "value": "#"}]
 
     expected = "#"
-    actual = sublime_modelines.get_line_comment_char(view)
+    actual = get_line_comment_char(view)
 
     assert expected == actual
 
@@ -44,7 +44,7 @@ def test_get_line_comment_char_DoWeGetEmptyLineIfLineCommentCharDoesntExist(view
     view.meta_info.return_value = [{ "name": "NOT_TM_COMMENT_START", "value": "#"}]
 
     expected = ""
-    actual = sublime_modelines.get_line_comment_char(view)
+    actual = get_line_comment_char(view)
 
     assert expected == actual
 
@@ -53,7 +53,7 @@ def test_get_line_comment_char_ShouldReturnEmptyStringIfNoExtraVariablesExist(vi
     view.meta_info.return_value = None
 
     expected = ""
-    actual = sublime_modelines.get_line_comment_char(view)
+    actual = get_line_comment_char(view)
 
     assert expected == actual
 

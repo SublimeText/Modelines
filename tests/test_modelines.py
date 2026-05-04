@@ -1,4 +1,4 @@
-from sublime_unittest import TestCase
+from unittest import TestCase
 import sublime, os
 
 
