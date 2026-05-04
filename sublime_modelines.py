@@ -22,7 +22,7 @@ DEFAULT_LINE_COMMENT = '#'
 MULTIOPT_SEP = '; '
 MAX_LINES_TO_CHECK = 50
 LINE_LENGTH = 80
-ODELINES_REG_SIZE = MAX_LINES_TO_CHECK * LINE_LENGTH
+MODELINES_REG_SIZE = MAX_LINES_TO_CHECK * LINE_LENGTH
 
 MONITORED_OUTPUT_PANELS = ['exec']
 
@@ -141,7 +141,7 @@ def debug_log(s, *args):
 def get_language_files(ignored_packages, *paths):
     paths = list(paths)
     tml_files = []
-    if ST3:kj
+    if ST3:
         tml_files.extend(sublime.find_resources('*.tmLanguage'))
     else:
         paths.insert(0, sublime.packages_path())
