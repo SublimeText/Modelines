@@ -100,3 +100,19 @@ class SublimeModelineIntegrationTests(DeferrableTestCase):
 		self.window.run_command("modelines_apply")
 		self.assertEqual(self.view.settings().get("tab_size"), 3)
 		self.assertEqual(self.view.settings().get("translate_tabs_to_spaces"), False)
+	
+	def test_view_function_outside_the_allowlist_is_refused(self):
+		original_size = self.view.size()
+		line = '/* ~*~ sublime: run_command()="insert"; tab_size=9 ~*~ */\n'
+		self.view.run_command("insert", {"characters": line})
+		self.window.run_command("modelines_apply")
+		# The buffer is exactly what we typed: the refused instruction did not run a command…
+		self.assertEqual(self.view.size(), original_size + len(line))
+		self.assertEqual(self.view.substr(sublime.Region(0, self.view.size())), line)
+		# …and the settings on the same line still applied.
+		self.assertEqual(self.view.settings().get("tab_size"), 9)
+	
+	def test_view_function_inside_the_allowlist_still_applies(self):
+		self.view.run_command("insert", {"characters": '/* ~*~ sublime: set_name()="renamed by modeline" ~*~ */\n'})
+		self.window.run_command("modelines_apply")
+		self.assertEqual(self.view.name(), "renamed by modeline")
