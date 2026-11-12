@@ -7,10 +7,9 @@ from ..modeline_instruction import ModelineInstruction
 
 
 
-# Modeline content comes from the file being opened, so the function name in “name()=argument” is
-# attacker-controlled: an unbounded getattr() over the view exposes every method, including
-# run_command(), which runs an arbitrary command. Only the methods a modeline has a reason to call
-# are allowed, and all of them change the buffer’s own state and nothing else.
+# Modeline content comes from the file being opened, so the function name in “name()=argument” is attacker-controlled:
+#  an unbounded getattr() over the view exposes every method, including run_command(), which runs an arbitrary command.
+# Only the methods a modeline has a reason to call are allowed, and all of them change the buffer’s own state and nothing else.
 ALLOWED_VIEW_FUNCTIONS: Final[FrozenSet[str]] = frozenset({
 	"set_encoding",
 	"set_line_endings",
@@ -19,7 +18,6 @@ ALLOWED_VIEW_FUNCTIONS: Final[FrozenSet[str]] = frozenset({
 	"set_scratch",
 	"set_syntax_file",
 })
-
 
 
 @final
