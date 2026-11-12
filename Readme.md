@@ -3,7 +3,7 @@
 Set settings local to a single buffer.  
 A more granular approach to settings than the per file type `.sublime-settings` files.
 
-Inspired by Vim’s modelines feature.
+_Inspired by Vim’s modelines feature._
 
 
 ## Getting Started
