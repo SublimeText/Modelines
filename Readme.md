@@ -51,6 +51,16 @@ This is a simple example, that disable tabs auto-translation to spaces, set the 
 # ~*~ sublime: syntax=Python; tab_size=3; translate_tabs_to_spaces=false ~*~
 ```
 
+### View Functions Are Restricted
+
+A key ending in `()` is a call on the buffer’s `sublime.View`, used by the VIM and Emacs mappings for `set_line_endings()` and `set_encoding()`.
+Because a modeline lives in the file being opened, only a fixed set of methods may be called this way: the ones that change that buffer’s own state and nothing else:
+ `set_encoding`, `set_line_endings`, `set_name`, `set_read_only`, `set_scratch` and `set_syntax_file`.
+
+Any other name is refused, logged, and skipped; the other instructions on the same line still apply.
+Without that restriction a file could declare `run_command()=…` and run an arbitrary command as soon as it was opened.
+
+
 ## Developer Note
 
 To get proper completion and errors in the editor when working on this repo,
